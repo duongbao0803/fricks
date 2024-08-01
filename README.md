@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# COOLIX - Refrigeration Care Online
 
-## Getting Started
+<div align="center">
+    <img style="width: 180px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/COOLIX%2FFrame%2061.png?alt=media&token=fb985543-5adf-4dff-85ce-a3df24ba1ffd" />
+    <p><a href="https://coolix.vercel.app/">COOLIX</a> is a platform that connects refrigeration repairmen with customers and provides repair services right where they live.
+</div>
 
-First, run the development server:
+### Welcome to COOLIX
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Demo: [COOLIX](https://coolix.vercel.app)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Introduction
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Updating...
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+#### 3 Members:
 
-## Learn More
+- [Đăng Phan Gia Đức](https://github.com/giaducdang03) (Leader, Back-end Dev, UI Design)
+- [Dương Tôn Bảo](https://github.com/duongbao0803) (Front-end Dev, UI Design)
+- [Phạm Ngọc Bảo](https://github.com/ngocbubuh) (Mobile-Dev)
 
-To learn more about Next.js, take a look at the following resources:
+#### Screen-shots
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+###### COOLIX app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Updating...
 
-## Deploy on Vercel
+###### COOLIX dashboard
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Updating...
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### Techstacks:
+
+- Updating...
+
+#### Deployment:
+
+- Updating...
+
+#### References:
+
+- Figma: [COOLIX UI](https://www.figma.com/design/EirGpkYSuGPQAteczJryxr/Coolix---Mobile-App-UI?t=Hh1cDdfsx718wuzI-0)
+- Updating...
+
+##### Contact me via: tonbao0803@gmail.com
+
+##### Copyright &#169; 2024 COOLIX
