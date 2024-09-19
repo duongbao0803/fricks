@@ -1,8 +1,6 @@
 import React from "react";
-// import Signup from "./Signup";
-// import ForgotPasswordForm from "./ForgotPassword";
-import CarouselDemo from "@/components/Carousel";
 import LoginForm from "./login/LoginForm";
+import { Carousel } from "@/components";
 
 const AuthPage: React.FC = () => {
   return (
@@ -12,7 +10,7 @@ const AuthPage: React.FC = () => {
           <LoginForm />
         </div>
         <div className="order-1 hidden rounded-xl transition-all duration-500 lg:block">
-          <CarouselDemo />
+          <Carousel />
         </div>
       </div>
     </section>

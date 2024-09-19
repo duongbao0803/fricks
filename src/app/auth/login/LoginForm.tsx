@@ -9,8 +9,12 @@ import { motion } from "framer-motion";
 import { ButtonCustom } from "@/components/ui/button";
 import { LoginFormParams } from "@/types/login.types";
 import { InputCustom } from "@/components/ui/input";
-import RegisterForm from "../register/RegisterForm";
-import ForgotPasswordForm from "../forgot-pass/ForgotPasswordForm";
+import RegisterForm from "@/app/auth/register/RegisterForm";
+import ForgotPasswordForm from "@/app/auth/forgot-pass/ForgotPasswordForm";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "@/config/firebase";
+
+const provider = new GoogleAuthProvider();
 
 const LoginForm: React.FC = () => {
   const [isShowRegister, setIsShowRegister] = useState<boolean>(false);
@@ -31,6 +35,18 @@ const LoginForm: React.FC = () => {
     setValues(values);
     if (values?.email && values?.password) {
       // handleSignin(values);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoggingIn(true);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result.user);
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -195,7 +211,10 @@ const LoginForm: React.FC = () => {
               animate={{ y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <ButtonCustom className="mx-auto mt-5 block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] text-[grey] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary">
+              <ButtonCustom
+                onClick={handleGoogleSignIn}
+                className="mx-auto mt-5 block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] text-[grey] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary"
+              >
                 <div className="flex items-center justify-center tracking-wider">
                   <Image
                     src="https://freesvg.org/img/1534129544.png"

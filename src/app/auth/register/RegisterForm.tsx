@@ -4,12 +4,11 @@ import React, { useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Form, Spin, notification } from "antd";
 import ReCAPTCHA from "react-google-recaptcha";
-
 import { motion } from "framer-motion";
 import { InputCustom } from "@/components/ui/input";
 import { ButtonCustom } from "@/components/ui/button";
-import LoginForm from "../login/LoginForm";
 import { notify } from "@/components/Notification";
+import LoginForm from "@/app/auth/login/LoginForm";
 
 interface IProps {
   isShowRegister: boolean;
@@ -20,14 +19,11 @@ const RegisterForm: React.FC<IProps> = ({
   isShowRegister,
   setIsShowRegister,
 }) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
 
   const [form] = Form.useForm();
-  const [api, contextHolder] = notification.useNotification();
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
 
   const validatePassword = (_: unknown, value: string) => {
     const password = form.getFieldValue("password");
@@ -35,14 +31,6 @@ const RegisterForm: React.FC<IProps> = ({
       return Promise.reject("Mật khẩu không trùng");
     }
     return Promise.resolve();
-  };
-
-  const togglePassword = (): void => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleConfirmPassword = (): void => {
-    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const onCaptchaChange = (value: string | null) => {
@@ -53,7 +41,7 @@ const RegisterForm: React.FC<IProps> = ({
     }
   };
 
-  const onFinish = (values: any) => {
+  const onFinish = () => {
     if (!captchaVerified) {
       notify(
         "warning",
@@ -67,11 +55,12 @@ const RegisterForm: React.FC<IProps> = ({
     setIsSigningUp(true);
     setTimeout(() => {
       setIsSigningUp(false);
-      api.success({
-        message: "Đăng ký thành công",
-        description: "Tài khoản của bạn đã được tạo thành công.",
-        duration: 2,
-      });
+      notify(
+        "success",
+        "Đăng ký thành công",
+        "Tài khoản của bạn đã được tạo thành công.",
+        3,
+      );
       form.resetFields();
     }, 2000);
   };
@@ -224,7 +213,7 @@ const RegisterForm: React.FC<IProps> = ({
             <Form.Item noStyle>
               <div className="mb-3 mt-8 flex w-full max-w-[300px] justify-start">
                 <ReCAPTCHA
-                  sitekey="6LfWakkqAAAAABKFbRZGqp9i_aYrEu9YwDqVWfsT"
+                  sitekey={recaptchaSiteKey}
                   onChange={onCaptchaChange}
                 />
               </div>

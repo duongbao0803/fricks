@@ -4,9 +4,8 @@ import React, { useState } from "react";
 import { Form, Spin } from "antd";
 import { motion } from "framer-motion";
 import { LoadingOutlined } from "@ant-design/icons";
-
 import { InputCustom } from "@/components/ui/input";
-import RegisterForm from "../register/RegisterForm";
+import RegisterForm from "@/app/auth/register/RegisterForm";
 import { ButtonCustom } from "@/components/ui/button";
 import { notify } from "@/components/Notification";
 
