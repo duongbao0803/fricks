@@ -9,7 +9,7 @@ import {
   LoadingOutlined,
 } from "@ant-design/icons";
 import { Button, Form, Input, Spin, notification } from "antd";
-import Signin from "./Signin";
+import Signin from "../app/auth/login/LoginForm";
 import Link from "next/link";
 import ForgotPasswordForm from "./ForgotPassword";
 // import { signUp } from "@/api/authenApi";

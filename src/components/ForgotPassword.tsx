@@ -3,7 +3,7 @@
 import React from "react";
 import { Button, Form, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import Signin from "./Signin";
+import Signin from "../app/auth/login/LoginForm";
 
 interface IProps {
   isShowRegister: boolean;
