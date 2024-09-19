@@ -2,17 +2,15 @@
 
 import React, { useState } from "react";
 import { Form, Checkbox, Spin } from "antd";
-import {
-  LoadingOutlined,
-} from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 import Image from "next/image";
-import ForgotPasswordForm from "@/components/ForgotPassword";
-import Signup from "@/components/Signup";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ButtonCustom } from "@/components/ui/button";
-import { InputCustom } from "../../../components/ui/input";
 import { LoginFormParams } from "@/types/login.types";
+import { InputCustom } from "@/components/ui/input";
+import RegisterForm from "../register/RegisterForm";
+import ForgotPasswordForm from "../forgot-pass/ForgotPasswordForm";
 
 const LoginForm: React.FC = () => {
   const [isShowRegister, setIsShowRegister] = useState<boolean>(false);
@@ -26,7 +24,6 @@ const LoginForm: React.FC = () => {
   });
   const [form] = Form.useForm();
   const [isError, setIsError] = useState(false);
- 
 
   const onFinish = (values: LoginFormParams) => {
     console.log("check values", values);
@@ -37,8 +34,6 @@ const LoginForm: React.FC = () => {
     }
   };
 
-
-
   return (
     <>
       {isShowForgotPassword ? (
@@ -48,24 +43,24 @@ const LoginForm: React.FC = () => {
         />
       ) : !isShowRegister ? (
         <>
-          <div className="">
+          <section className="py-5">
             <motion.div
               initial={{ y: -50 }}
               animate={{ y: 0 }}
               transition={{ duration: 1 }}
             >
-              <h1 className="text-center text-[27px] lg:text-3xl font-bold text-primary transition-all duration-500">
+              <h1 className="text-center text-2xl font-bold text-primary transition-all duration-500 lg:text-3xl">
                 CHÀO MỪNG TRỞ LẠI
               </h1>
-              <p className="mx-5 lg:mx-10 mt-3 mb-5 text-center text-sm lg:text-[15px] text-[#a3a1a1] transition-all duration-500">
+              <p className="mx-4 mb-5 mt-3 text-center text-sm text-[#a3a1a1] transition-all duration-500 lg:mx-9 lg:text-[15px]">
                 Trải nghiệm mua sắm vật liệu xây dựng chất lượng với {""}
                 <span>
                   <Link
                     href="/"
-                    className="cursor-pointer font-bold text-primary relative group"
+                    className="group relative cursor-pointer font-bold text-primary"
                   >
                     FRICKS
-                    <span className="absolute bottom-[-3px] left-0 w-full h-0.5 bg-primary transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
+                    <span className="absolute bottom-[-3px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
                   </Link>
                   <span>.</span>
                 </span>
@@ -105,6 +100,7 @@ const LoginForm: React.FC = () => {
                     placeholder="Email"
                     type="email"
                     className="hover:border-primary focus:border-primary"
+                    autoFocus
                   />
                 </Form.Item>
               </motion.div>
@@ -138,34 +134,39 @@ const LoginForm: React.FC = () => {
                 </Form.Item>
               </motion.div>
               <motion.div
-                initial={{ x: 100 }}
-                animate={{ x: 0 }}
-                transition={{ duration: 0.8 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1 }}
               >
-                <Form.Item name="remember" valuePropName="checked" noStyle className="mt-4">
+                <Form.Item
+                  name="remember"
+                  valuePropName="checked"
+                  noStyle
+                  className="mt-4"
+                >
                   <Checkbox onChange={(e) => setRememberMe(e.target.checked)}>
                     Ghi nhớ
                   </Checkbox>
+
                   <a
                     href="#"
-                    className="float-right hover:text-primary cursor-pointer font-semibold text-primary relative group"
+                    className="group relative float-right cursor-pointer font-semibold text-primary hover:text-primary"
                     onClick={() => setIsShowForgotPassword(true)}
                   >
                     Quên mật khẩu
-                    <span className="absolute bottom-[-3px] left-0 w-full h-0.5 bg-primary transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
-
+                    <span className="absolute bottom-[-3px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
                   </a>
                 </Form.Item>
               </motion.div>
-              <Form.Item>
-                <motion.div
-                     initial={{ x: -50 }}
-                     animate={{ x: 0 }}
-                  transition={{ duration: 1 }}
-                >
+              <motion.div
+                initial={{ x: 50 }}
+                animate={{ x: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <Form.Item>
                   <ButtonCustom
                     // htmlType="submit"
-                    className="mx-auto mt-5 block h-11 w-full rounded-[5px] text-lg tracking-wider bg-primary hover:bg-primary/80 text-white"
+                    className="mx-auto mt-5 block h-11 w-full rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80"
                   >
                     {isLoggingIn ? (
                       <Spin
@@ -175,12 +176,12 @@ const LoginForm: React.FC = () => {
                       "Đăng nhập"
                     )}
                   </ButtonCustom>
-                </motion.div>
-              </Form.Item>
+                </Form.Item>
+              </motion.div>
             </Form>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1 }}
             >
               <div className="mt-4 flex items-center justify-center text-center">
@@ -194,7 +195,7 @@ const LoginForm: React.FC = () => {
               animate={{ y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <ButtonCustom className="mx-auto mt-5 block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] text-[grey] hover:!text-primary shadow-none hover:!border-primary hover:!bg-transparent">
+              <ButtonCustom className="mx-auto mt-5 block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] text-[grey] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary">
                 <div className="flex items-center justify-center tracking-wider">
                   <Image
                     src="https://freesvg.org/img/1534129544.png"
@@ -208,23 +209,22 @@ const LoginForm: React.FC = () => {
                 </div>
               </ButtonCustom>
 
-
               <div className="mt-3 text-center text-sm">
                 <span className="text-black">Bạn không có tài khoản?</span> {""}
                 <a
                   href="#"
-                  className="login-form-forgot  hover:text-primary cursor-pointer  font-semibold text-primary relative  group"
+                  className="login-form-forgot group relative cursor-pointer font-semibold text-primary hover:text-primary"
                   onClick={() => setIsShowRegister(true)}
                 >
                   Đăng ký
-                  <span className="absolute bottom-[-3px] left-0 w-full h-0.5 bg-primary transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
+                  <span className="absolute bottom-[-3px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
                 </a>
               </div>
             </motion.div>
-          </div>
+          </section>
         </>
       ) : (
-        <Signup
+        <RegisterForm
           isShowRegister={isShowRegister}
           setIsShowRegister={setIsShowRegister}
         />

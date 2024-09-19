@@ -36,8 +36,8 @@ const config: Config = {
           "50%": { transform: "translateY(3px)" },
         },
         roadAnimation: {
-          '0%': { transform: 'translateX(0px)' },
-          '100%': { transform: 'translateX(-350px)' },
+          "0%": { transform: "translateX(0px)" },
+          "100%": { transform: "translateX(-350px)" },
         },
       },
       animation: {
