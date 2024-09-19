@@ -11,7 +11,7 @@ import Signup from "@/components/Signup";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ButtonCustom } from "@/components/ui/button";
-import { InputCustom } from "./ui/input";
+import { InputCustom } from "../../../components/ui/input";
 import { LoginFormParams } from "@/types/login.types";
 
 const LoginForm: React.FC = () => {
@@ -36,7 +36,6 @@ const LoginForm: React.FC = () => {
       // handleSignin(values);
     }
   };
-
 
 
 
