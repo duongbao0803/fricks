@@ -1,10 +1,9 @@
-import VoiceSearch from "@/components/VoiceSearch";
 import React from "react";
 
 const HomePage = () => {
   return (
     <>
-      <VoiceSearch />
+      <div>hihi</div>
     </>
   );
 };
