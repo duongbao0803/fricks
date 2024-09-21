@@ -7,7 +7,7 @@ import { NotificationProvider } from "@/components/Notification";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FRICKS",
+  title: "Fricks",
 };
 
 export default function RootLayout({

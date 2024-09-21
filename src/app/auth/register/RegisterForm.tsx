@@ -43,24 +43,14 @@ const RegisterForm: React.FC<IProps> = ({
 
   const onFinish = () => {
     if (!captchaVerified) {
-      notify(
-        "warning",
-        "reCAPTCHA không hợp lệ",
-        "Vui lòng xác nhận reCAPTCHA",
-        3,
-      );
+      notify("warning", "Vui lòng xác nhận reCAPTCHA", 3);
       return;
     }
 
     setIsSigningUp(true);
     setTimeout(() => {
       setIsSigningUp(false);
-      notify(
-        "success",
-        "Đăng ký thành công",
-        "Tài khoản của bạn đã được tạo thành công.",
-        3,
-      );
+      notify("success", "Tài khoản của bạn đã được tạo thành công.", 3);
       form.resetFields();
     }, 2000);
   };

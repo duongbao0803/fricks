@@ -20,16 +20,10 @@ const ForgotPasswordForm: React.FC<IProps> = ({
 }) => {
   const [isSending, setIsSending] = useState(false);
   const [form] = Form.useForm();
-  const [isError, setIsError] = useState(false);
 
   const onFinish = () => {
     setIsSending(true);
-    notify(
-      "success",
-      "Gửi thành công",
-      "Vui lòng kiểm tra hòm thư để lấy lại mật khẩu",
-      30,
-    );
+    notify("success", "Vui lòng kiểm tra hòm thư để lấy lại mật khẩu", 30);
     setTimeout(() => {
       setIsSending(false);
     }, 30000);
@@ -44,7 +38,7 @@ const ForgotPasswordForm: React.FC<IProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            <h1 className="mb-5 text-center text-4xl font-bold uppercase text-primary">
+            <h1 className="mb-5 text-center text-2xl font-bold uppercase text-primary transition-all duration-500 sm:text-3xl md:text-4xl">
               Quên mật khẩu
             </h1>
           </motion.div>

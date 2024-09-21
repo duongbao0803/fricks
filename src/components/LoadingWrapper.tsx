@@ -8,13 +8,12 @@ export default function LoadingWrapper({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter()
-
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-      router.push("/auth")
+      router.push("/auth");
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -22,9 +21,9 @@ export default function LoadingWrapper({
 
   if (isLoading) {
     return (
-      <div className="mx-2 h-screen flex items-center justify-center">
-        <div className="w-52 h-28 flex flex-col relative items-center justify-end overflow-x-hidden">
-          <div className="w-[130px] h-fit mb-2 animate-motion">
+      <div className="fixed inset-0 mx-2 flex items-center justify-center">
+        <div className="relative flex h-28 w-52 flex-col items-center justify-end overflow-x-hidden">
+          <div className="mb-2 h-fit w-[130px] animate-motion">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -91,7 +90,7 @@ export default function LoadingWrapper({
               ></rect>
             </svg>
           </div>
-          <div className="w-32 h-fit flex items-center justify-between pr-[10px] pl-[15px] absolute bottom-0">
+          <div className="absolute bottom-0 flex h-fit w-32 items-center justify-between pl-[15px] pr-[10px]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -125,7 +124,7 @@ export default function LoadingWrapper({
               <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
             </svg>
           </div>
-          <div className="w-full h-[1.5px] bg-[#282828] relative bottom-0 self-end rounded-[3px] road"></div>
+          <div className="road relative bottom-0 h-[1.5px] w-full self-end rounded-[3px] bg-[#282828]"></div>
 
           <svg
             xmlSpace="preserve"
@@ -135,7 +134,7 @@ export default function LoadingWrapper({
             id="Capa_1"
             version="1.1"
             fill="#000000"
-            className="animate-roadAnimation absolute bottom-0 right-[-90%] h-[90px] "
+            className="absolute bottom-0 right-[-90%] h-[90px] animate-roadAnimation"
           >
             <path
               d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
@@ -151,7 +150,6 @@ h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
           </svg>
         </div>
       </div>
-
     );
   }
 

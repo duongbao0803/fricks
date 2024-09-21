@@ -27,7 +27,6 @@ const LoginForm: React.FC = () => {
     password: "",
   });
   const [form] = Form.useForm();
-  const [isError, setIsError] = useState(false);
 
   const onFinish = (values: LoginFormParams) => {
     console.log("check values", values);
@@ -39,14 +38,11 @@ const LoginForm: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    setIsLoggingIn(true);
     try {
       const result = await signInWithPopup(auth, provider);
       console.log(result.user);
     } catch (error) {
-      console.error("Error during Google sign-in:", error);
-    } finally {
-      setIsLoggingIn(false);
+      console.error("Error login with google", error);
     }
   };
 
