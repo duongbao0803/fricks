@@ -39,10 +39,15 @@ const config: Config = {
           "0%": { transform: "translateX(0px)" },
           "100%": { transform: "translateX(-350px)" },
         },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
       },
       animation: {
         motion: "motion 1s linear infinite",
         roadAnimation: "roadAnimation 1.4s linear infinite",
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
     },
   },

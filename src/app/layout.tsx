@@ -3,11 +3,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import LoadingWrapper from "@/components/LoadingWrapper";
 import { NotificationProvider } from "@/components/Notification";
-
+import { Providers } from "@/redux/provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FRICKS",
+  title: "Fricks",
 };
 
 export default function RootLayout({
@@ -21,9 +21,8 @@ export default function RootLayout({
         <LoadingWrapper>
           <NotificationProvider>
             {/* <Navbar /> */}
-
             {/* <NextProgressBar /> */}
-            {children}
+            <Providers>{children}</Providers>
           </NotificationProvider>
         </LoadingWrapper>
       </body>

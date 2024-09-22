@@ -30,18 +30,26 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const notify = (
   type: "success" | "info" | "warning" | "error",
-  message: string,
   description: string,
   duration: number,
 ) => {
+  const typeMessages: { [key: string]: string } = {
+    success: "Thành công",
+    info: "Thông báo",
+    warning: "Cảnh báo",
+    error: "Lỗi",
+  };
+
+  const notificationMessage = typeMessages[type];
+
   if (notificationApi) {
     notificationApi[type]({
-      message,
+      message: notificationMessage,
       description,
       duration: duration || 3,
       showProgress: true,
     });
   } else {
-    console.error("Notification API not initialized!");
+    console.error("Notification is not initialized");
   }
 };

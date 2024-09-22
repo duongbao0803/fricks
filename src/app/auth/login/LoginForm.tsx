@@ -7,13 +7,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ButtonCustom } from "@/components/ui/button";
-import { LoginFormParams } from "@/types/login.types";
+import {
+  ApiResponse,
+  ErrorResponse,
+  LoginFormParams,
+} from "@/types/login.types";
 import { InputCustom } from "@/components/ui/input";
 import RegisterForm from "@/app/auth/register/RegisterForm";
 import ForgotPasswordForm from "@/app/auth/forgot-pass/ForgotPasswordForm";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "@/config/firebase";
-
+import { useLoginMutation } from "@/apis/authApi";
+import Cookies from "js-cookie";
+import { notify } from "@/components/Notification";
+import { isErrorResponse } from "@/utils";
 const provider = new GoogleAuthProvider();
 
 const LoginForm: React.FC = () => {
@@ -22,31 +29,39 @@ const LoginForm: React.FC = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [isShowForgotPassword, setIsShowForgotPassword] =
     useState<boolean>(false);
-  const [, setValues] = useState({
-    email: "",
-    password: "",
-  });
   const [form] = Form.useForm();
-  const [isError, setIsError] = useState(false);
+  const [login] = useLoginMutation();
 
-  const onFinish = (values: LoginFormParams) => {
-    console.log("check values", values);
-
-    setValues(values);
-    if (values?.email && values?.password) {
-      // handleSignin(values);
+  const onFinish = async (values: { email: string; password: string }) => {
+    setIsLoggingIn(true);
+    try {
+      const res: ApiResponse = await login({
+        email: values.email,
+        password: values.password,
+      }).unwrap();
+      if (res && res.httpCode === 200) {
+        setIsLoggingIn(false);
+        notify("success", "Đăng nhập thành công", 3);
+        Cookies.set("accessToken", res.accessToken);
+        Cookies.set("refreshToken", res.refreshToken);
+      }
+    } catch (err: unknown) {
+      if (isErrorResponse(err)) {
+        setIsLoggingIn(false);
+        notify("error", `${err.data.message}`, 3);
+      } else {
+        setIsLoggingIn(false);
+        notify("error", "An unknown error occurred", 3);
+      }
     }
   };
 
   const handleGoogleSignIn = async () => {
-    setIsLoggingIn(true);
     try {
       const result = await signInWithPopup(auth, provider);
       console.log(result.user);
     } catch (error) {
-      console.error("Error during Google sign-in:", error);
-    } finally {
-      setIsLoggingIn(false);
+      console.error("Error login with google", error);
     }
   };
 
@@ -59,7 +74,7 @@ const LoginForm: React.FC = () => {
         />
       ) : !isShowRegister ? (
         <>
-          <section className="py-5">
+          <section className="py-10">
             <motion.div
               initial={{ y: -50 }}
               animate={{ y: 0 }}
