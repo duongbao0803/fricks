@@ -2,13 +2,15 @@
 
 import React, { useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Form, Spin, notification } from "antd";
+import { Form, Spin } from "antd";
 import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from "framer-motion";
 import { InputCustom } from "@/components/ui/input";
 import { ButtonCustom } from "@/components/ui/button";
 import { notify } from "@/components/Notification";
 import LoginForm from "@/app/auth/login/LoginForm";
+import { useRegisterMutation } from "@/apis/authApi";
+import { isErrorResponse } from "@/utils";
 
 interface IProps {
   isShowRegister: boolean;
@@ -21,6 +23,7 @@ const RegisterForm: React.FC<IProps> = ({
 }) => {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [register] = useRegisterMutation();
 
   const [form] = Form.useForm();
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
@@ -41,18 +44,37 @@ const RegisterForm: React.FC<IProps> = ({
     }
   };
 
-  const onFinish = () => {
+  const onFinish = async (values: {
+    email: string;
+    fullName: string;
+    password: string;
+    phoneNumber: string;
+    confirmPassword: boolean;
+  }) => {
+    const { confirmPassword, ...information } = values;
     if (!captchaVerified) {
       notify("warning", "Vui lòng xác nhận reCAPTCHA", 3);
       return;
     }
-
-    setIsSigningUp(true);
-    setTimeout(() => {
-      setIsSigningUp(false);
-      notify("success", "Tài khoản của bạn đã được tạo thành công.", 3);
-      form.resetFields();
-    }, 2000);
+    setIsShowRegister(true);
+    try {
+      console.log("check values", values);
+      const res = await register(values).unwrap();
+      if (res && res.httpCode === 200) {
+        setIsSigningUp(false);
+        notify("success", "Đăng kí tài khoản thành công", 3);
+        setIsShowRegister(false);
+      }
+    } catch (err: unknown) {
+      console.log("check err", err);
+      if (isErrorResponse(err)) {
+        setIsSigningUp(false);
+        notify("error", `${err.data.message}`, 3);
+      } else {
+        setIsSigningUp(false);
+        notify("error", `${err}`, 3);
+      }
+    }
   };
 
   return (
@@ -79,7 +101,7 @@ const RegisterForm: React.FC<IProps> = ({
               initial={{ x: -50 }}
               animate={{ x: 0 }}
               transition={{ duration: 0.8 }}
-              className="mb-9"
+              className="mb-8"
             >
               <Form.Item
                 name="email"
@@ -91,7 +113,7 @@ const RegisterForm: React.FC<IProps> = ({
                   },
                   {
                     type: "email",
-                    message: "Vui lòng nhập đúng kiểu email",
+                    message: "Email không đúng định dạng",
                   },
                 ]}
                 colon={true}
@@ -106,23 +128,22 @@ const RegisterForm: React.FC<IProps> = ({
                 />
               </Form.Item>
             </motion.div>
-
             <motion.div
               initial={{ x: -50 }}
               animate={{ x: 0 }}
               transition={{ duration: 0.8 }}
-              className="mb-9"
+              className="mb-8"
             >
               <Form.Item
-                name="name"
+                name="fullName"
                 hasFeedback
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập tên của bạn",
+                    message: "Vui lòng nhập họ và tên",
                   },
                   {
-                    max: 8,
+                    min: 8,
                     message: "Tên người dùng ít nhất 8 ký tự",
                   },
                 ]}
@@ -137,12 +158,43 @@ const RegisterForm: React.FC<IProps> = ({
                 />
               </Form.Item>
             </motion.div>
+            <motion.div
+              initial={{ x: -50 }}
+              animate={{ x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mb-8"
+            >
+              <Form.Item
+                name="phoneNumber"
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập số điện thoại",
+                  },
+                  {
+                    pattern: /^[0-9]{10,11}$/,
+                    message: "Vui lòng nhập đúng số điện thoại (10-11 chữ số)",
+                  },
+                ]}
+                colon={true}
+                labelCol={{ span: 24 }}
+                className="formItem"
+              >
+                <InputCustom
+                  placeholder="Số điện thoại"
+                  type="text"
+                  className="hover:border-primary focus:border-primary"
+                  autoFocus
+                />
+              </Form.Item>
+            </motion.div>
 
             <motion.div
               initial={{ x: -50 }}
               animate={{ x: 0 }}
               transition={{ duration: 0.8 }}
-              className="mb-9"
+              className="mb-8"
             >
               <Form.Item
                 name="password"
@@ -154,7 +206,7 @@ const RegisterForm: React.FC<IProps> = ({
                   {
                     min: 4,
                     max: 20,
-                    message: "Mật khẩu phải có ít nhất 8 kí tự",
+                    message: "Mật khẩu phải có từ 4 đến 20 kí tự",
                   },
                 ]}
                 labelCol={{ span: 24 }}
@@ -180,11 +232,6 @@ const RegisterForm: React.FC<IProps> = ({
                   {
                     required: true,
                     message: "Vui lòng xác nhận mật khẩu",
-                  },
-                  {
-                    min: 4,
-                    max: 20,
-                    message: "Mật khẩu phải có ít nhất 8 kí tự",
                   },
                   { validator: validatePassword },
                 ]}

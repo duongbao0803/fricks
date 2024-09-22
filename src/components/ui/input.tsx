@@ -37,7 +37,11 @@ const InputCustom = React.forwardRef<HTMLInputElement, InputProps>(
           type={isPasswordVisible ? "password" : "text"}
           className={cn(
             "flex h-10 w-full rounded-[6px] border !bg-white bg-transparent px-3 text-sm placeholder-transparent shadow-sm outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-            error ? "border-red-500" : "border-gray-300",
+            error
+              ? "border-red-500"
+              : isFocused || props.value
+                ? "border-primary"
+                : "border-gray-300",
             className,
           )}
           placeholder={placeholder}

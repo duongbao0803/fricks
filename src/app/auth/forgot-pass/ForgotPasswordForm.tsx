@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { Form, Spin } from "antd";
 import { motion } from "framer-motion";
@@ -8,6 +6,22 @@ import { InputCustom } from "@/components/ui/input";
 import RegisterForm from "@/app/auth/register/RegisterForm";
 import { ButtonCustom } from "@/components/ui/button";
 import { notify } from "@/components/Notification";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 interface IProps {
   isShowRegister: boolean;
@@ -20,13 +34,16 @@ const ForgotPasswordForm: React.FC<IProps> = ({
 }) => {
   const [isSending, setIsSending] = useState(false);
   const [form] = Form.useForm();
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
 
   const onFinish = () => {
     setIsSending(true);
-    notify("success", "Vui lòng kiểm tra hòm thư để lấy lại mật khẩu", 30);
+    notify("success", "Vui lòng kiểm tra hòm thư để lấy lại mật khẩu", 1);
+
     setTimeout(() => {
       setIsSending(false);
-    }, 30000);
+      setIsDrawerVisible(true);
+    }, 1000);
   };
 
   return (
@@ -42,32 +59,18 @@ const ForgotPasswordForm: React.FC<IProps> = ({
               Quên mật khẩu
             </h1>
           </motion.div>
-          <Form
-            name="normal_login"
-            className="login-form"
-            form={form}
-            onFinish={onFinish}
-          >
+          <Form form={form} onFinish={onFinish} className="login-form">
             <motion.div
               initial={{ x: -50 }}
               animate={{ x: 0 }}
               transition={{ duration: 1 }}
             >
               <Form.Item
-                name="password"
-                id="formItem"
+                name="email"
                 rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập email của bạn",
-                  },
-                  {
-                    min: 8,
-                    message: "Password must be at least 8 characters",
-                  },
+                  { required: true, message: "Vui lòng nhập email của bạn" },
+                  { type: "email", message: "Vui lòng nhập đúng kiểu email" },
                 ]}
-                labelCol={{ span: 24 }}
-                className="formItem"
               >
                 <InputCustom
                   placeholder="Email"
@@ -76,26 +79,78 @@ const ForgotPasswordForm: React.FC<IProps> = ({
                 />
               </Form.Item>
             </motion.div>
+
             <motion.div
               initial={{ y: 50 }}
               animate={{ y: 0 }}
               transition={{ duration: 1 }}
               className="mt-8"
             >
-              <Form.Item noStyle>
-                <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80">
-                  {isSending ? (
-                    <Spin
-                      indicator={<LoadingOutlined className="text-[#fff]" />}
-                    />
-                  ) : (
-                    "Gửi"
-                  )}
-                </ButtonCustom>
-              </Form.Item>
+              <Drawer
+                open={isDrawerVisible}
+                onClose={() => setIsDrawerVisible(false)}
+              >
+                <DrawerTrigger asChild>
+                  <Form.Item noStyle>
+                    <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80">
+                      {isSending ? (
+                        <Spin
+                          indicator={
+                            <LoadingOutlined className="text-[#fff]" />
+                          }
+                        />
+                      ) : (
+                        "Gửi"
+                      )}
+                    </ButtonCustom>
+                  </Form.Item>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm">
+                    <DrawerHeader>
+                      <DrawerTitle className="text-2xl">
+                        Nhập mã OTP
+                      </DrawerTitle>
+                      <DrawerDescription className="text-[#a3a1a1]">
+                        Nhập mã OTP đã gửi đến email của bạn.
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <div className="pb-0">
+                      <div className="flex items-center justify-center space-x-2 px-5">
+                        <InputOTP maxLength={6} className="px-5">
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                    </div>
+                    <DrawerFooter>
+                      <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-sm tracking-wider text-white hover:bg-primary/80">
+                        Khôi phục
+                      </ButtonCustom>
+                      <DrawerClose asChild>
+                        <ButtonCustom className="mx-auto block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary">
+                          Gửi lại
+                        </ButtonCustom>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </div>
+                </DrawerContent>
+              </Drawer>
 
               <div className="mt-3 text-center text-sm">
-                <span className="text-black">Bạn không có tài khoản?</span> {""}
+                <span className="text-black">Bạn không có tài khoản?</span>{" "}
                 <a
                   href="#"
                   className="login-form-forgot group relative cursor-pointer font-semibold text-primary hover:text-primary"
@@ -111,11 +166,7 @@ const ForgotPasswordForm: React.FC<IProps> = ({
       ) : (
         <RegisterForm
           isShowRegister={false}
-          setIsShowRegister={function (
-            value: React.SetStateAction<boolean>,
-          ): void {
-            throw new Error("Function not implemented.");
-          }}
+          setIsShowRegister={setIsShowRegister}
         />
       )}
     </>
