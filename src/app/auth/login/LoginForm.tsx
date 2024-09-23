@@ -244,7 +244,7 @@ const LoginForm: React.FC = () => {
               </ButtonCustom>
 
               <div className="mt-3 text-center text-sm">
-                <span className="text-black">Bạn không có tài khoản?</span> {""}
+                <span className="text-black">Bạn đã có tài khoản?</span> {""}
                 <a
                   href="#"
                   className="login-form-forgot group relative cursor-pointer font-semibold text-primary hover:text-primary"
