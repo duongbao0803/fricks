@@ -185,7 +185,6 @@ const RegisterForm: React.FC<IProps> = ({
                   placeholder="Số điện thoại"
                   type="text"
                   className="hover:border-primary focus:border-primary"
-                  autoFocus
                 />
               </Form.Item>
             </motion.div>
