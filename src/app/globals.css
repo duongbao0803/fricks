@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+&::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+}
+
+&::-webkit-scrollbar-thumb {
+  background-color: #524f4f;
+  border-radius: 3px;
+}
+
+&::-webkit-scrollbar-thumb:active {
+  background-color: #292929;
+}
+
+:root {
+  --c-primary: theme("colors.primary");
+  --c-secondary: theme("colors.secondary.DEFAULT");
+  --c-light: white;
+}
+
 .road::before {
   content: "";
   position: absolute;
@@ -26,7 +52,69 @@
 }
 
 .formItem .ant-form-item-explain-error {
-  font-size: 13px!important; 
+  font-size: 13px !important;
 }
 
+.button-hire {
+  color: var(--c-light);
+  font-size: 1em;
+  border: 0.13em solid var(--c-secondary);
+  border-radius: 0.5em;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 7px 2px;
+  width: 130px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: 0.5s;
+  overflow: hidden;
+  background-color: var(--c-primary);
+}
 
+.button-hire span {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+  background-color: var(--c-light);
+  transform: translateY(150%);
+  border-radius: 50%;
+  left: calc((var(--n) - 1) * 25%);
+  transition: 0.8s;
+  transition-delay: calc((var(--n) - 1) * 0.1s);
+  z-index: -1;
+}
+
+.button-hire:hover {
+  color: var(--c-primary);
+  background-color: var(--c-light);
+  letter-spacing: 3px;
+  overflow: hidden;
+}
+
+.button-hire:hover span {
+  transform: translateY(0) scale(2);
+}
+
+.button-hire span:nth-child(1) {
+  --n: 1;
+}
+
+.button-hire span:nth-child(2) {
+  --n: 2;
+}
+
+.button-hire span:nth-child(3) {
+  --n: 3;
+}
+
+.button-hire span:nth-child(4) {
+  --n: 4;
+}
+
+/* responsive */
+@media (max-width: 530px) {
+  .max-513-center {
+    justify-content: center;
+  }
+}

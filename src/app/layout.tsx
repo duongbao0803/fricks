@@ -4,6 +4,9 @@ import "./globals.css";
 import LoadingWrapper from "@/components/LoadingWrapper";
 import { NotificationProvider } from "@/components/Notification";
 import { Providers } from "@/redux/provider";
+import { NextProgressBar } from "@/components";
+import ClientLayout from "./auth/layout";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,9 +23,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <LoadingWrapper>
           <NotificationProvider>
-            {/* <Navbar /> */}
-            {/* <NextProgressBar /> */}
-            <Providers>{children}</Providers>
+            <NextProgressBar />
+            <Providers>
+              <ClientLayout>{children}</ClientLayout>
+            </Providers>
           </NotificationProvider>
         </LoadingWrapper>
       </body>

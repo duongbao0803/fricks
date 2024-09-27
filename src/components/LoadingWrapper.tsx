@@ -13,8 +13,7 @@ export default function LoadingWrapper({
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-      router.push("/auth");
-    }, 3000);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);

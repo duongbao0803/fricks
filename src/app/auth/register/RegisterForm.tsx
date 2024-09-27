@@ -9,8 +9,24 @@ import { InputCustom } from "@/components/ui/input";
 import { ButtonCustom } from "@/components/ui/button";
 import { notify } from "@/components/Notification";
 import LoginForm from "@/app/auth/login/LoginForm";
-import { useRegisterMutation } from "@/apis/authApi";
+import { useConfirmEmailMutation, useRegisterMutation } from "@/apis/authApi";
 import { isErrorResponse } from "@/utils";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { useRouter } from "next/navigation";
 
 interface IProps {
   isShowRegister: boolean;
@@ -24,6 +40,11 @@ const RegisterForm: React.FC<IProps> = ({
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [register] = useRegisterMutation();
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [confirmEmail] = useConfirmEmailMutation();
+  const router = useRouter();
 
   const [form] = Form.useForm();
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
@@ -56,14 +77,22 @@ const RegisterForm: React.FC<IProps> = ({
       notify("warning", "Vui lòng xác nhận reCAPTCHA", 3);
       return;
     }
-    setIsShowRegister(true);
+
+    setTimeout(() => {
+      setIsSending(false);
+      setIsDrawerVisible(true);
+    }, 1000);
+
     try {
-      console.log("check values", values);
+      setIsSigningUp(true);
       const res = await register(values).unwrap();
       if (res && res.httpCode === 200) {
+        notify(
+          "success",
+          "Vui lòng kiểm tra hòm thư (hoặc Thư rác) để lấy mã OTP",
+          3,
+        );
         setIsSigningUp(false);
-        notify("success", "Đăng kí tài khoản thành công", 3);
-        setIsShowRegister(false);
       }
     } catch (err: unknown) {
       console.log("check err", err);
@@ -74,6 +103,49 @@ const RegisterForm: React.FC<IProps> = ({
         setIsSigningUp(false);
         notify("error", `${err}`, 3);
       }
+    }
+  };
+
+  const handleDrawerClose = () => {
+    setIsDrawerVisible(false);
+  };
+
+  const handleResendMail = async () => {
+    const values = form.getFieldsValue();
+    try {
+      setIsSending(true);
+      const res = await register(values).unwrap();
+      if (res && res.httpCode === 200) {
+        notify(
+          "success",
+          "Vui lòng kiểm tra hòm thư (hoặc thư rác) để lấy mã OTP",
+          3,
+        );
+        setIsSending(false);
+      }
+    } catch (err: unknown) {
+      console.log("check err", err);
+      if (isErrorResponse(err)) {
+        setIsSigningUp(false);
+        notify("error", `${err.data.message}`, 3);
+      } else {
+        setIsSigningUp(false);
+        notify("error", `${err}`, 3);
+      }
+    }
+  };
+
+  const handleOTPSubmit = async () => {
+    try {
+      const email = form.getFieldValue("email");
+      let information = { email, otp };
+      const res = await confirmEmail(information).unwrap();
+      if (res && res.httpCode === 200) {
+        notify("success", "Đăng nhập thành công", 3);
+        router.push("/");
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -246,7 +318,7 @@ const RegisterForm: React.FC<IProps> = ({
               </Form.Item>
             </motion.div>
 
-            <Form.Item noStyle>
+            <Form.Item name="" noStyle>
               <div className="mb-3 mt-8 flex w-full max-w-[300px] justify-start">
                 <ReCAPTCHA
                   sitekey={recaptchaSiteKey}
@@ -259,32 +331,93 @@ const RegisterForm: React.FC<IProps> = ({
               animate={{ y: 0 }}
               transition={{ duration: 1 }}
             >
-              <Form.Item>
-                <ButtonCustom
-                  // htmlType="submit"
-                  className="mx-auto block h-11 w-full rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80"
-                >
-                  {isSigningUp ? (
-                    <Spin
-                      indicator={<LoadingOutlined className="text-[#fff]" />}
-                    />
-                  ) : (
-                    "Đăng ký"
-                  )}
-                </ButtonCustom>
+              <Drawer open={isDrawerVisible} onClose={handleDrawerClose}>
+                <DrawerTrigger asChild>
+                  <Form.Item noStyle>
+                    <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80">
+                      {isSigningUp ? (
+                        <Spin
+                          indicator={
+                            <LoadingOutlined className="text-[#fff]" />
+                          }
+                        />
+                      ) : (
+                        "Gửi"
+                      )}
+                    </ButtonCustom>
+                  </Form.Item>
+                </DrawerTrigger>
 
-                <div className="mt-3 text-center text-sm">
-                  <span className="text-black">Bạn đã có tài khoản?</span>{" "}
-                  <a
-                    href="#"
-                    className="login-form-forgot group relative cursor-pointer font-semibold text-primary hover:text-primary"
-                    onClick={() => setIsShowRegister(false)}
-                  >
-                    Đăng nhập
-                    <span className="absolute bottom-[-3px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
-                  </a>
-                </div>
-              </Form.Item>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm">
+                    <motion.div
+                      key="enterOTP"
+                      initial={{ x: 0, opacity: 1 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: -150, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <DrawerHeader>
+                        <DrawerTitle className="text-2xl">
+                          Nhập mã OTP
+                        </DrawerTitle>
+                        <DrawerDescription className="text-[#a3a1a1]">
+                          Nhập mã OTP đã được gửi đến email của bạn
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <div className="pb-0">
+                        <div className="flex items-center justify-center space-x-2 px-5">
+                          <InputOTP
+                            maxLength={6}
+                            className="px-5"
+                            onChange={(value) => setOtp(value)}
+                          >
+                            <InputOTPGroup>
+                              <InputOTPSlot index={0} />
+                              <InputOTPSlot index={1} />
+                            </InputOTPGroup>
+                            <InputOTPSeparator />
+                            <InputOTPGroup>
+                              <InputOTPSlot index={2} />
+                              <InputOTPSlot index={3} />
+                            </InputOTPGroup>
+                            <InputOTPSeparator />
+                            <InputOTPGroup>
+                              <InputOTPSlot index={4} />
+                              <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                          </InputOTP>
+                        </div>
+                      </div>
+                      <DrawerFooter>
+                        <ButtonCustom
+                          className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-sm tracking-wider text-white hover:bg-primary/80"
+                          onClick={handleOTPSubmit}
+                        >
+                          Xác nhận
+                        </ButtonCustom>
+                        <ButtonCustom
+                          onClick={handleResendMail}
+                          className="mx-auto block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary"
+                        >
+                          Gửi lại
+                        </ButtonCustom>
+                      </DrawerFooter>
+                    </motion.div>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+              <div className="mt-3 text-center text-sm">
+                <span className="text-black">Bạn đã có tài khoản?</span>{" "}
+                <a
+                  href="#"
+                  className="login-form-forgot group relative cursor-pointer font-semibold text-primary hover:text-primary"
+                  onClick={() => setIsShowRegister(false)}
+                >
+                  Đăng nhập
+                  <span className="absolute bottom-[-3px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
+                </a>
+              </div>
             </motion.div>
           </Form>
         </section>
@@ -295,4 +428,4 @@ const RegisterForm: React.FC<IProps> = ({
   );
 };
 
-export default RegisterForm;
+export default React.memo(RegisterForm);

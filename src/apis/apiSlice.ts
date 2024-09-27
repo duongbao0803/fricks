@@ -17,9 +17,10 @@ const axiosBaseQuery = async (
   const config = await fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     prepareHeaders: (headers) => {
-      Object.entries(headers).forEach(([key, value]) => {
-        headers.set(key, value);
-      });
+      headers.set("Content-Type", "application/json");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   })(args, api, extraOptions);
