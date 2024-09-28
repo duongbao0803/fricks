@@ -5,10 +5,10 @@ import Image from "next/image";
 const Footer: React.FC = () => {
   return (
     <>
-      <div className="grid grid-cols-1 items-center justify-center gap-5 bg-[#198ab6] px-10 py-6 text-white sm:grid-cols-2 md:px-20 lg:px-48 xl:grid-cols-3">
+      <section className="grid grid-cols-1 items-center justify-center gap-5 bg-primary px-10 py-6 text-white sm:grid-cols-2 md:px-20 lg:px-48 xl:grid-cols-3">
         <div>
           <p className="mb-4 text-xl font-bold">
-            FMILK - DINH DƯỠNG CHO MỌI NHÀ
+            FRICKS - VẬT LIỆU CHO MỌI NHÀ
           </p>
           <p className="mb-4 text-sm">
             Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Thành
@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
             className="h-[250px] w-[300px] border-none"
           ></iframe>
         </div>
-      </div>
+      </section>
     </>
   );
 };
