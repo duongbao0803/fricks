@@ -62,7 +62,7 @@ const CarouselHome = () => {
             />
           </Carousel>
         </div>
-        <div className="absolute bottom-[-50px] left-1/2 z-[99] mx-auto my-auto flex h-[100px] w-full max-w-[300px] -translate-x-1/2 transform items-center justify-between overflow-hidden rounded-lg border border-primary bg-primary/95 px-3 transition-all duration-500 sm:bottom-[-40px] sm:w-full sm:max-w-[400px] md:bottom-[-30px] md:w-full md:max-w-[700px] lg:bottom-[-50px] lg:w-full lg:max-w-[900px]">
+        <div className="absolute bottom-[-50px] left-1/2 z-[99] mx-auto my-auto flex h-[100px] w-full max-w-[300px] -translate-x-1/2 transform items-center justify-between overflow-hidden rounded-lg border border-primary bg-primary px-3 transition-all duration-500 sm:bottom-[-40px] sm:w-full sm:max-w-[400px] md:bottom-[-30px] md:w-full md:max-w-[700px] lg:bottom-[-50px] lg:w-full lg:max-w-[900px]">
           <div className="flex w-full items-center justify-around overflow-hidden transition-all duration-500 md:justify-between">
             {Process.map((item, index: number) => (
               <div
