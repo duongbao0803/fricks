@@ -99,6 +99,8 @@ const ForgotPasswordForm: React.FC<IProps> = ({
   };
 
   const handleResetPassword = async () => {
+    await form.validateFields();
+
     const email = form.getFieldValue("email");
     const password = form.getFieldValue("password");
     const information = { email, password };
