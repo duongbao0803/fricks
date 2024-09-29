@@ -1,9 +1,4 @@
-import { ErrorResponse } from "@/types/login.types";
 import CryptoJS from "crypto-js";
-
-export function isErrorResponse(error: unknown): error is ErrorResponse {
-  return (error as ErrorResponse).data !== undefined;
-}
 
 export function encryptData(
   data: string | CryptoJS.lib.WordArray,

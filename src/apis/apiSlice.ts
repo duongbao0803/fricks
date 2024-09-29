@@ -6,15 +6,18 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
+interface RefreshResultData {
+  accessToken: string;
+}
+
 const axiosBaseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
   extraOptions: {},
 ) => {
-  const token = Cookies.get("accessToken");
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  let token = Cookies.get("accessToken");
 
-  const config = await fetchBaseQuery({
+  const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     prepareHeaders: (headers) => {
       headers.set("Content-Type", "application/json");
@@ -23,33 +26,52 @@ const axiosBaseQuery = async (
       }
       return headers;
     },
-  })(args, api, extraOptions);
+  });
 
-  // if (result.error && result.error.status === 401) {
-  //   const refreshToken = Cookies.get('refreshToken');
-  //   if (refreshToken) {
-  //     const refreshResult = await fetchBaseQuery({
-  //       baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
-  //     })('/refresh-token', {
-  //       method: 'POST',
-  //       body: { refreshToken },
-  //     });
+  let result = await baseQuery(args, api, extraOptions);
 
-  //     if (refreshResult.data) {
-  //       const newAccessToken = refreshResult.data['access-token'];
-  //       Cookies.set('accessToken', newAccessToken);
-  //       return await fetchBaseQuery({
-  //         baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
-  //         prepareHeaders: (headers) => {
-  //           headers.set('Authorization', `Bearer ${newAccessToken}`);
-  //           return headers;
-  //         },
-  //       })(args, api, extraOptions);
-  //     }
-  //   }
-  // }
+  if (result.error && result.error.status === 401) {
+    const refreshToken = Cookies.get("refreshToken");
+    const rfToken = JSON.stringify(refreshToken);
 
-  return config;
+    if (rfToken) {
+      const res = await baseQuery(
+        {
+          url: "/authen/refresh-token",
+          method: "POST",
+          body: rfToken,
+        },
+        api,
+        extraOptions,
+      );
+
+      const refreshData = res.data as RefreshResultData | undefined;
+
+      if (refreshData) {
+        const newAccessToken = refreshData.accessToken;
+        Cookies.set("accessToken", newAccessToken);
+        token = newAccessToken;
+
+        if (typeof args === "object") {
+          result = await baseQuery(
+            {
+              ...args,
+              headers: {
+                ...args.headers,
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            },
+            api,
+            extraOptions,
+          );
+        }
+      } else {
+        // Navigate to login
+      }
+    }
+  }
+
+  return result;
 };
 
 const apiSlice = createApi({

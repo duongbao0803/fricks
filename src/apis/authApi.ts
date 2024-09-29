@@ -25,19 +25,47 @@ const authApi = apiSlice.injectEndpoints({
     }),
     refreshToken: builder.mutation({
       query: (refreshToken) => ({
-        url: "/refresh-token",
+        url: "/authen/refresh-token",
         method: "POST",
         body: { refreshToken },
       }),
     }),
     confirmEmail: builder.mutation({
       query: (information) => ({
-        url: "/authen/email-confirm",
+        url: "/authen/confirm/email",
         method: "POST",
         body: information,
       }),
     }),
-    getUserInfo: builder.mutation({
+    resendOTP: builder.mutation({
+      query: (email) => ({
+        url: "/authen/confirm/resend-otp",
+        method: "POST",
+        body: email,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (email) => ({
+        url: "/authen/reset-password",
+        method: "POST",
+        body: email,
+      }),
+    }),
+    resetPasswordConfirm: builder.mutation({
+      query: (information) => ({
+        url: "/authen/reset-password/confirm",
+        method: "POST",
+        body: information,
+      }),
+    }),
+    confirmNewPassword: builder.mutation({
+      query: (information) => ({
+        url: "/authen/reset-password/new-password",
+        method: "POST",
+        body: information,
+      }),
+    }),
+    getUserInfo: builder.query({
       query: () => ({
         url: "/authen/current-user",
         method: "GET",
@@ -52,7 +80,11 @@ export const {
   useRegisterMutation,
   useLoginGoogleMutation,
   useConfirmEmailMutation,
-  useGetUserInfoMutation,
+  useGetUserInfoQuery,
+  useResendOTPMutation,
+  useResetPasswordMutation,
+  useResetPasswordConfirmMutation,
+  useConfirmNewPasswordMutation,
 } = authApi;
 
 export default authApi;

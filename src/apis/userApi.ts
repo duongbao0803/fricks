@@ -5,9 +5,7 @@ const userApi = apiSlice.injectEndpoints({
     getUserList: builder.query({
       query: () => "/users",
     }),
-    getUserInfo: builder.query({
-      query: () => "/user/info",
-    }),
+
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `/users/${userId}`,
@@ -26,7 +24,6 @@ const userApi = apiSlice.injectEndpoints({
 
 export const {
   useGetUserListQuery,
-  useGetUserInfoQuery,
   useDeleteUserMutation,
   useUpdateUserMutation,
 } = userApi;

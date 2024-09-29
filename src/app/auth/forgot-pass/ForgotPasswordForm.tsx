@@ -21,6 +21,12 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import {
+  useConfirmNewPasswordMutation,
+  useResetPasswordConfirmMutation,
+  useResetPasswordMutation,
+} from "@/apis/authApi";
+import { isErrorResponse } from "@/utils";
 
 interface IProps {
   isShowRegister: boolean;
@@ -33,9 +39,12 @@ const ForgotPasswordForm: React.FC<IProps> = ({
 }) => {
   const [isSending, setIsSending] = useState(false);
   const [form] = Form.useForm();
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [isOTPSubmitted, setIsOTPSubmitted] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [isDrawerVisible, setIsDrawerVisible] = useState<boolean>(false);
+  const [isOTPSubmitted, setIsOTPSubmitted] = useState<boolean>(false);
+  const [otpCode, setOtp] = useState<string>("");
+  const [resetPassword] = useResetPasswordMutation();
+  const [resetPasswordConfirm] = useResetPasswordConfirmMutation();
+  const [confirmNewPassword] = useConfirmNewPasswordMutation();
 
   const validatePassword = (_: unknown, value: string) => {
     const password = form.getFieldValue("password");
@@ -45,34 +54,73 @@ const ForgotPasswordForm: React.FC<IProps> = ({
     return Promise.resolve();
   };
 
-  const onFinish = () => {
+  const onFinish = async () => {
     setIsSending(true);
     setIsOTPSubmitted(false);
-    notify(
-      "success",
-      "Vui lòng kiểm tra hòm thư (hoặc Thư rác) để lấy mã OTP",
-      3,
-    );
-
-    setTimeout(() => {
-      setIsSending(false);
-      setIsDrawerVisible(true);
-    }, 1000);
+    const email = form.getFieldValue("email");
+    try {
+      const res = await resetPassword(JSON.stringify(email)).unwrap();
+      if (res && res.httpCode === 200) {
+        setIsSending(false);
+        notify("success", `${res.message}`, 3);
+        setTimeout(() => {
+          setIsDrawerVisible(true);
+        }, 1000);
+      }
+    } catch (err) {
+      console.error(err);
+      if (isErrorResponse(err)) {
+        notify("error", `${err.data.message}`, 3);
+        setIsSending(false);
+      }
+    }
   };
 
-  const handleOTPSubmit = () => {
-    setIsOTPSubmitted(true);
+  const handleOTPSubmit = async () => {
+    const email = form.getFieldValue("email");
+    let information = { email, otpCode };
+    if (otpCode.length < 6) {
+      notify("warning", "Vui lòng nhập otp", 3);
+      return;
+    }
+    try {
+      const res = await resetPasswordConfirm(information).unwrap();
+      if (res && res.httpCode === 200) {
+        setIsOTPSubmitted(true);
+      }
+    } catch (err) {
+      console.error(err);
+      if (isErrorResponse(err)) {
+        notify("error", `${err.data.message}`, 3);
+      } else {
+        notify("error", `${err}`, 3);
+      }
+    }
   };
 
-  const handleResetPassword = () => {
-    setIsDrawerVisible(false);
-    notify(
-      "success",
-      "Xác thực thành công. Vui lòng đăng nhập để vào hệ thống",
-      3,
-    );
-    setIsShowRegister(true);
-    form.resetFields();
+  const handleResetPassword = async () => {
+    const email = form.getFieldValue("email");
+    const password = form.getFieldValue("password");
+    const information = { email, password };
+    if (!email || !password) {
+      notify("warning", "Vui lòng nhập đầy đủ thông tin", 3);
+      return;
+    }
+    try {
+      const res = await confirmNewPassword(information).unwrap();
+      if (res && res.httpCode === 200) {
+        notify("success", `${res.message}`, 3);
+        setIsDrawerVisible(false);
+        setIsShowRegister(true);
+      }
+    } catch (err) {
+      console.error(err);
+      if (isErrorResponse(err)) {
+        notify("error", `${err.data.message}`, 3);
+      } else {
+        notify("error", `${err}`, 3);
+      }
+    }
   };
 
   const handleDrawerClose = () => {
@@ -80,14 +128,6 @@ const ForgotPasswordForm: React.FC<IProps> = ({
     if (isOTPSubmitted) {
       setIsOTPSubmitted(false);
     }
-  };
-
-  const handleResendMail = () => {
-    notify(
-      "success",
-      "Vui lòng kiểm tra hòm thư (hoặc Thư rác) để lấy mã OTP",
-      3,
-    );
   };
 
   return (
@@ -167,7 +207,11 @@ const ForgotPasswordForm: React.FC<IProps> = ({
                         </DrawerHeader>
                         <div className="pb-0">
                           <div className="flex items-center justify-center space-x-2 px-5">
-                            <InputOTP maxLength={6} className="px-5">
+                            <InputOTP
+                              maxLength={6}
+                              className="px-5"
+                              onChange={(value) => setOtp(value)}
+                            >
                               <InputOTPGroup>
                                 <InputOTPSlot index={0} />
                                 <InputOTPSlot index={1} />
@@ -191,12 +235,6 @@ const ForgotPasswordForm: React.FC<IProps> = ({
                             onClick={handleOTPSubmit}
                           >
                             Khôi phục
-                          </ButtonCustom>
-                          <ButtonCustom
-                            onClick={handleResendMail}
-                            className="mx-auto block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary"
-                          >
-                            Gửi lại
                           </ButtonCustom>
                         </DrawerFooter>
                       </motion.div>
@@ -231,6 +269,7 @@ const ForgotPasswordForm: React.FC<IProps> = ({
                                   message: "Mật khẩu phải có ít nhất 8 kí tự",
                                 },
                               ]}
+                              className="mb-7"
                             >
                               <InputCustom
                                 type="password"

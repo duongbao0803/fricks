@@ -1,19 +1,28 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 export default function LoadingWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
+
+  const token = Cookies.get("accessToken");
+
+  useEffect(() => {
+    if (token) {
+      router.push("/");
+    }
+  }, [token, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);

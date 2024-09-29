@@ -3,7 +3,6 @@
 import React from "react";
 import LoginForm from "./login/LoginForm";
 import { Carousel } from "@/components";
-import RootLayout from "../layout";
 
 const AuthPage: React.FC = () => {
   return (

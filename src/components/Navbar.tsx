@@ -1,22 +1,54 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import NavElement from "./NavElement";
 import MobileNav from "./MobileNav";
 import Image from "next/image";
-import { Badge, Form } from "antd";
+import { Badge, Form, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 import {
   ShoppingCartOutlined,
   BellOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import IconWeb from "@/assets/images/logo/logo_web.png";
 import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
 import { FaRegUserCircle } from "react-icons/fa";
-
+import Cookies from "js-cookie";
 import { InputCustom } from "./ui/input";
+import IconWeb from "@/assets/images/logo/logo_web.png";
+import { useGetUserInfoQuery } from "@/apis/authApi";
+import { useLogout } from "@/hooks/useLogout";
+import User from "@/assets/images/logo/avatar_admin.jpg";
 
 const Navbar = () => {
+  const token = Cookies.get("accessToken");
+  const { data } = useGetUserInfoQuery(undefined, {
+    skip: !token,
+  });
+  const { logout } = useLogout();
+
+  const menuItems: MenuProps = {
+    items: [
+      {
+        key: "profile",
+        label: (
+          <Link href="/profile" className="flex items-center gap-2">
+            <span>Thông tin cá nhân</span>
+          </Link>
+        ),
+      },
+      {
+        key: "logout",
+        label: (
+          <p className="w-full" onClick={logout}>
+            Đăng xuất
+          </p>
+        ),
+      },
+    ],
+  };
+
   return (
     <header>
       <div className="flex flex-col items-center justify-center bg-[#fff] transition-all duration-500">
@@ -40,7 +72,8 @@ const Navbar = () => {
               <div className="h-6 w-0.5 bg-orange-600" />
 
               <Link
-                href=""
+                href="https://www.facebook.com/Fricks.BuildingService"
+                target="_blank"
                 className="flex cursor-pointer items-center gap-1 hover:text-primary"
               >
                 <FaRegCircleQuestion className="text-sm transition-all duration-500 lg:text-lg" />
@@ -50,16 +83,37 @@ const Navbar = () => {
               </Link>
 
               <div className="h-6 w-0.5 bg-orange-600" />
-
-              <Link
-                href="/auth"
-                className="flex cursor-pointer items-center gap-1 hover:text-primary"
-              >
-                <FaRegUserCircle className="text-sm transition-all duration-500 lg:text-lg" />
-                <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                  Đăng nhập
-                </span>
-              </Link>
+              {data ? (
+                <Dropdown
+                  menu={menuItems}
+                  trigger={["hover"]}
+                  placement="bottomRight"
+                  arrow
+                >
+                  <div className="flex cursor-pointer items-center gap-1 hover:text-primary">
+                    <Image
+                      src={data?.avatar || User}
+                      alt={data?.fullName}
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                    />
+                    <span className="text-[11px] transition-all duration-500 lg:text-sm">
+                      {data?.fullName}
+                    </span>
+                  </div>
+                </Dropdown>
+              ) : (
+                <Link
+                  href="/auth"
+                  className="flex cursor-pointer items-center gap-1 hover:text-primary"
+                >
+                  <FaRegUserCircle className="text-sm transition-all duration-500 lg:text-lg" />
+                  <span className="text-[11px] transition-all duration-500 lg:text-sm">
+                    Đăng nhập
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
