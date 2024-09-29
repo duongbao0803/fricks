@@ -6,6 +6,7 @@ const nextConfig = {
       "drh.vn",
       "freesvg.org",
       "cdn.pixabay.com",
+      "lh3.googleusercontent.com",
     ],
   },
 };

@@ -27,20 +27,6 @@ const ProductHome = () => {
     go: ["Gỗ thông", "Ván ép công nghiệp"],
   };
 
-  const data = [
-    "Xi măng, bộ trét",
-    "Gạch",
-    "Thép & Sắt",
-    "Gỗ & ván ép",
-    "Ống nước & phụ kiện",
-    "Thiết bị điện",
-    "Sơn",
-    "Thiết bị vệ sinh",
-    "Vật liệu cách nhiệt",
-    "Dụng cụ xây dựng",
-    "Phụ kiện khác",
-  ];
-
   const categories = [
     { id: "all", name: "Tất cả" },
     { id: "ximang", name: "Xi măng, bộ trét" },
@@ -83,9 +69,9 @@ const ProductHome = () => {
             ref={indicatorRef}
             className="absolute inset-0 z-[-1] mb-3 h-full rounded-md bg-primary transition-transform duration-500 ease-in-out"
           />
-          {categories.map((category) => (
+          {categories.map((category, index) => (
             <div
-              key={category.id}
+              key={index}
               id={`category-${category.id}`}
               className={`relative flex-shrink-0 cursor-pointer p-2 transition-colors duration-500 ${selectedCategory === category.id ? "text-white" : "text-black"}`}
               onClick={() => setSelectedCategory(category.id)}
@@ -98,7 +84,7 @@ const ProductHome = () => {
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {getProductsToDisplay().length > 0
           ? getProductsToDisplay().map((product: any, index: number) => (
-              <ScrollReveal key={product?._id}>
+              <ScrollReveal key={index}>
                 <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
                   <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
                     <div className="group relative w-full overflow-hidden">
@@ -109,7 +95,7 @@ const ProductHome = () => {
                         width={1000}
                         height={100}
                         quality={100}
-                        alt={product?.name}
+                        alt="product"
                         className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
                       />
 
