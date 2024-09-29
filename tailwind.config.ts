@@ -19,6 +19,9 @@ const config: Config = {
         xl: "1200px",
       },
     },
+    fontFamily: {
+      primary: "var(--font-robotoSlab)",
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -9,7 +9,7 @@ interface ScrollRevealProps {
 
 export const ScrollReveal = ({ children }: ScrollRevealProps) => {
   const controls = useAnimation();
-  const [ref, inView] = useInView({ threshold: 0.2 });
+  const [ref, inView] = useInView({ threshold: 0.3 });
 
   useEffect(() => {
     if (inView) {
@@ -25,7 +25,7 @@ export const ScrollReveal = ({ children }: ScrollRevealProps) => {
       initial="hidden"
       animate={controls}
       variants={{
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
         hidden: { opacity: 0, y: 50 },
       }}
     >
@@ -39,7 +39,7 @@ export const ScrollReveal = ({ children }: ScrollRevealProps) => {
                 visible: {
                   opacity: 1,
                   y: 0,
-                  transition: { duration: 0.6, delay: index * 0.2 },
+                  transition: { duration: 0.8, delay: index * 0.2 },
                 },
                 hidden: { opacity: 0, y: 50 },
               }}
