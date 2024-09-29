@@ -132,7 +132,7 @@ const ForgotPasswordForm: React.FC<IProps> = ({
             >
               <Drawer open={isDrawerVisible} onClose={handleDrawerClose}>
                 <DrawerTrigger asChild>
-                  <Form.Item noStyle>
+                  <Form.Item name="" noStyle>
                     <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80">
                       {isSending ? (
                         <Spin

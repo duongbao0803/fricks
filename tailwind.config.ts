@@ -12,11 +12,15 @@ const config: Config = {
       center: true,
       padding: "15px",
       screens: {
+        "max-513": { max: "513px" },
         sm: "640px",
         md: "768px",
         lg: "992px",
         xl: "1200px",
       },
+    },
+    fontFamily: {
+      primary: "var(--font-robotoSlab)",
     },
     extend: {
       backgroundImage: {
@@ -28,6 +32,7 @@ const config: Config = {
         primary: "#ff7b29",
         secondary: {
           DEFAULT: "#F4A41C",
+          hover: "#00e187",
         },
       },
       keyframes: {

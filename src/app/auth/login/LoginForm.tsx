@@ -17,10 +17,27 @@ import RegisterForm from "@/app/auth/register/RegisterForm";
 import ForgotPasswordForm from "@/app/auth/forgot-pass/ForgotPasswordForm";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "@/config/firebase";
-import { useLoginMutation } from "@/apis/authApi";
+import { useLoginGoogleMutation, useLoginMutation } from "@/apis/authApi";
 import Cookies from "js-cookie";
 import { notify } from "@/components/Notification";
 import { isErrorResponse } from "@/utils";
+import { useRouter } from "next/navigation";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
 const provider = new GoogleAuthProvider();
 
 const LoginForm: React.FC = () => {
@@ -31,6 +48,8 @@ const LoginForm: React.FC = () => {
     useState<boolean>(false);
   const [form] = Form.useForm();
   const [login] = useLoginMutation();
+  const [loginGoogle] = useLoginGoogleMutation();
+  const router = useRouter();
 
   const onFinish = async (values: { email: string; password: string }) => {
     setIsLoggingIn(true);
@@ -47,6 +66,7 @@ const LoginForm: React.FC = () => {
       }
     } catch (err: unknown) {
       if (isErrorResponse(err)) {
+        console.log("err", err);
         setIsLoggingIn(false);
         notify("error", `${err.data.message}`, 3);
       } else {
@@ -59,8 +79,15 @@ const LoginForm: React.FC = () => {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log(result.user);
+      const credentials = await result.user.getIdTokenResult();
+      const accessToken = credentials.token;
+      console.log("check toke", accessToken);
+      const res = await loginGoogle(JSON.stringify(accessToken)).unwrap();
+      if (res && res.httpCode === 200) {
+        router.push("/");
+      }
     } catch (error) {
+      router.push("/");
       console.error("Error login with google", error);
     }
   };
@@ -194,10 +221,10 @@ const LoginForm: React.FC = () => {
                 animate={{ x: 0 }}
                 transition={{ duration: 1 }}
               >
-                <Form.Item>
+                <Form.Item name="">
                   <ButtonCustom
                     // htmlType="submit"
-                    className="mx-auto mt-5 block h-11 w-full rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80"
+                    className="mx-auto mt-5 flex h-11 w-full items-center rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80"
                   >
                     {isLoggingIn ? (
                       <Spin
@@ -209,6 +236,81 @@ const LoginForm: React.FC = () => {
                   </ButtonCustom>
                 </Form.Item>
               </motion.div>
+              {/* <motion.div
+                initial={{ y: 50 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Form.Item noStyle>
+                      <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-lg tracking-wider text-white hover:bg-primary/80">
+                        Gửi
+                      </ButtonCustom>
+                    </Form.Item>
+                  </DrawerTrigger>
+
+                  <DrawerContent>
+                    <div className="mx-auto w-full max-w-sm">
+                      <motion.div
+                        key="enterOTP"
+                        initial={{ x: 0, opacity: 1 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -150, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <DrawerHeader>
+                          <DrawerTitle className="text-2xl">
+                            Nhập mã OTP
+                          </DrawerTitle>
+                          <DrawerDescription className="text-[#a3a1a1]">
+                            Nhập mã OTP đã được gửi đến email của bạn
+                          </DrawerDescription>
+                        </DrawerHeader>
+                        <div className="pb-0">
+                          <div className="flex items-center justify-center space-x-2 px-5">
+                            <InputOTP maxLength={6} className="px-5">
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                              </InputOTPGroup>
+                              <InputOTPSeparator />
+                              <InputOTPGroup>
+                                <InputOTPSlot index={2} />
+                                <InputOTPSlot index={3} />
+                              </InputOTPGroup>
+                              <InputOTPSeparator />
+                              <InputOTPGroup>
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                              </InputOTPGroup>
+                            </InputOTP>
+                          </div>
+                        </div>
+                        <DrawerFooter>
+                          <ButtonCustom className="mx-auto flex h-11 w-full items-center rounded-[5px] bg-primary text-sm tracking-wider text-white hover:bg-primary/80">
+                            Xác nhận
+                          </ButtonCustom>
+                          <ButtonCustom className="mx-auto block h-11 w-full rounded-[5px] border border-gray-300 bg-[#fff] shadow-none hover:!border-primary hover:!bg-transparent hover:!text-primary">
+                            Gửi lại
+                          </ButtonCustom>
+                        </DrawerFooter>
+                      </motion.div>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+                <div className="mt-3 text-center text-sm">
+                  <span className="text-black">Bạn đã có tài khoản?</span>{" "}
+                  <a
+                    href="#"
+                    className="login-form-forgot group relative cursor-pointer font-semibold text-primary hover:text-primary"
+                    onClick={() => setIsShowRegister(false)}
+                  >
+                    Đăng nhập
+                    <span className="absolute bottom-[-3px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
+                  </a>
+                </div>
+              </motion.div> */}
             </Form>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}

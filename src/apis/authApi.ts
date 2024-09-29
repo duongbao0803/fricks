@@ -16,11 +16,31 @@ const authApi = apiSlice.injectEndpoints({
         body: information,
       }),
     }),
+    loginGoogle: builder.mutation({
+      query: (credentials) => ({
+        url: "/authen/login-with-google",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     refreshToken: builder.mutation({
       query: (refreshToken) => ({
         url: "/refresh-token",
         method: "POST",
         body: { refreshToken },
+      }),
+    }),
+    confirmEmail: builder.mutation({
+      query: (information) => ({
+        url: "/authen/email-confirm",
+        method: "POST",
+        body: information,
+      }),
+    }),
+    getUserInfo: builder.mutation({
+      query: () => ({
+        url: "/authen/current-user",
+        method: "GET",
       }),
     }),
   }),
@@ -30,6 +50,9 @@ export const {
   useLoginMutation,
   useRefreshTokenMutation,
   useRegisterMutation,
+  useLoginGoogleMutation,
+  useConfirmEmailMutation,
+  useGetUserInfoMutation,
 } = authApi;
 
 export default authApi;

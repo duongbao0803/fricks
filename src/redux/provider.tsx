@@ -5,9 +5,5 @@ import { store } from "./store";
 import { ReactNode } from "react";
 
 export function Providers({ children }: { children: ReactNode }) {
-  return (
-    <Provider store={store}>
-      {children} {/* Sử dụng children thay vì App */}
-    </Provider>
-  );
+  return <Provider store={store}>{children}</Provider>;
 }
