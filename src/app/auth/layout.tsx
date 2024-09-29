@@ -15,7 +15,7 @@ export default function ClientLayout({
     <>
       {showNavbar && <Navbar />}
       {children}
-      <Footer />
+      {showNavbar && <Footer />}
     </>
   );
 }
