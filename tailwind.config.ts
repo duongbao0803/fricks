@@ -12,11 +12,15 @@ const config: Config = {
       center: true,
       padding: "15px",
       screens: {
+        "max-513": { max: "513px" },
         sm: "640px",
         md: "768px",
         lg: "992px",
         xl: "1200px",
       },
+    },
+    fontFamily: {
+      primary: "var(--font-robotoSlab)",
     },
     extend: {
       backgroundImage: {
@@ -28,6 +32,7 @@ const config: Config = {
         primary: "#ff7b29",
         secondary: {
           DEFAULT: "#F4A41C",
+          hover: "#00e187",
         },
       },
       keyframes: {
@@ -36,13 +41,18 @@ const config: Config = {
           "50%": { transform: "translateY(3px)" },
         },
         roadAnimation: {
-          '0%': { transform: 'translateX(0px)' },
-          '100%': { transform: 'translateX(-350px)' },
+          "0%": { transform: "translateX(0px)" },
+          "100%": { transform: "translateX(-350px)" },
+        },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
         },
       },
       animation: {
         motion: "motion 1s linear infinite",
         roadAnimation: "roadAnimation 1.4s linear infinite",
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
     },
   },
