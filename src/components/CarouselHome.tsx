@@ -1,7 +1,7 @@
 import { Carousel } from "antd";
 import React from "react";
 import ImageSliderCustom from "./ImageSliderCustom";
-import Slide1 from "@/assets/images/slides/slide_1.jpg";
+import Slide1 from "@/assets/images/logo/banner.png";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { CiCoinInsert } from "react-icons/ci";
 import { BiSupport } from "react-icons/bi";
@@ -39,26 +39,26 @@ const CarouselHome = () => {
             <ImageSliderCustom
               src={Slide1}
               alt="slide1"
-              width={1000}
-              height={1000}
+              width={3000}
+              height={3000}
               quality={100}
-              className="h-[500px] w-full"
+              className="h-[500px] w-full object-fill"
             />
             <ImageSliderCustom
               src={Slide1}
               alt="slide1"
-              width={1000}
-              height={1000}
+              width={3000}
+              height={3000}
               quality={100}
-              className="h-[500px] w-full"
+              className="h-[500px] w-full object-fill"
             />
             <ImageSliderCustom
               src={Slide1}
               alt="slide1"
-              width={1000}
-              height={1000}
+              width={3000}
+              height={3000}
               quality={100}
-              className="h-[500px] w-full"
+              className="h-[500px] w-full object-fill"
             />
           </Carousel>
         </div>
