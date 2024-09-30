@@ -11,3 +11,4 @@ export { default as IntroHome } from "./IntroHome";
 export { default as Statistical } from "./Statistical";
 export { default as PostHome } from "./PostHome";
 export { default as Subscribe } from "./Subscribe";
+export { default as BreadScrumb } from "./BreadScrumb";

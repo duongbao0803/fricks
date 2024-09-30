@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import NavElement from "./NavElement";
 import MobileNav from "./MobileNav";
 import Image from "next/image";
-import { Badge, Form, Dropdown } from "antd";
+import { Badge, Form, Dropdown, Input } from "antd";
 import type { MenuProps } from "antd";
 import {
   ShoppingCartOutlined,
@@ -20,6 +20,8 @@ import IconWeb from "@/assets/images/logo/logo_web.png";
 import { useGetUserInfoQuery } from "@/apis/authApi";
 import { useLogout } from "@/hooks/useLogout";
 import User from "@/assets/images/logo/avatar_admin.jpg";
+import { MdKeyboardVoice } from "react-icons/md";
+import VoiceSearch from "./VoiceSearch";
 
 const Navbar = () => {
   const token = Cookies.get("accessToken");
@@ -27,6 +29,11 @@ const Navbar = () => {
     skip: !token,
   });
   const { logout } = useLogout();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchUpdate = (query: string) => {
+    setSearchQuery(query);
+  };
 
   const menuItems: MenuProps = {
     items: [
@@ -67,6 +74,7 @@ const Navbar = () => {
                 <span className="text-[11px] transition-all duration-500 lg:text-sm">
                   Thông báo
                 </span>
+                <p>{searchQuery}</p>
               </Link>
 
               <div className="h-6 w-0.5 bg-orange-600" />
@@ -141,8 +149,7 @@ const Navbar = () => {
 
           <div className="mx-6 flex w-full items-center gap-3 lg:mx-0 lg:w-auto">
             <div className="relative flex w-full items-center gap-2 transition-all duration-500 lg:flex">
-              <SearchOutlined className="absolute right-3 z-10 select-none text-gray-400 transition-all duration-500" />
-
+              <VoiceSearch onSearch={handleSearchUpdate} />
               <Form name="normal_login" className="login-form w-full">
                 <Form.Item
                   name=""
@@ -151,10 +158,13 @@ const Navbar = () => {
                   className="formItem"
                   noStyle
                 >
-                  <InputCustom
+                  <input
+                    value={searchQuery}
+                    defaultValue={searchQuery}
                     placeholder="Tìm kiếm..."
                     type="email"
-                    className="w-full rounded-lg px-3 py-2 text-sm"
+                    className="w-full rounded-lg border-2 px-3 py-2 text-sm active:border-2 active:!border-primary"
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </Form.Item>
               </Form>

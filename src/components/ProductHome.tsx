@@ -4,10 +4,24 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollReveal } from "./ScrollReveal";
 import Link from "next/link";
+import { useGetAllCatagoryQuery } from "@/apis/categortApi";
+import { useGetProductListQuery } from "@/apis/productApi";
+import NotFoundImage from "@/assets/images/logo/not-found.jpg";
+import { PriceFormat } from "@/utils";
+import VoiceSearch from "./VoiceSearch";
 
 const ProductHome = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState(12);
   const indicatorRef = useRef<HTMLDivElement>(null);
+  const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
+    undefined,
+    {},
+  );
+  const { data: productData = [] } = useGetProductListQuery({
+    categoryId: selectedCategory,
+  });
+
+  const categories = [{ id: 12, name: "Tất cả" }, ...categoriesData];
 
   useEffect(() => {
     const selectedCategoryElement = document.getElementById(
@@ -20,33 +34,20 @@ const ProductHome = () => {
     }
   }, [selectedCategory]);
 
-  const products = {
-    ximang: ["Sản phẩm xi măng 1", "Sản phẩm bộ trét 2"],
-    gach: ["Gạch men", "Gạch ốp lát"],
-    thep: ["Thép cuộn", "Sắt cây"],
-    go: ["Gỗ thông", "Ván ép công nghiệp"],
+  const getProductsToDisplay = () => {
+    if (selectedCategory === 12) {
+      return Object.values(productData).flat();
+    }
+    console.log("check select", selectedCategory);
+    console.log("check select", productData);
+
+    return productData[selectedCategory as keyof typeof productData] || [];
   };
 
-  const categories = [
-    { id: "all", name: "Tất cả" },
-    { id: "ximang", name: "Xi măng, bộ trét" },
-    { id: "gach", name: "Gạch" },
-    { id: "thep", name: "Thép & Sắt" },
-    { id: "go", name: "Gỗ & ván ép" },
-    { id: "ongnuoc", name: "Ống nước & phụ kiện" },
-    { id: "thietbidiens", name: "Thiết bị điện" },
-    { id: "son", name: "Sơn" },
-    { id: "thietbivesinh", name: "Thiết bị vệ sinh" },
-    { id: "vatlieucachnhiet", name: "Vật liệu cách nhiệt" },
-    { id: "dungcuxaydung", name: "Dụng cụ xây dựng" },
-    { id: "phukienkhac", name: "Phụ kiện khác" },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const getProductsToDisplay = () => {
-    if (selectedCategory === "all") {
-      return Object.values(products).flat();
-    }
-    return products[selectedCategory as keyof typeof products] || [];
+  const handleSearchUpdate = (query: string) => {
+    setSearchQuery(query);
   };
 
   return (
@@ -82,44 +83,46 @@ const ProductHome = () => {
         </div>
       </div>
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {getProductsToDisplay().length > 0
-          ? getProductsToDisplay().map((product: any, index: number) => (
-              <ScrollReveal key={index}>
-                <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
-                  <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
-                    <div className="group relative w-full overflow-hidden">
-                      <Image
-                        src={
-                          "https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2FXi%20m%C4%83ng.jpg?alt=media&token=4038617b-6820-4982-a912-9dffdffbf897"
-                        }
-                        width={1000}
-                        height={100}
-                        quality={100}
-                        alt="product"
-                        className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
-                      />
+        {productData?.length > 0
+          ? productData?.map((product: any, index: number) =>
+              product?.price?.map((item: any, index: number) => (
+                <ScrollReveal key={index}>
+                  <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
+                    <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
+                      <div className="group relative h-full w-full overflow-hidden">
+                        <Image
+                          src={product?.image ?? NotFoundImage}
+                          width={1000}
+                          height={1000}
+                          quality={100}
+                          alt="product"
+                          className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
+                        />
 
-                      <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
-                        <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                          <button>+ Thêm vào giỏ hàng</button>
-                        </p>
-                      </button>
-                    </div>
-                    <Link href={`/product/${product?._id}`}>
-                      <div className="flex flex-col items-center p-4 text-center">
-                        <h3 className="mb-2 text-lg font-semibold">
-                          Xi măng INSEE
-                        </h3>
-
-                        <p className="mb-2 text-xl font-bold">
-                          <span className="text-primary">123.000đ</span>
-                        </p>
+                        <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
+                          <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
+                            <button>+ Thêm vào giỏ hàng</button>
+                          </p>
+                        </button>
                       </div>
-                    </Link>
+                      <Link href={`/product/${product?._id}`}>
+                        <div className="flex flex-col items-center p-4 text-center">
+                          <h3 className="mb-2 text-lg font-semibold">
+                            {product?.name}
+                          </h3>
+
+                          <p className="mb-2 text-xl font-bold">
+                            <span className="text-primary">
+                              {PriceFormat.format(item?.price)}
+                            </span>
+                          </p>
+                        </div>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </ScrollReveal>
-            ))
+                </ScrollReveal>
+              )),
+            )
           : Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}

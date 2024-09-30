@@ -3,12 +3,17 @@ import { InputCustom } from "@/components/ui/input";
 import { Form } from "antd";
 import React from "react";
 import { motion } from "framer-motion";
+import BannerProduct from "@/components/BannerProduct";
+import { BreadScrumb } from "@/components";
 
 const ProductPage = () => {
   return (
-    <>
-      <div> product</div>
-    </>
+    <main className="min-h-screen">
+      <BannerProduct />
+      <section className="container mx-auto">
+        <BreadScrumb />
+      </section>
+    </main>
   );
 };
 

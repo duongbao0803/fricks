@@ -29,3 +29,8 @@ export function decryptData(
     return null;
   }
 }
+
+export const PriceFormat = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+});
