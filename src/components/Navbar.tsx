@@ -163,7 +163,7 @@ const Navbar = () => {
                     defaultValue={searchQuery}
                     placeholder="Tìm kiếm..."
                     type="email"
-                    className="w-full rounded-lg border-2 px-3 py-2 text-sm active:border-2 active:!border-primary"
+                    className="text-smfocus:border-2 w-full rounded-lg border-2 px-3 py-2 focus:!border-primary active:border-2 active:border-primary"
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </Form.Item>

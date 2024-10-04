@@ -9,20 +9,20 @@ const BreadScrumb: React.FC = () => (
         href: "/",
         title: <HomeOutlined />,
       },
+      // {
+      //   href: "",
+      //   title: (
+      //     <>
+      //       <UserOutlined />
+      //       <span>Application List</span>
+      //     </>
+      //   ),
+      // },
       {
-        href: "",
-        title: (
-          <>
-            <UserOutlined />
-            <span>Application List</span>
-          </>
-        ),
-      },
-      {
-        title: "Application",
+        title: "Sản phẩm",
       },
     ]}
   />
 );
 
-export default BreadScrumb;
+export default React.memo(BreadScrumb);

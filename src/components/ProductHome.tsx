@@ -8,10 +8,9 @@ import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { PriceFormat } from "@/utils";
-import VoiceSearch from "./VoiceSearch";
 
 const ProductHome = () => {
-  const [selectedCategory, setSelectedCategory] = useState(12);
+  const [selectedCategory, setSelectedCategory] = useState(100);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
@@ -21,7 +20,7 @@ const ProductHome = () => {
     categoryId: selectedCategory,
   });
 
-  const categories = [{ id: 12, name: "Tất cả" }, ...categoriesData];
+  const categories = [{ id: 100, name: "Tất cả" }, ...categoriesData];
 
   useEffect(() => {
     const selectedCategoryElement = document.getElementById(
@@ -35,19 +34,13 @@ const ProductHome = () => {
   }, [selectedCategory]);
 
   const getProductsToDisplay = () => {
-    if (selectedCategory === 12) {
+    if (selectedCategory === 100) {
       return Object.values(productData).flat();
     }
     console.log("check select", selectedCategory);
     console.log("check select", productData);
 
     return productData[selectedCategory as keyof typeof productData] || [];
-  };
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearchUpdate = (query: string) => {
-    setSearchQuery(query);
   };
 
   return (

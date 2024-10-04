@@ -8,7 +8,7 @@ export const useLogout = () => {
   const logout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    router.push("/auth");
+    router.replace("/auth");
     notify("success", "Đăng xuất thành công", 3);
   };
 

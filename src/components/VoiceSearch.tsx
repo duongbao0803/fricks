@@ -16,19 +16,17 @@ const VoiceSearch = ({ onSearch }: { onSearch: any }) => {
 
     const recognition = new SpeechRecognition();
 
-    // Cấu hình nhận dạng giọng nói
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = "vi-VN";
 
-    // Xử lý kết quả từ giọng nói
     recognition.onresult = (event) => {
       let finalTranscript = "";
       for (let i = 0; i < event.results.length; i++) {
         finalTranscript += event.results[i][0].transcript;
       }
       setSearchQuery(finalTranscript);
-      onSearch(finalTranscript); // Gọi hàm callback để lưu kết quả
+      onSearch(finalTranscript);
     };
 
     recognition.onerror = (event) => {
@@ -57,6 +55,7 @@ const VoiceSearch = ({ onSearch }: { onSearch: any }) => {
 
   return (
     <MdKeyboardVoice
+      size={20}
       className="absolute right-3 z-[999] cursor-pointer select-none text-gray-400 transition-all duration-500"
       onClick={toggleListening}
     />
