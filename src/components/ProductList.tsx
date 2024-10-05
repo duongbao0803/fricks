@@ -160,8 +160,8 @@ const ProductList = () => {
             onChange={handleSortChange}
           >
             <Option value="default">Mặc định</Option>
-            <Option value="lowToHigh">Thấp đến cao</Option>
-            <Option value="highToLow">Cao đến thấp</Option>
+            <Option value="LOWTOHIGH">Thấp đến cao</Option>
+            <Option value="HIGHTOLOW">Cao đến thấp</Option>
           </Select>
         </div>
         <div className="mx-auto mt-4 grid grid-cols-1 justify-center transition-all duration-500 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3">
