@@ -1,22 +1,79 @@
 "use client";
 
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import NavElement from "./NavElement";
-import MobileNav from "./MobileNav";
 import Image from "next/image";
-import { Badge, Form } from "antd";
-import {
-  ShoppingCartOutlined,
-  BellOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import IconWeb from "@/assets/images/logo/logo_web.png";
+import { Badge, Form, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
 import { FaRegUserCircle } from "react-icons/fa";
-
-import { InputCustom } from "./ui/input";
+import Cookies from "js-cookie";
+import { ShoppingCartOutlined, BellOutlined } from "@ant-design/icons";
+import NavElement from "./NavElement";
+import MobileNav from "./MobileNav";
+import VoiceSearch from "./VoiceSearch";
+import IconWeb from "@/assets/images/logo/logo_web.png";
+import { useGetUserInfoQuery } from "@/apis/authApi";
+import { useLogout } from "@/hooks/useLogout";
+import User from "@/assets/images/logo/avatar_admin.jpg";
 
 const Navbar = () => {
+  const token = Cookies.get("accessToken");
+  const { data } = useGetUserInfoQuery(undefined, {
+    skip: !token,
+  });
+  const { logout } = useLogout();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchUpdate = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const menuItems = useMemo<MenuProps>(
+    () => ({
+      items: [
+        {
+          key: "profile",
+          label: (
+            <Link href="/profile" className="flex items-center gap-2">
+              <span>Thông tin cá nhân</span>
+            </Link>
+          ),
+        },
+        {
+          key: "logout",
+          label: (
+            <p className="w-full" onClick={logout}>
+              Đăng xuất
+            </p>
+          ),
+        },
+      ],
+    }),
+    [logout],
+  );
+
+  const linkData = useMemo(
+    () => [
+      {
+        href: "",
+        text: "Thông báo",
+        icon: (
+          <BellOutlined className="text-sm transition-all duration-500 lg:text-lg" />
+        ),
+      },
+      {
+        href: "https://www.facebook.com/Fricks.BuildingService",
+        text: "Hỗ trợ",
+        icon: (
+          <FaRegCircleQuestion className="text-sm transition-all duration-500 lg:text-lg" />
+        ),
+        target: "_blank",
+      },
+    ],
+    [],
+  );
+
   return (
     <header>
       <div className="flex flex-col items-center justify-center bg-[#fff] transition-all duration-500">
@@ -27,39 +84,55 @@ const Navbar = () => {
               <span>fricks.customerservice@gmail.com</span>
             </div>
             <div className="ml-2 flex items-center gap-5">
-              <Link
-                href=""
-                className="flex cursor-pointer items-center gap-1 hover:text-primary"
-              >
-                <BellOutlined className="text-sm transition-all duration-500 lg:text-lg" />
-                <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                  Thông báo
-                </span>
-              </Link>
-
+              {linkData.map((link, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <Link
+                    href={link.href}
+                    target={link.target}
+                    className="flex cursor-pointer items-center gap-1 hover:text-primary"
+                  >
+                    {link.icon}
+                    <span className="text-[11px] transition-all duration-500 lg:text-sm">
+                      {link.text}
+                    </span>
+                  </Link>
+                  {index < linkData.length - 1 && (
+                    <div className="h-6 w-0.5 bg-orange-600" />
+                  )}
+                </div>
+              ))}
               <div className="h-6 w-0.5 bg-orange-600" />
-
-              <Link
-                href=""
-                className="flex cursor-pointer items-center gap-1 hover:text-primary"
-              >
-                <FaRegCircleQuestion className="text-sm transition-all duration-500 lg:text-lg" />
-                <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                  Hỗ trợ
-                </span>
-              </Link>
-
-              <div className="h-6 w-0.5 bg-orange-600" />
-
-              <Link
-                href="/auth"
-                className="flex cursor-pointer items-center gap-1 hover:text-primary"
-              >
-                <FaRegUserCircle className="text-sm transition-all duration-500 lg:text-lg" />
-                <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                  Đăng nhập
-                </span>
-              </Link>
+              {data ? (
+                <Dropdown
+                  menu={menuItems}
+                  trigger={["hover"]}
+                  placement="bottomRight"
+                  arrow
+                >
+                  <div className="flex cursor-pointer items-center gap-1 hover:text-primary">
+                    <Image
+                      src={data?.avatar || User}
+                      alt={data?.fullName}
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                    />
+                    <span className="text-[11px] transition-all duration-500 lg:text-sm">
+                      {data?.fullName}
+                    </span>
+                  </div>
+                </Dropdown>
+              ) : (
+                <Link
+                  href="/auth"
+                  className="flex cursor-pointer items-center gap-1 hover:text-primary"
+                >
+                  <FaRegUserCircle className="text-sm transition-all duration-500 lg:text-lg" />
+                  <span className="text-[11px] transition-all duration-500 lg:text-sm">
+                    Đăng nhập
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -87,8 +160,7 @@ const Navbar = () => {
 
           <div className="mx-6 flex w-full items-center gap-3 lg:mx-0 lg:w-auto">
             <div className="relative flex w-full items-center gap-2 transition-all duration-500 lg:flex">
-              <SearchOutlined className="absolute right-3 z-10 select-none text-gray-400 transition-all duration-500" />
-
+              <VoiceSearch onSearch={handleSearchUpdate} />
               <Form name="normal_login" className="login-form w-full">
                 <Form.Item
                   name=""
@@ -97,10 +169,13 @@ const Navbar = () => {
                   className="formItem"
                   noStyle
                 >
-                  <InputCustom
+                  <input
+                    value={searchQuery}
+                    defaultValue={searchQuery}
                     placeholder="Tìm kiếm..."
                     type="email"
-                    className="w-full rounded-lg px-3 py-2 text-sm"
+                    className="text-smfocus:border-2 w-full rounded-lg border-2 px-3 py-2 focus:!border-primary active:border-2 active:border-primary"
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </Form.Item>
               </Form>

@@ -4,7 +4,7 @@ import React from "react";
 import CountUp from "react-countup";
 import { FaPeopleGroup, FaUser } from "react-icons/fa6";
 import { MdFavorite, MdProductionQuantityLimits } from "react-icons/md";
-import { ScrollReveal } from "./ScrollReveal";
+import ScrollReveal from "./ScrollReveal";
 
 const Statistical = () => {
   const stats = [

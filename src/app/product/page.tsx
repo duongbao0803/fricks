@@ -1,14 +1,26 @@
-"use client";
-import { InputCustom } from "@/components/ui/input";
-import { Form } from "antd";
-import React from "react";
-import { motion } from "framer-motion";
+import BannerProduct from "@/components/BannerProduct";
+import { BreadScrumb } from "@/components/common";
+import { ProductList } from "@/components";
 
 const ProductPage = () => {
+  const items = [
+    {
+      title: "Sản phẩm",
+    },
+  ];
+
   return (
-    <>
-      <div> product</div>
-    </>
+    <main className="min-h-screen">
+      <BannerProduct />
+      <section className="container mx-auto">
+        <div className="my-10">
+          <BreadScrumb items={items} />
+        </div>
+        <div className="my-16">
+          <ProductList />
+        </div>
+      </section>
+    </main>
   );
 };
 

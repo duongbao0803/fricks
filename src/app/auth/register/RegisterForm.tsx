@@ -7,9 +7,13 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from "framer-motion";
 import { InputCustom } from "@/components/ui/input";
 import { ButtonCustom } from "@/components/ui/button";
-import { notify } from "@/components/Notification";
+import { notify } from "@/components/common/Notification";
 import LoginForm from "@/app/auth/login/LoginForm";
-import { useConfirmEmailMutation, useRegisterMutation } from "@/apis/authApi";
+import {
+  useConfirmEmailMutation,
+  useRegisterMutation,
+  useResendOTPMutation,
+} from "@/apis/authApi";
 import { isErrorResponse } from "@/utils";
 import {
   Drawer,
@@ -27,6 +31,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface IProps {
   isShowRegister: boolean;
@@ -37,13 +42,15 @@ const RegisterForm: React.FC<IProps> = ({
   isShowRegister,
   setIsShowRegister,
 }) => {
-  const [isSigningUp, setIsSigningUp] = useState(false);
-  const [captchaVerified, setCaptchaVerified] = useState(false);
-  const [register] = useRegisterMutation();
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+  const [captchaVerified, setCaptchaVerified] = useState<boolean>(false);
+  const [isDrawerVisible, setIsDrawerVisible] = useState<boolean>(false);
+  const [otpCode, setOtp] = useState<string>("");
   const [confirmEmail] = useConfirmEmailMutation();
+  const [resendOtp] = useResendOTPMutation();
+  const [isResending, setIsResending] = useState<boolean>(false);
+  const [cooldownTime, setCooldownTime] = useState<number>(0);
+  const [register] = useRegisterMutation();
   const router = useRouter();
 
   const [form] = Form.useForm();
@@ -78,11 +85,6 @@ const RegisterForm: React.FC<IProps> = ({
       return;
     }
 
-    setTimeout(() => {
-      setIsSending(false);
-      setIsDrawerVisible(true);
-    }, 1000);
-
     try {
       setIsSigningUp(true);
       const res = await register(values).unwrap();
@@ -92,10 +94,12 @@ const RegisterForm: React.FC<IProps> = ({
           "Vui lòng kiểm tra hòm thư (hoặc Thư rác) để lấy mã OTP",
           3,
         );
+        setTimeout(() => {
+          setIsDrawerVisible(true);
+        }, 1000);
         setIsSigningUp(false);
       }
     } catch (err: unknown) {
-      console.log("check err", err);
       if (isErrorResponse(err)) {
         setIsSigningUp(false);
         notify("error", `${err.data.message}`, 3);
@@ -111,41 +115,67 @@ const RegisterForm: React.FC<IProps> = ({
   };
 
   const handleResendMail = async () => {
-    const values = form.getFieldsValue();
+    const email = form.getFieldValue("email");
+    if (!email) {
+      notify("warning", "Vui lòng nhập email", 3);
+      return;
+    }
+    if (isResending) {
+      notify(
+        "warning",
+        `Vui lòng chờ ${cooldownTime} giây trước khi gửi lại mã OTP`,
+        3,
+      );
+      return;
+    }
+    setIsResending(true);
+    setCooldownTime(30);
     try {
-      setIsSending(true);
-      const res = await register(values).unwrap();
+      const res = await resendOtp(JSON.stringify(email)).unwrap();
       if (res && res.httpCode === 200) {
-        notify(
-          "success",
-          "Vui lòng kiểm tra hòm thư (hoặc thư rác) để lấy mã OTP",
-          3,
-        );
-        setIsSending(false);
+        notify("success", `${res.message}`, 3);
+        const countdownInterval = setInterval(() => {
+          setCooldownTime((prev) => {
+            if (prev === 1) {
+              clearInterval(countdownInterval);
+              setIsResending(false);
+            }
+            return prev - 1;
+          });
+        }, 1000);
       }
-    } catch (err: unknown) {
-      console.log("check err", err);
+    } catch (err) {
       if (isErrorResponse(err)) {
-        setIsSigningUp(false);
         notify("error", `${err.data.message}`, 3);
       } else {
-        setIsSigningUp(false);
         notify("error", `${err}`, 3);
       }
     }
   };
 
   const handleOTPSubmit = async () => {
+    const email = form.getFieldValue("email");
+    let information = { email, otpCode };
+    if (otpCode.length < 6) {
+      notify("warning", "Vui lòng nhập otp", 3);
+      return;
+    }
     try {
-      const email = form.getFieldValue("email");
-      let information = { email, otp };
       const res = await confirmEmail(information).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", "Đăng nhập thành công", 3);
-        router.push("/");
+        const accessToken = res.accessToken;
+        if (accessToken) {
+          Cookies.set("accessToken", res.accessToken);
+          Cookies.set("refreshToken", res.refreshToken);
+          notify("success", "Đăng nhập thành công", 3);
+          router.push("/");
+        }
       }
     } catch (err) {
       console.error(err);
+      if (isErrorResponse(err)) {
+        notify("error", `${err.data.message}`, 3);
+      }
     }
   };
 
@@ -342,7 +372,7 @@ const RegisterForm: React.FC<IProps> = ({
                           }
                         />
                       ) : (
-                        "Gửi"
+                        "Đăng ký"
                       )}
                     </ButtonCustom>
                   </Form.Item>
