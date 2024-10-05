@@ -10,3 +10,6 @@ export { default as IntroHome } from "./IntroHome";
 export { default as Statistical } from "./Statistical";
 export { default as PostHome } from "./PostHome";
 export { default as Subscribe } from "./Subscribe";
+export { default as ProgressBar } from "./ProgressBar";
+export { default as ScrollReveal } from "./ScrollReveal";
+export { default as ProductList } from "./ProductList";

@@ -1,10 +1,7 @@
-// AuthPage.tsx
-
-import React from "react";
 import LoginForm from "./login/LoginForm";
 import { Carousel } from "@/components";
 
-const AuthPage: React.FC = () => {
+const AuthPage = () => {
   return (
     <>
       <main className="flex flex-grow bg-[hsl(0,0%,97%)]">

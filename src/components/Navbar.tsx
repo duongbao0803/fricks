@@ -1,27 +1,21 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import NavElement from "./NavElement";
-import MobileNav from "./MobileNav";
 import Image from "next/image";
-import { Badge, Form, Dropdown, Input } from "antd";
+import { Badge, Form, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import {
-  ShoppingCartOutlined,
-  BellOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
 import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
 import { FaRegUserCircle } from "react-icons/fa";
 import Cookies from "js-cookie";
-import { InputCustom } from "./ui/input";
+import { ShoppingCartOutlined, BellOutlined } from "@ant-design/icons";
+import NavElement from "./NavElement";
+import MobileNav from "./MobileNav";
+import VoiceSearch from "./VoiceSearch";
 import IconWeb from "@/assets/images/logo/logo_web.png";
 import { useGetUserInfoQuery } from "@/apis/authApi";
 import { useLogout } from "@/hooks/useLogout";
 import User from "@/assets/images/logo/avatar_admin.jpg";
-import { MdKeyboardVoice } from "react-icons/md";
-import VoiceSearch from "./VoiceSearch";
 
 const Navbar = () => {
   const token = Cookies.get("accessToken");
@@ -35,26 +29,50 @@ const Navbar = () => {
     setSearchQuery(query);
   };
 
-  const menuItems: MenuProps = {
-    items: [
+  const menuItems = useMemo<MenuProps>(
+    () => ({
+      items: [
+        {
+          key: "profile",
+          label: (
+            <Link href="/profile" className="flex items-center gap-2">
+              <span>Thông tin cá nhân</span>
+            </Link>
+          ),
+        },
+        {
+          key: "logout",
+          label: (
+            <p className="w-full" onClick={logout}>
+              Đăng xuất
+            </p>
+          ),
+        },
+      ],
+    }),
+    [logout],
+  );
+
+  const linkData = useMemo(
+    () => [
       {
-        key: "profile",
-        label: (
-          <Link href="/profile" className="flex items-center gap-2">
-            <span>Thông tin cá nhân</span>
-          </Link>
+        href: "",
+        text: "Thông báo",
+        icon: (
+          <BellOutlined className="text-sm transition-all duration-500 lg:text-lg" />
         ),
       },
       {
-        key: "logout",
-        label: (
-          <p className="w-full" onClick={logout}>
-            Đăng xuất
-          </p>
+        href: "https://www.facebook.com/Fricks.BuildingService",
+        text: "Hỗ trợ",
+        icon: (
+          <FaRegCircleQuestion className="text-sm transition-all duration-500 lg:text-lg" />
         ),
+        target: "_blank",
       },
     ],
-  };
+    [],
+  );
 
   return (
     <header>
@@ -66,30 +84,23 @@ const Navbar = () => {
               <span>fricks.customerservice@gmail.com</span>
             </div>
             <div className="ml-2 flex items-center gap-5">
-              <Link
-                href=""
-                className="flex cursor-pointer items-center gap-1 hover:text-primary"
-              >
-                <BellOutlined className="text-sm transition-all duration-500 lg:text-lg" />
-                <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                  Thông báo
-                </span>
-                <p>{searchQuery}</p>
-              </Link>
-
-              <div className="h-6 w-0.5 bg-orange-600" />
-
-              <Link
-                href="https://www.facebook.com/Fricks.BuildingService"
-                target="_blank"
-                className="flex cursor-pointer items-center gap-1 hover:text-primary"
-              >
-                <FaRegCircleQuestion className="text-sm transition-all duration-500 lg:text-lg" />
-                <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                  Hỗ trợ
-                </span>
-              </Link>
-
+              {linkData.map((link, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <Link
+                    href={link.href}
+                    target={link.target}
+                    className="flex cursor-pointer items-center gap-1 hover:text-primary"
+                  >
+                    {link.icon}
+                    <span className="text-[11px] transition-all duration-500 lg:text-sm">
+                      {link.text}
+                    </span>
+                  </Link>
+                  {index < linkData.length - 1 && (
+                    <div className="h-6 w-0.5 bg-orange-600" />
+                  )}
+                </div>
+              ))}
               <div className="h-6 w-0.5 bg-orange-600" />
               {data ? (
                 <Dropdown

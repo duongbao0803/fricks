@@ -4,10 +4,10 @@ import {
   IntroHome,
   PostHome,
   ProductHome,
+  ScrollReveal,
   Statistical,
   Subscribe,
 } from "@/components";
-import { ScrollReveal } from "@/components/ScrollReveal";
 import "./globals.css";
 import "./globals.css";
 

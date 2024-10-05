@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
@@ -13,7 +14,6 @@ interface BreadScrumbProps {
 }
 
 const BreadScrumb: React.FC<BreadScrumbProps> = ({ items }) => {
-  // Combine the home item with the passed items
   const breadcrumbItems = [
     {
       href: "/",

@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Slider } from "antd";
 
@@ -20,10 +21,10 @@ const RadioCustom: React.FC<CustomSliderProps> = ({
 }) => {
   const [value, setValue] = useState<[number, number]>(initialValue);
 
-  const handleChange = (value: [number, number]) => {
-    setValue(value);
+  const handleChange = (value: number[]) => {
+    setValue([value[0], value[1]]);
     if (onChange) {
-      onChange(value);
+      onChange([value[0], value[1]]);
     }
   };
 

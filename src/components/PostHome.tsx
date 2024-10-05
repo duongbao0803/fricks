@@ -1,5 +1,5 @@
 "use client";
-import { Card } from "antd";
+import { Card, Skeleton } from "antd";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -9,9 +9,14 @@ import "swiper/swiper-bundle.css";
 import { Autoplay, FreeMode, Pagination } from "swiper/modules";
 import Link from "next/link";
 import Image from "next/image";
+import { useGetPostListQuery } from "@/apis/postApi";
 
 const PostHome = () => {
   const { Meta } = Card;
+  const { data, isLoading } = useGetPostListQuery({
+    PageIndex: 1,
+    PageSize: 100,
+  });
 
   return (
     <section className="container mx-auto my-32 text-center">
@@ -45,78 +50,84 @@ const PostHome = () => {
             },
             640: {
               slidesPerView: 1,
-              spaceBetween: 20,
+              spaceBetween: 5,
             },
             900: {
-              slidesPerView: 1,
-              spaceBetween: 20,
+              slidesPerView: 2,
+              spaceBetween: 5,
             },
             1150: {
               slidesPerView: 2,
-              spaceBetween: 10,
+              spaceBetween: 5,
             },
-            1200: {
-              slidesPerView: 2,
-              spaceBetween: 10,
+            1600: {
+              slidesPerView: 3,
+              spaceBetween: 5,
             },
-            1400: {
-              slidesPerView: 2,
-            },
-            1500: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-            1900: {
-              slidesPerView: 2,
+            2000: {
+              slidesPerView: 3,
               spaceBetween: 20,
             },
             2400: {
-              slidesPerView: 2,
+              slidesPerView: 3,
               spaceBetween: 30,
             },
             3300: {
-              slidesPerView: 2,
+              slidesPerView: 4,
               spaceBetween: 30,
             },
           }}
           modules={[FreeMode, Pagination, Autoplay]}
           className="mySwiper h-[450px] overflow-hidden transition-all duration-500"
         >
-          {Array.from({ length: 10 }).map((_, index) => (
-            <SwiperSlide
-              key={index}
-              className="flex h-[300px] max-w-[500px] justify-center"
-            >
-              <Link href={""} className="gap-5 transition-all duration-500">
-                <Card
-                  hoverable
-                  className="h-auto max-w-[500px] overflow-visible border-2"
-                  cover={
-                    <Image
-                      alt="error"
-                      height={300}
-                      width={350}
-                      quality={100}
-                      src={
-                        "https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2FXi%20m%C4%83ng.jpg?alt=media&token=4038617b-6820-4982-a912-9dffdffbf897"
-                      }
-                      className="size-[300px] object-contain"
-                    />
-                  }
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex h-[400px] w-[350px] justify-center"
                 >
-                  <Meta
-                    description={
-                      <span className="block text-sm font-semibold text-[black]">
-                        Nội dung tin tức hoặc mô tả Nội dung tin tức hoặc mô tả
-                        Nội dung tin tức hoặc mô tả Nội dung tin tức hoặc mô tả
-                        Nội dung tin tức hoặc mô tả
-                      </span>
-                    }
-                  />
-                </Card>
-              </Link>
-            </SwiperSlide>
-          ))}
+                  <div className="my-3 mr-4 rounded-lg border-[0.2px] border-[#e6e6e6] p-5">
+                    <Skeleton active paragraph={{ rows: 3 }} />
+                  </div>
+                </SwiperSlide>
+              ))
+            : data?.length > 0 &&
+              data.map((post: any, index: number) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex h-[400px] w-[350px] justify-center"
+                >
+                  <Link href={""} className="gap-5 transition-all duration-500">
+                    <Card
+                      hoverable
+                      className="h-[400px] w-[350px] overflow-hidden border-2"
+                      cover={
+                        <Image
+                          alt="error"
+                          height={300}
+                          width={300}
+                          quality={100}
+                          src={post.image}
+                          className="h-[300px] w-full object-contain"
+                        />
+                      }
+                    >
+                      <Meta
+                        description={
+                          <>
+                            <h2 className="block text-sm font-semibold text-[black]">
+                              {post.title}
+                            </h2>
+                            <span className="line-clamp-2 block h-[80px] overflow-hidden text-ellipsis whitespace-normal">
+                              {post.content}
+                            </span>
+                          </>
+                        }
+                      />
+                    </Card>
+                  </Link>
+                </SwiperSlide>
+              ))}
         </Swiper>
       </div>
     </section>

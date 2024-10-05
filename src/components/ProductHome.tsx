@@ -1,28 +1,27 @@
 "use client";
 import { Skeleton } from "antd";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
-import { ScrollReveal } from "./ScrollReveal";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { PriceFormat } from "@/utils";
 import { useRouter } from "next/navigation";
+import ScrollReveal from "./ScrollReveal";
 
 const ProductHome = () => {
-  const [selectedCategory, setSelectedCategory] = useState(100);
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState(0);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
   );
-  const { data: productData = [] } = useGetProductListQuery({
-    categoryId: selectedCategory,
-  });
-  const router = useRouter();
-
-  const categories = [{ id: 100, name: "Tất cả" }, ...categoriesData];
+  const categories = useMemo(
+    () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
+    [categoriesData],
+  );
 
   useEffect(() => {
     const selectedCategoryElement = document.getElementById(
@@ -35,8 +34,17 @@ const ProductHome = () => {
     }
   }, [selectedCategory]);
 
+  const { data: productData = [] } = useGetProductListQuery({
+    PageIndex: 1,
+    PageSize: 10,
+    CategoryId: selectedCategory,
+    name: "",
+    MinPrice: 0,
+    MaxPrice: 0,
+  });
+
   const getProductsToDisplay = () => {
-    if (selectedCategory === 100) {
+    if (selectedCategory === 0) {
       return Object.values(productData).flat();
     }
 
@@ -77,7 +85,7 @@ const ProductHome = () => {
       </div>
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {productData?.length > 0
-          ? productData?.map((product: any, index: number) =>
+          ? productData?.slice(0, 7).map((product: any) =>
               product?.price?.map((item: any, index: number) => (
                 <ScrollReveal key={index}>
                   <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
