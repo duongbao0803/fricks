@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { notify } from "@/components/Notification";
+import { notify } from "@/components/common/Notification";
 
 export const useLogout = () => {
   const router = useRouter();
@@ -8,7 +8,7 @@ export const useLogout = () => {
   const logout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    router.push("/auth");
+    router.replace("/auth");
     notify("success", "Đăng xuất thành công", 3);
   };
 

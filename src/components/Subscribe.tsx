@@ -3,7 +3,7 @@ import React from "react";
 import { ButtonCustom } from "./ui/button";
 import { Form, Input } from "antd";
 import { FaRegPaperPlane } from "react-icons/fa6";
-import { notify } from "./Notification";
+import { notify } from "./common/Notification";
 
 const Subscribe = () => {
   const [form] = Form.useForm();

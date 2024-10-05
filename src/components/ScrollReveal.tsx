@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 import { ReactNode, useEffect } from "react";
 import { useAnimation } from "framer-motion";
@@ -7,7 +8,7 @@ interface ScrollRevealProps {
   children: ReactNode;
 }
 
-export const ScrollReveal = ({ children }: ScrollRevealProps) => {
+const ScrollReveal = ({ children }: ScrollRevealProps) => {
   const controls = useAnimation();
   const [ref, inView] = useInView({ threshold: 0.3 });
 
@@ -51,3 +52,5 @@ export const ScrollReveal = ({ children }: ScrollRevealProps) => {
     </motion.div>
   );
 };
+
+export default ScrollReveal;

@@ -22,7 +22,7 @@ import {
   useLoginMutation,
   useResendOTPMutation,
 } from "@/apis/authApi";
-import { notify } from "@/components/Notification";
+import { notify } from "@/components/common/Notification";
 import { encryptData, isErrorResponse } from "@/utils";
 import {
   Drawer,
@@ -129,7 +129,7 @@ const LoginForm: React.FC = () => {
       if (res && res.httpCode === 200) {
         Cookies.set("accessToken", res.accessToken);
         Cookies.set("refreshToken", res.refreshToken);
-        router.push("/");
+        router.replace("/");
         notify("success", `${res.message}`, 3);
       }
     } catch (err) {

@@ -1,8 +1,9 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Navbar } from "@/components";
 import Footer from "@/components/Footer";
 import { FloatButton } from "antd";
+import ProgressBar from "@/components/ProgressBar";
 
 export default function ClientLayout({
   children,
@@ -17,6 +18,7 @@ export default function ClientLayout({
       {showNavbar && <Navbar />}
       {children}
       <FloatButton.BackTop className="!fixed !bottom-[200px] !right-[20px]" />
+      <ProgressBar />
       {showNavbar && <Footer />}
     </>
   );

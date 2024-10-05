@@ -6,8 +6,10 @@ import { TiTick } from "react-icons/ti";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper/modules";
 import { introImages } from "@/constants";
+import { useRouter } from "next/navigation";
 
 const IntroHome = () => {
+  const router = useRouter();
   return (
     <section className="container mx-auto my-32 transition-all duration-500">
       <div className="container mx-auto block transition-all duration-500 md:flex md:flex-1 md:items-center md:gap-20">
@@ -57,7 +59,10 @@ const IntroHome = () => {
             </div>
           </div>
 
-          <button className="group relative my-5 flex h-[2.8em] cursor-pointer items-center overflow-hidden rounded-3xl border border-solid bg-primary p-[0.35em] pl-[1em] pr-[3.3em] text-[17px] font-medium tracking-wider text-black">
+          <button
+            onClick={() => router.push("/product")}
+            className="group relative my-5 flex h-[2.8em] cursor-pointer items-center overflow-hidden rounded-3xl border border-solid bg-primary p-[0.35em] pl-[1em] pr-[3.3em] text-[17px] font-medium tracking-wider text-black"
+          >
             <span className="text-sm text-white">Đặt hàng ngay</span>
             <div className="absolute right-[0.3em] ml-[1em] flex size-[2.2em] items-center justify-center overflow-hidden rounded-3xl bg-white transition-all duration-300 group-hover:w-[calc(100%-0.6em)] active:group-active:scale-95">
               <svg

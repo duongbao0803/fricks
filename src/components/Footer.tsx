@@ -1,12 +1,11 @@
-import React from "react";
-import { ChromeOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Logo from "@/assets/images/logo/logo_web.png";
 import Link from "next/link";
+import React from "react";
 
-const Footer: React.FC = () => {
+const Footer = () => {
   return (
-    <footer className="bg-white dark:bg-gray-900">
+    <footer className="border bg-white dark:bg-gray-900">
       <div className="mx-auto w-full max-w-screen-xl">
         <div className="grid grid-cols-2 gap-8 px-4 py-6 transition-all duration-500 lg:grid-cols-5 lg:py-8">
           <div className="flex items-center text-sm">

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { EyeIcon } from "lucide-react";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
 
