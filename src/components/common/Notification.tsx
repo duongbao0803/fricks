@@ -28,7 +28,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-const notify = (
+export const notify = (
   type: "success" | "info" | "warning" | "error",
   description: string,
   duration: number,
@@ -53,5 +53,3 @@ const notify = (
     console.error("Notification is not initialized");
   }
 };
-
-export default notify;

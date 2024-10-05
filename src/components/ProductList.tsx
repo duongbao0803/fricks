@@ -8,7 +8,6 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import VoiceSearch from "./VoiceSearch";
 import ScrollReveal from "./ScrollReveal";
 import { RadioCustom, SliderCustom } from "./common";
-import notify from "./common/Notification";
 import { PriceFormat } from "@/utils";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
@@ -18,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { toggleFavorite } from "@/redux/slices/favoriteSlice";
 import { SortStatus } from "@/enums";
+import { notify } from "./common/Notification";
 
 const { Option } = Select;
 
