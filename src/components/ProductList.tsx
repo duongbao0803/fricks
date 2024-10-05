@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Divider, Form, Skeleton, Select, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import VoiceSearch from "./VoiceSearch";
-import { RadioCustom, SliderCustom } from "./common";
-import ScrollReveal from "./ScrollReveal";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import VoiceSearch from "./VoiceSearch";
+import ScrollReveal from "./ScrollReveal";
+import { RadioCustom, SliderCustom } from "./common";
+import notify from "./common/Notification";
 import { PriceFormat } from "@/utils";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
@@ -84,8 +85,16 @@ const ProductList = () => {
   const handleSliderChange = (value: [number, number]) => {
     setPriceRange(value);
   };
-  const handleToggleFavorite = (productId: number) => {
-    dispatch(toggleFavorite(productId));
+  const handleToggleFavorite = (product: any) => {
+    dispatch(toggleFavorite(product?.id));
+    const isFavorite = favoriteProducts.includes(product?.id);
+    notify(
+      "success",
+      isFavorite
+        ? `Gỡ ${product?.name} khỏi danh sách yêu thích thành công`
+        : `Thêm ${product?.name} vào danh sách yêu thích thành công`,
+      2,
+    );
   };
 
   return (
@@ -189,7 +198,7 @@ const ProductList = () => {
 
                         <button
                           className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-300 ease-in-out hover:bg-gray-200"
-                          onClick={() => handleToggleFavorite(product?.id)}
+                          onClick={() => handleToggleFavorite(product)}
                         >
                           {favoriteProducts.includes(product?.id) ? (
                             <AiFillHeart className="text-xl text-red-500" />

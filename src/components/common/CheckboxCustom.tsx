@@ -1,11 +1,12 @@
 import { Radio } from "antd";
 import React from "react";
+import { RadioChangeEvent } from "antd/lib/radio";
 
 interface RadioCustomProps {
   className?: string;
   title?: string;
   checked?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: RadioChangeEvent) => void;
 }
 
 const RadioCustom: React.FC<RadioCustomProps> = (props) => {
