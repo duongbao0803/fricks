@@ -5,7 +5,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { InputCustom } from "@/components/ui/input";
 import RegisterForm from "@/app/auth/register/RegisterForm";
 import { ButtonCustom } from "@/components/ui/button";
-import { notify } from "@/components/Notification";
+import { notify } from "@/components/common/Notification";
 import {
   Drawer,
   DrawerContent,

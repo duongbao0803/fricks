@@ -22,7 +22,7 @@ import {
   useLoginMutation,
   useResendOTPMutation,
 } from "@/apis/authApi";
-import { notify } from "@/components/Notification";
+import { notify } from "@/components/common/Notification";
 import { encryptData, isErrorResponse } from "@/utils";
 import {
   Drawer,

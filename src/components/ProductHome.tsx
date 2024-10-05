@@ -8,6 +8,7 @@ import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { PriceFormat } from "@/utils";
+import { useRouter } from "next/navigation";
 
 const ProductHome = () => {
   const [selectedCategory, setSelectedCategory] = useState(100);
@@ -19,6 +20,7 @@ const ProductHome = () => {
   const { data: productData = [] } = useGetProductListQuery({
     categoryId: selectedCategory,
   });
+  const router = useRouter();
 
   const categories = [{ id: 100, name: "Tất cả" }, ...categoriesData];
 
@@ -37,8 +39,6 @@ const ProductHome = () => {
     if (selectedCategory === 100) {
       return Object.values(productData).flat();
     }
-    console.log("check select", selectedCategory);
-    console.log("check select", productData);
 
     return productData[selectedCategory as keyof typeof productData] || [];
   };
@@ -128,7 +128,10 @@ const ProductHome = () => {
 
       {getProductsToDisplay().length > 0 && (
         <div className="my-7 flex justify-center">
-          <button className="w-[300px] border-2 border-primary bg-primary py-3 font-bold text-[white] transition-all duration-500 ease-in-out hover:rounded-2xl hover:border-primary hover:bg-[white] hover:tracking-widest hover:text-primary">
+          <button
+            onClick={() => router.push("/product")}
+            className="w-[300px] border-2 border-primary bg-primary py-3 font-bold text-[white] transition-all duration-500 ease-in-out hover:rounded-2xl hover:border-primary hover:bg-[white] hover:tracking-widest hover:text-primary"
+          >
             Xem thêm {">"}
           </button>
         </div>

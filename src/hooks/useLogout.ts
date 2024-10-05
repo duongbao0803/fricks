@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { notify } from "@/components/Notification";
+import { notify } from "@/components/common/Notification";
 
 export const useLogout = () => {
   const router = useRouter();
