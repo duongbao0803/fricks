@@ -1,27 +1,21 @@
 import { BreadScrumb } from "@/components/common";
-import BannerProduct from "./BannerProduct";
-import ProductList from "./ProductList";
 
-const ProductPage = () => {
+const PostDetail = () => {
   const items = [
     {
-      title: "Sản phẩm",
+      title: "Chi tiết bài viết",
     },
   ];
-
   return (
     <main className="min-h-screen">
-      <BannerProduct />
       <section className="container mx-auto">
         <div className="my-10">
           <BreadScrumb items={items} />
         </div>
-        <div className="my-16">
-          <ProductList />
-        </div>
+        <div className="my-16">chi tiết</div>
       </section>
     </main>
   );
 };
 
-export default ProductPage;
+export default PostDetail;

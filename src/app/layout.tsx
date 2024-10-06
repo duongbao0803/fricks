@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Fredoka,
-  Inter,
-  Josefin_Sans,
-  Montserrat,
-  Roboto_Slab,
-  Ubuntu,
-} from "next/font/google";
+import { Roboto_Slab } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import LoadingWrapper from "@/components/LoadingWrapper";

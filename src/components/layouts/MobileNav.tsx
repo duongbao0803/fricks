@@ -1,11 +1,10 @@
-"use client";
-
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { CiMenuFries } from "react-icons/ci";
-import NavElement from "./NavElement";
-import IconWeb from "@/assets/images/logo/logo_web.png";
 import Image from "next/image";
+import IconWeb from "@/assets/images/logo/logo_web.png";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import "@/app/globals.css";
+import NavElement from "./NavElement";
 
 const MobileNav = () => {
   return (

@@ -12,7 +12,7 @@ export const NavElements = [
     path: "/post",
   },
   {
-    name: "Thông tin",
+    name: "Liên hệ",
     path: "/contact",
   },
 ];

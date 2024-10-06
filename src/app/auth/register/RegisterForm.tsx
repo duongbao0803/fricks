@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Form, Spin } from "antd";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from "framer-motion";
 import { InputCustom } from "@/components/ui/input";
@@ -30,8 +32,6 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 
 interface IProps {
   isShowRegister: boolean;
