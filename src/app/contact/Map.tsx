@@ -20,7 +20,6 @@ const Map = () => {
         loading="lazy"
         width="100%"
         height="400"
-        allowTransparency={true}
         allowFullScreen={true}
         className="h-[500px] w-full border-0"
         onLoad={handleIframeLoad}
