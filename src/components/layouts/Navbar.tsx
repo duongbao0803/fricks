@@ -9,13 +9,14 @@ import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
 import { FaRegUserCircle } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { ShoppingCartOutlined, BellOutlined } from "@ant-design/icons";
-import NavElement from "./NavElement";
 import MobileNav from "./MobileNav";
-import VoiceSearch from "./VoiceSearch";
 import IconWeb from "@/assets/images/logo/logo_web.png";
 import { useGetUserInfoQuery } from "@/apis/authApi";
 import { useLogout } from "@/hooks/useLogout";
 import User from "@/assets/images/logo/avatar_admin.jpg";
+import useDebounce from "@/hooks/useDebounce";
+import { VoiceSearch } from "@/components";
+import NavElement from "./NavElement";
 
 const Navbar = () => {
   const token = Cookies.get("accessToken");
@@ -24,6 +25,7 @@ const Navbar = () => {
   });
   const { logout } = useLogout();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const handleSearchUpdate = (query: string) => {
     setSearchQuery(query);
@@ -153,11 +155,9 @@ const Navbar = () => {
               className="lg:hidden"
             />
           </Link>
-
           <div className="hidden items-center gap-8 lg:flex">
             <NavElement />
           </div>
-
           <div className="mx-6 flex w-full items-center gap-3 lg:mx-0 lg:w-auto">
             <div className="relative flex w-full items-center gap-2 transition-all duration-500 lg:flex">
               <VoiceSearch onSearch={handleSearchUpdate} />
@@ -170,24 +170,21 @@ const Navbar = () => {
                   noStyle
                 >
                   <input
-                    value={searchQuery}
-                    defaultValue={searchQuery}
+                    value={debouncedSearchQuery}
                     placeholder="Tìm kiếm..."
-                    type="email"
-                    className="text-smfocus:border-2 w-full rounded-lg border-2 px-3 py-2 focus:!border-primary active:border-2 active:border-primary"
+                    type="text"
+                    className="w-full rounded-lg px-3 py-2 text-sm ring-1 ring-gray-300 focus:border-0 focus:outline-none focus:ring-1 focus:ring-primary"
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </Form.Item>
               </Form>
             </div>
-
             <Link href="">
               <div className="lg:hidden">
                 <Badge count={5} size="small">
                   <ShoppingCartOutlined className="cursor-pointer text-xl hover:text-primary" />
                 </Badge>
               </div>
-
               <div className="hidden lg:block">
                 <Badge count={5}>
                   <ShoppingCartOutlined className="cursor-pointer text-3xl hover:text-primary" />
@@ -195,7 +192,6 @@ const Navbar = () => {
               </div>
             </Link>
           </div>
-
           <div className="lg:hidden">
             <MobileNav />
           </div>

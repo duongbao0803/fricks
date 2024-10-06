@@ -10,6 +10,7 @@ import { Autoplay, FreeMode, Pagination } from "swiper/modules";
 import Link from "next/link";
 import Image from "next/image";
 import { useGetPostListQuery } from "@/apis/postApi";
+import { PostInfo } from "@/types/post.types";
 
 const PostHome = () => {
   const { Meta } = Card;
@@ -92,12 +93,15 @@ const PostHome = () => {
                 </SwiperSlide>
               ))
             : data?.length > 0 &&
-              data.map((post: any, index: number) => (
+              data.map((post: PostInfo, index: number) => (
                 <SwiperSlide
                   key={index}
                   className="flex h-[400px] w-[350px] justify-center"
                 >
-                  <Link href={""} className="gap-5 transition-all duration-500">
+                  <Link
+                    href={`/post/${post?.id}`}
+                    className="gap-5 transition-all duration-500"
+                  >
                     <Card
                       hoverable
                       className="h-[400px] w-[350px] overflow-hidden border-2"

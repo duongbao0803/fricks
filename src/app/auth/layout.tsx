@@ -1,9 +1,8 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { Navbar } from "@/components";
-import Footer from "@/components/Footer";
 import { FloatButton } from "antd";
 import ProgressBar from "@/components/ProgressBar";
+import { Footer, Navbar } from "@/components/layouts";
 
 export default function ClientLayout({
   children,

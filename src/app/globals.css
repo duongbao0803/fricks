@@ -38,6 +38,7 @@ body {
   --c-primary: theme("colors.primary");
   --c-secondary: theme("colors.secondary.DEFAULT");
   --c-light: white;
+  --c-semidark: #404040;
 }
 
 .road::before {
@@ -70,8 +71,6 @@ body {
 .button-hire {
   color: var(--c-light);
   font-size: 1em;
-  border: 0.13em solid var(--c-secondary);
-  border-radius: 0.5em;
   letter-spacing: 0.1em;
   text-align: center;
   padding: 7px 2px;
@@ -81,14 +80,14 @@ body {
   z-index: 1;
   transition: 0.5s;
   overflow: hidden;
-  background-color: var(--c-primary);
+  background-color: var(--c-semidark);
 }
 
 .button-hire span {
   position: absolute;
   width: 25%;
   height: 100%;
-  background-color: var(--c-light);
+  background-color: var(--c-primary);
   transform: translateY(150%);
   border-radius: 50%;
   left: calc((var(--n) - 1) * 25%);
@@ -98,8 +97,8 @@ body {
 }
 
 .button-hire:hover {
-  color: var(--c-primary);
-  background-color: var(--c-light);
+  color: var(--c-light);
+  background-color: var(--c-semidark);
   letter-spacing: 3px;
   overflow: hidden;
 }

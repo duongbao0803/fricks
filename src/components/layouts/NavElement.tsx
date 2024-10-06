@@ -3,13 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { NavElements } from "@/constants";
+import "@/app/globals.css";
 
 const NavElement = () => {
   const defaultPath = NavElements[0]?.path || "";
-  const [delayedPath, setDelayedPath] = useState(
+  const [, setDelayedPath] = useState<string>(
     () => sessionStorage.getItem("delayedPath") || defaultPath,
   );
-  const [sliderStyle, setSliderStyle] = useState({ width: "2px", left: "0px" });
+  const [sliderStyle, setSliderStyle] = useState({
+    width: "2px",
+    left: "0px",
+  });
   const navRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const path = usePathname();
   const router = useRouter();
@@ -19,7 +23,10 @@ const NavElement = () => {
       setDelayedPath(path);
       sessionStorage.setItem("delayedPath", path);
       const activeIndex = NavElements.findIndex(
-        (navEle) => navEle.path === path,
+        (navEle) =>
+          navEle.path === path ||
+          (path.startsWith("/product") && navEle.path === "/product") ||
+          (path.startsWith("/post") && navEle.path === "/post"),
       );
       if (navRef.current[activeIndex]) {
         const { offsetWidth, offsetLeft } = navRef.current[activeIndex];
@@ -48,7 +55,11 @@ const NavElement = () => {
           }}
           onClick={() => handleLinkClick(navElement.path)}
           className={`group relative z-10 ${
-            navElement.path === delayedPath ? "text-primary" : "text-gray-600"
+            navElement.path === path ||
+            (path.startsWith("/product") && navElement.path === "/product") ||
+            (path.startsWith("/post") && navElement.path === "/post")
+              ? "text-primary"
+              : "text-gray-600"
           } transition-colors duration-300 hover:text-primary`}
         >
           {navElement.name}
