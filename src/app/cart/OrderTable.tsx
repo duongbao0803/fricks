@@ -109,7 +109,7 @@ const OrderTable = () => {
             <InputCustom placeholder="Mã giảm giá" className="" />
 
             <button className="w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95">
-              XÁC NHẬN
+              ÁP DỤNG
             </button>
           </div>
         </div>
