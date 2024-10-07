@@ -109,7 +109,7 @@ const ProductHome = () => {
       </div>
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {productData?.length > 0
-          ? productData?.slice(0, 8).map((product: ProductInfo) =>
+          ? productData?.slice(0, 7).map((product: ProductInfo) =>
               product?.price?.map((item: ProductPrice, index: number) => (
                 <ScrollReveal key={index}>
                   <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
