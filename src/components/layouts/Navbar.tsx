@@ -194,14 +194,14 @@ const Navbar = () => {
               <div className="lg:hidden">
                 <Badge count={5} size="small">
                   <ShoppingCartOutlined
-                    className={`cursor-pointer text-xl ${style} hover:text-primary`}
+                    className={`cursor-pointer text-2xl ${style} hover:text-primary`}
                   />
                 </Badge>
               </div>
               <div className="hidden lg:block">
                 <Badge count={5}>
                   <ShoppingCartOutlined
-                    className={`cursor-pointer text-xl ${style} hover:text-primary`}
+                    className={`cursor-pointer text-2xl ${style} hover:text-primary`}
                   />
                 </Badge>
               </div>

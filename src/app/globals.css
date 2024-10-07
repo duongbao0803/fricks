@@ -131,6 +131,12 @@ body {
   text-overflow: ellipsis;
 }
 
+/* antd */
+/* .ant-radio-inner {
+  background-color: var(--c-primary) !important;
+  border: var(--c-primary) !important;
+} */
+
 /* responsive */
 @media (max-width: 530px) {
   .max-513-center {
