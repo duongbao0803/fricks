@@ -125,7 +125,6 @@ const LoginForm: React.FC = () => {
       const credentials = await result.user.getIdTokenResult();
       const accessToken = credentials.token;
       const res = await loginGoogle(JSON.stringify(accessToken)).unwrap();
-      console.log("check res", res);
       if (res && res.httpCode === 200) {
         Cookies.set("accessToken", res.accessToken);
         Cookies.set("refreshToken", res.refreshToken);

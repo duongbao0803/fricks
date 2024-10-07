@@ -63,11 +63,13 @@ const ProductList = () => {
   const sortProduct = useMemo(() => {
     if (selectedSort.includes(SortStatus.LOWTOHIGHT)) {
       return [...productData].sort(
-        (a: ProductInfo, b: ProductInfo) => a.price[0].price - b.price[0].price,
+        (a: ProductInfo, b: ProductInfo) =>
+          a?.price[0]?.price - b?.price[0]?.price,
       );
     } else if (selectedSort.includes(SortStatus.HIGHTOLOW)) {
       return [...productData].sort(
-        (a: ProductInfo, b: ProductInfo) => b.price[0].price - a.price[0].price,
+        (a: ProductInfo, b: ProductInfo) =>
+          b?.price[0]?.price - a?.price[0]?.price,
       );
     } else {
       return productData;

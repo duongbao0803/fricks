@@ -55,8 +55,6 @@ const ProductHome = () => {
     MaxPrice: 0,
   });
 
-  console.log("check productData", productData);
-
   const getProductsToDisplay = () => {
     if (selectedCategory === 0) {
       return Object.values(productData).flat();
