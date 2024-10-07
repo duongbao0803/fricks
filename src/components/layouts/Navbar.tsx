@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge, Form, Dropdown } from "antd";
@@ -17,6 +17,7 @@ import User from "@/assets/images/logo/avatar_admin.jpg";
 import useDebounce from "@/hooks/useDebounce";
 import { VoiceSearch } from "@/components";
 import NavElement from "./NavElement";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const token = Cookies.get("accessToken");
@@ -26,6 +27,16 @@ const Navbar = () => {
   const { logout } = useLogout();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const [style, setStyle] = useState<string>("");
+  const currentPath = usePathname();
+
+  useEffect(() => {
+    if (currentPath.includes("/cart")) {
+      setStyle("text-primary");
+    } else {
+      setStyle("");
+    }
+  }, [currentPath]);
 
   const handleSearchUpdate = (query: string) => {
     setSearchQuery(query);
@@ -179,15 +190,19 @@ const Navbar = () => {
                 </Form.Item>
               </Form>
             </div>
-            <Link href="">
+            <Link href="/cart">
               <div className="lg:hidden">
                 <Badge count={5} size="small">
-                  <ShoppingCartOutlined className="cursor-pointer text-xl hover:text-primary" />
+                  <ShoppingCartOutlined
+                    className={`cursor-pointer text-xl ${style} hover:text-primary`}
+                  />
                 </Badge>
               </div>
               <div className="hidden lg:block">
                 <Badge count={5}>
-                  <ShoppingCartOutlined className="cursor-pointer text-3xl hover:text-primary" />
+                  <ShoppingCartOutlined
+                    className={`cursor-pointer text-xl ${style} hover:text-primary`}
+                  />
                 </Badge>
               </div>
             </Link>
