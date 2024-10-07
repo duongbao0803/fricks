@@ -79,7 +79,7 @@ const FormContact = () => {
               <div className="rounded-full border border-black p-2 text-lg text-black transition-all duration-500 hover:border-primary hover:bg-primary hover:text-white">
                 {contact.icon}
               </div>
-              <p>{contact.text}</p>
+              <p className="font-normal">{contact.text}</p>
             </div>
           ))}
         </div>

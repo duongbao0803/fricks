@@ -24,11 +24,11 @@ const Detail = () => {
             <div>
               <Image
                 src={typedProduct?.image}
-                height={300}
-                width={300}
+                height={2000}
+                width={2000}
                 quality={100}
                 alt="sản phẩm"
-                className={`h-auto w-full rounded-lg transition-opacity duration-300`}
+                className="max-h-[400px] w-full rounded-lg object-contain transition-opacity duration-300"
               />
             </div>
 
@@ -65,10 +65,10 @@ const Detail = () => {
                   />
                   <button className="px-3 py-1 text-gray-500">+</button>
                 </div>
-                <button className="rounded-md bg-blue-500 px-8 py-3 font-semibold text-white hover:bg-blue-600">
+                <button className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary">
                   Thêm giỏ hàng
                 </button>
-                <button className="rounded-md border border-gray-300 p-3 text-gray-500 hover:text-blue-500">
+                <button className="rounded-md border border-gray-300 p-3 text-gray-500 hover:bg-secondary">
                   &#9825;
                 </button>
               </div>
@@ -140,7 +140,7 @@ const Detail = () => {
                   <p className="mt-1 text-gray-500">
                     {typedProduct?.price[0]?.price}
                   </p>
-                  <button className="mt-2 w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600">
+                  <button className="mt-2 w-full rounded-md bg-primary py-2 text-white hover:bg-secondary">
                     Thêm giỏ hàng
                   </button>
                 </div>
@@ -171,7 +171,7 @@ const Detail = () => {
                   placeholder="Mô tả.."
                   className="w-full rounded-md border border-gray-300 p-2 outline-none focus:ring-1 focus:ring-blue-500"
                 />
-                <button className="mt-2 rounded-md bg-blue-500 px-6 py-2 font-semibold text-white hover:bg-blue-600">
+                <button className="mt-2 rounded-md bg-primary px-6 py-2 font-semibold text-white hover:bg-secondary">
                   Gửi
                 </button>
               </div>

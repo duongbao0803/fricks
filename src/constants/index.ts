@@ -30,3 +30,14 @@ export const introImages = [
   { src: Intro_4, alt: "Intro Image 4" },
   { src: Intro_5, alt: "Intro Image 5" },
 ];
+
+export const tableData = [
+  "Cửa hàng",
+  "Sản phẩm",
+  "Giá",
+  "Số lượng",
+  "Tổng",
+  "Khác",
+];
+
+export const tableDataCheckout = ["Cửa hàng", "Sản phẩm", "Giá", "Số lượng"];

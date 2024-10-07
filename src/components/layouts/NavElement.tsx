@@ -34,6 +34,11 @@ const NavElement = () => {
           width: `${offsetWidth}px`,
           left: `${offsetLeft}px`,
         });
+      } else {
+        setSliderStyle({
+          width: "0px",
+          left: "0px",
+        });
       }
     }
   }, [path]);
