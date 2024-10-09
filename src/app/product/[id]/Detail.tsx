@@ -5,7 +5,7 @@ import { PriceFormat } from "@/utils";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 const Detail = () => {
   const { id } = useParams();
@@ -13,9 +13,16 @@ const Detail = () => {
     productId: id,
   });
   const typedProduct = product as ProductInfo;
+  const [selectedPrice, setSelectedPrice] = useState<string>(
+    typedProduct?.price[0]?.price,
+  );
+
+  const handleChangeUnit = (values) => {
+    setSelectedPrice(values?.price);
+  };
 
   return (
-    <div className="container mx-auto border border-gray-300 bg-white p-6">
+    <div className="container mx-auto bg-white p-6">
       {isLoading ? (
         <Spin size="large" tip="Đang chờ..." fullscreen />
       ) : (
@@ -28,7 +35,7 @@ const Detail = () => {
                 width={2000}
                 quality={100}
                 alt="sản phẩm"
-                className="max-h-[400px] w-full rounded-lg object-contain transition-opacity duration-300"
+                className="max-h-[400px] w-full rounded-lg object-fill transition-opacity duration-300"
               />
             </div>
 
@@ -52,7 +59,7 @@ const Detail = () => {
                 </p>
               </div>
               <p className="my-5 text-3xl font-bold text-primary">
-                {PriceFormat.format(typedProduct?.price[0]?.price)}
+                {PriceFormat.format(selectedPrice)}
               </p>
 
               <div className="mt-4 flex items-center space-x-4">
@@ -65,12 +72,24 @@ const Detail = () => {
                   />
                   <button className="px-3 py-1 text-gray-500">+</button>
                 </div>
-                <button className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary">
+                <button
+                  // onClick={handleAddToCart}
+                  className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary"
+                >
                   Thêm giỏ hàng
                 </button>
                 <button className="rounded-md border border-gray-300 p-3 text-gray-500 hover:bg-secondary">
                   &#9825;
                 </button>
+              </div>
+              <div className="flex gap-5">
+                {typedProduct?.price?.map((typeUnit, index) => (
+                  <div key={index} className="flex gap-5 border border-red-500">
+                    <button onClick={() => handleChangeUnit(typeUnit)}>
+                      {typeUnit?.unit?.name}
+                    </button>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-6 rounded-md border border-gray-500 p-4">

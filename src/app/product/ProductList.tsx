@@ -12,12 +12,13 @@ import useDebounce from "@/hooks/useDebounce";
 import NoProducts from "@/assets/images/logo/no-products.png";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { toggleFavorite } from "@/redux/slices/favoriteSlice";
 import { SortStatus } from "@/enums";
 import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
 import { ScrollReveal, VoiceSearch } from "@/components";
 import { notify } from "@/components/common/Notification";
 import { RadioCustom, SliderCustom } from "@/components/common";
+import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import { useFavorite } from "@/hooks/useAddFavorite";
 
 const { Option } = Select;
 
@@ -26,14 +27,14 @@ const ProductList = () => {
   const debouncedPriceRange = useDebounce(priceRange, 500);
   const [selectedSort, setSelectedSort] = useState<string>("default");
   const dispatch = useDispatch();
-  const favoriteProducts = useSelector(
-    (state: RootState) => state.favorites.favoriteProducts,
-  );
+  const { isFavorite, toggleFavorite, loading } = useFavorite();
 
+  const { data: favoriteList = [] } = useGetFavorListQuery(undefined, {});
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
   );
+  console.log("check favoriteList", favoriteList);
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -89,16 +90,10 @@ const ProductList = () => {
   };
 
   const handleToggleFavorite = (product: ProductInfo, item: ProductPrice) => {
-    dispatch(toggleFavorite(item?.id));
-    const isFavorite = favoriteProducts.includes(item?.id);
-    notify(
-      "success",
-      isFavorite
-        ? `Gỡ ${product?.name} khỏi danh sách yêu thích thành công`
-        : `Thêm ${product?.name} vào danh sách yêu thích thành công`,
-      2,
-    );
+    toggleFavorite(product?.id);
   };
+
+  console.log("check isfavorite", isFavorite);
 
   return (
     <section className="grid grid-cols-1 gap-16 leading-10 transition-all duration-500 md:grid-cols-4">
@@ -199,9 +194,9 @@ const ProductList = () => {
                         </button>
                         <Tooltip
                           title={
-                            favoriteProducts.includes(product?.id)
-                              ? "Gỡ khỏi danh sách yêu thích"
-                              : "Thêm vào danh sách yêu thích"
+                            isFavorite
+                              ? "Thêm vào danh sách yêu thích"
+                              : "Gỡ khỏi danh sách yêu thích"
                           }
                           placement="top"
                         >
@@ -209,7 +204,7 @@ const ProductList = () => {
                             className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-300 ease-in-out hover:bg-gray-200"
                             onClick={() => handleToggleFavorite(product, item)}
                           >
-                            {favoriteProducts.includes(item?.id) ? (
+                            {favoriteList.includes(item?.id) ? (
                               <AiFillHeart className="text-xl text-red-500" />
                             ) : (
                               <AiOutlineHeart className="text-xl text-gray-500" />

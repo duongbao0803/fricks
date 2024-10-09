@@ -34,6 +34,9 @@ const config: Config = {
           DEFAULT: "#F4A41C",
           hover: "#00e187",
         },
+        thirdly: {
+          DEFAULT: "#fff3ed",
+        },
       },
       keyframes: {
         motion: {
