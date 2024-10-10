@@ -1,11 +1,14 @@
 "use client";
 import { useGetDetailProductQuery } from "@/apis/productApi";
-import { ProductInfo } from "@/types/product.types";
+import { notify } from "@/components/common/Notification";
+import { addToCart } from "@/redux/slices/cartSlice";
+import { ProductInfo, ProductPrice } from "@/types/product.types";
 import { PriceFormat } from "@/utils";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Detail = () => {
   const { id } = useParams();
@@ -13,13 +16,34 @@ const Detail = () => {
     productId: id,
   });
   const typedProduct = product as ProductInfo;
-  const [selectedPrice, setSelectedPrice] = useState<string>(
+  const [selectedPrice, setSelectedPrice] = useState<number>(
     typedProduct?.price[0]?.price,
   );
 
-  const handleChangeUnit = (values) => {
+  const handleChangeUnit = (values: any) => {
     setSelectedPrice(values?.price);
   };
+
+  console.log("check typedProduct", typedProduct);
+
+  const dispatch = useDispatch();
+
+  const handleAddToCart = useCallback(
+    (product: ProductInfo) => {
+      // if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
+      dispatch(addToCart(product));
+      notify(
+        "success",
+        `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
+        3,
+      );
+      // } else {
+      //   notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
+      //   return;
+      // }
+    },
+    [addToCart],
+  );
 
   return (
     <div className="container mx-auto bg-white p-6">
@@ -73,7 +97,7 @@ const Detail = () => {
                   <button className="px-3 py-1 text-gray-500">+</button>
                 </div>
                 <button
-                  // onClick={handleAddToCart}
+                  onClick={() => handleAddToCart(typedProduct)}
                   className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary"
                 >
                   Thêm giỏ hàng

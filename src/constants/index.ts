@@ -33,7 +33,7 @@ export const introImages = [
 
 export const tableData = ["Sản phẩm", "Giá", "Số lượng", "Tổng"];
 
-export const tableDataCheckout = ["Cửa hàng", "Sản phẩm", "Giá", "Số lượng"];
+export const tableDataCheckout = ["Sản phẩm", "Giá", "Số lượng", "Tổng"];
 export const tableFavorite = [
   "Cửa hàng",
   "Sản phẩm",

@@ -42,6 +42,9 @@ const ProductHome = () => {
     undefined,
     {},
   );
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
+  );
   const dispatch = useDispatch();
 
   const { isFavorite, toggleFavorite, loading } = useFavorite();
@@ -90,18 +93,29 @@ const ProductHome = () => {
   const handleAddToCart = useCallback(
     (product: ProductInfo) => {
       if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
-        dispatch(addToCart(product));
-        notify(
-          "success",
-          `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
-          3,
+        const isSameStore = cartData?.cart?.some(
+          (item: { storeId: number }) => item.storeId === product.storeId,
         );
+
+        if (isSameStore) {
+          dispatch(addToCart(product));
+          notify(
+            "success",
+            `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
+            2,
+          );
+        } else {
+          notify(
+            "warning",
+            "Bạn chỉ có thể thêm sản phẩm của một cửa hàng duy nhất",
+            2,
+          );
+        }
       } else {
         notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
-        return;
       }
     },
-    [userInfo],
+    [userInfo, dispatch],
   );
 
   return (

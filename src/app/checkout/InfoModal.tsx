@@ -2,20 +2,33 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Col, Row } from "antd";
 import { ProductInfo } from "@/types/product.types";
 import { InputCustom } from "@/components/ui/input";
+import { UserInfo } from "@/types/personal.types";
 
 export interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isOpen: boolean;
+  userInfo?: UserInfo;
 }
 
 const InfoModal: React.FC<AddModalProps> = (props) => {
   // const { addNewUserItem } = useUserService();
-  const { setIsOpen, isOpen } = props;
+  const { setIsOpen, isOpen, userInfo } = props;
   const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
   const [fileChange, setFileChange] = useState<string>("");
   const [form] = Form.useForm();
   const { Option } = Select;
   const { TextArea } = Input;
+
+  useEffect(() => {
+    if (isOpen && userInfo) {
+      form.setFieldsValue({
+        email: userInfo.email,
+        fullName: userInfo.fullName,
+        address: userInfo.address,
+        phoneNumber: userInfo.phoneNumber,
+      });
+    }
+  }, [isOpen, userInfo, form]);
 
   const handleOk = async () => {
     try {
@@ -36,10 +49,6 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       console.error("Validation failed:", err);
     }
   };
-
-  useEffect(() => {
-    form.setFieldsValue({ image: fileChange });
-  }, [fileChange, form]);
 
   const handleCancel = () => {
     setIsOpen(false);
@@ -78,7 +87,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
           <InputCustom placeholder="Email" />
         </Form.Item>
         <Form.Item
-          name="name"
+          name="fullName"
           rules={[
             {
               required: true,

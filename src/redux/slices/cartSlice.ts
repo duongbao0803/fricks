@@ -1,61 +1,80 @@
 // cartSlice.js
 import { ProductInfo } from "@/types/product.types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { current } from "immer";
 
 interface CartState {
-  data: ProductInfo[];
+  cart: ProductInfo[];
   totalQuantity: number;
   totalPrice: number;
-  itemsPrice: number;
 }
 
 const initialState: CartState = {
-  data: [],
+  cart: [],
   totalQuantity: 0,
   totalPrice: 0,
-  itemsPrice: 0,
 };
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart(state, action) {
-      const newItem = action.payload;
-      const existingItem = state.data.find(
-        (item: ProductInfo) => item.id === newItem.id,
-      );
-      let newTotalPrice = state.itemsPrice;
+    addToCart(state, action: PayloadAction<ProductInfo>) {
+      const product = action.payload;
+      const existingItem = state.cart.find((item) => item.id === product.id);
 
-      if (!existingItem) {
-        state.data.push({
-          ...newItem,
-          quantity: 1,
-        });
-        state.totalQuantity++;
-        state.totalPrice += newItem.price[0].price;
-      } else {
-        const increment = 1;
-        existingItem.quantity += increment;
-        state.totalQuantity += increment;
-        state.totalPrice += existingItem.price[0].price;
-      }
-    },
-    removeFromCart(state, action) {
-      const id = action.payload;
-      const existingItem = state.data.find((item) => item.id === id);
       if (existingItem) {
-        state.totalQuantity--;
-        if (existingItem.quantity === 1) {
-          state.data = state.data.filter((item) => item.id !== id);
+        state.cart = state.cart.map((cartItem) =>
+          cartItem.id === product.id
+            ? {
+                ...cartItem,
+                quantity: cartItem.quantity + 1,
+                totalProductPrice:
+                  (cartItem.quantity + 1) * (cartItem.price[0].price || 0),
+              }
+            : cartItem,
+        );
+      } else {
+        state.cart.push({
+          ...product,
+          quantity: 1,
+          totalProductPrice: product.price[0].price || 0,
+        });
+        state.totalQuantity += 1;
+      }
+      state.totalPrice += product.price[0].price || 0;
+    },
+
+    removeFromCart(state, action: PayloadAction<ProductInfo>) {
+      const product = action.payload;
+      const existingItem = state.cart.find((item) => item.id === product.id);
+
+      if (existingItem) {
+        if (existingItem.quantity > 1) {
+          state.cart = state.cart.map((cartItem) =>
+            cartItem.id === product.id
+              ? {
+                  ...cartItem,
+                  quantity: cartItem.quantity - 1,
+                  totalProductPrice:
+                    (cartItem.quantity - 1) * (cartItem.price[0].price || 0),
+                }
+              : cartItem,
+          );
         } else {
-          existingItem.quantity--;
-          state.totalPrice -= existingItem.price[0].price;
+          state.cart = state.cart.filter(
+            (cartItem) => cartItem.id !== product.id,
+          );
+          state.totalQuantity -= 1;
         }
+
+        state.totalPrice -= product.price[0].price || 0;
       }
     },
+
     clearCart(state) {
-      state.data = [];
+      state.cart = [];
       state.totalQuantity = 0;
+      state.totalPrice = 0;
     },
   },
 });

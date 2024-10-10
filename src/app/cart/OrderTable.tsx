@@ -23,13 +23,13 @@ import { UserInfo } from "@/types/personal.types";
 import { RolesLogin } from "@/enums";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { notify } from "@/components/common/Notification";
+import { PriceFormat } from "@/utils";
 
 const OrderTable = () => {
   const router = useRouter();
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
-  console.log("check carrt", cartData);
   const token = Cookies.get("accessToken");
   const { data } = useGetUserInfoQuery(undefined, {
     skip: !token,
@@ -56,7 +56,7 @@ const OrderTable = () => {
 
   const handleRemoveProduct = useCallback(
     (product: ProductInfo) => {
-      dispatch(removeFromCart(product?.id));
+      dispatch(removeFromCart(product));
     },
     [dispatch],
   );
@@ -66,21 +66,16 @@ const OrderTable = () => {
       {userInfo &&
       userInfo?.role.includes(RolesLogin.CUSTOMER) &&
       cartData &&
-      cartData?.data.length > 0 ? (
+      cartData?.cart.length > 0 ? (
         <section className="mb-10 grid grid-cols-1 gap-4 transition-all duration-500 lg:grid-cols-4">
           <div className="col-span-1 overflow-x-auto bg-[#fff] lg:col-span-3">
-            <div className="flex items-center gap-3">
-              <Image
-                height={100}
-                width={100}
-                quality={100}
-                src={Imagee}
-                className="h-12 w-12 rounded-[100%]"
-                alt="Product Image"
-              />
-              <h1>FPT Shop</h1>
+            <div className="flex items-center gap-1">
+              <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
+                FMALL
+              </span>
+              <h1>{cartData?.cart[0]?.storeName}</h1>
             </div>
-            <Divider className="bg-gray-300"></Divider>
+            <Divider className="bg-gray-300" />
             <table className="min-w-full border bg-white">
               <thead className="rounded bg-thirdly">
                 <tr>
@@ -95,7 +90,7 @@ const OrderTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {cartData?.data?.map((item: ProductInfo, index: number) => (
+                {cartData?.cart?.map((item: ProductInfo, index: number) => (
                   <>
                     <tr className="border-b-0 border-t" key={index}>
                       <td className="px-6 py-[34px]">
@@ -113,7 +108,9 @@ const OrderTable = () => {
                       </td>
                       {/* <td className="px-6 py-[34px]">{item?.}</td> */}
 
-                      <td className="px-6 py-[34px]">{item?.price[0].price}</td>
+                      <td className="px-6 py-[34px]">
+                        {item?.price[0]?.price}
+                      </td>
                       <td className="px-6 py-[34px]">
                         <div className="flex items-center">
                           <MinusCircleOutlined
@@ -127,7 +124,9 @@ const OrderTable = () => {
                           />
                         </div>
                       </td>
-                      <td className="px-6 py-[34px]">{cartData?.totalPrice}</td>
+                      <td className="px-6 py-[34px]">
+                        {PriceFormat.format(item?.totalProductPrice ?? 0)}
+                      </td>
                     </tr>
                   </>
                 ))}
@@ -163,16 +162,16 @@ const OrderTable = () => {
                   </span>
                 </div>
                 <div className="flex flex-col gap-5">
-                  <span>$167.00</span>
-                  <span>$3.00</span>
-                  <span>$3.00</span>
+                  <span>{PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
+                  <span>Miễn phí</span>
+                  <span>{PriceFormat.format(0)}</span>
                 </div>
               </div>
               <Divider className="!m-0 bg-gray-300" />
               <div className="flex flex-col justify-between p-3">
                 <div className="flex justify-between">
                   <span className="font-semibold text-gray-500">Tổng</span>
-                  <span>$167.00</span>
+                  <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
                 </div>
                 <div className="mt-5">
                   <button

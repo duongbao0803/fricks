@@ -9,9 +9,25 @@ import { InputCustom } from "@/components/ui/input";
 import { ButtonCustom } from "@/components/ui/button";
 import BankIcon from "@/assets/images/icons/bank.png";
 import InfoModal from "./InfoModal";
+import { useGetUserInfoQuery } from "@/apis/authApi";
+import Cookies from "js-cookie";
+import { UserInfo } from "@/types/personal.types";
+import { useOrderMutation } from "@/apis/orderApi";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { PriceFormat } from "@/utils";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const token = Cookies.get("accessToken");
+  const { data: UserData } = useGetUserInfoQuery(undefined, {
+    skip: !token,
+  });
+  const userInfo: UserInfo | undefined = UserData;
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
+  );
+  const [checkoutAPI] = useOrderMutation();
 
   const data = [
     {
@@ -22,6 +38,30 @@ const OrderDetail = () => {
       total: 30,
     },
   ];
+
+  const checkout = {
+    shipFee: 0,
+    voucherCode: "123456",
+    productOrders: [
+      {
+        productId: 2,
+        productUnitId: 3,
+        quantity: 10,
+      },
+    ],
+    customerPhone: "4032521844",
+    customerAddress: "Vung Tau",
+    paymentMethod: 1,
+  };
+
+  const handlePayment = async () => {
+    try {
+      const res = await checkoutAPI(checkout);
+      console.log("check res", res);
+    } catch (err) {
+      console.error("Err checkout", err);
+    }
+  };
   return (
     <section className="pb-10">
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
@@ -48,10 +88,10 @@ const OrderDetail = () => {
                 <p>Số điện thoại:</p>
               </div>
               <div className="col-span-4">
-                <p>duongbao@gmail.com</p>
-                <p>Dương Tôn Bảo</p>
-                <p>Vũng Tàu</p>
-                <p>0909113114</p>
+                <p>{userInfo?.email}</p>
+                <p>{userInfo?.fullName}</p>
+                <p>{userInfo?.address || "Chưa có thông tin"}</p>
+                <p>{userInfo?.phoneNumber}</p>
               </div>
             </div>
           </div>
@@ -70,17 +110,19 @@ const OrderDetail = () => {
                 </span>
                 <span className="font-semibold text-gray-500">Khuyến mãi:</span>
               </div>
-              <div className="flex flex-col gap-5">
-                <span>$167.00</span>
-                <span>$3.00</span>
-                <span>$3.00</span>
+              <div className="flex flex-col items-end gap-5">
+                <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
+                <span>Miễn phí</span>
+                <span>{PriceFormat.format(0)}</span>
               </div>
             </div>
             <Divider className="!m-0 bg-gray-300" />
             <div className="flex flex-col justify-between p-3">
               <div className="flex justify-between">
                 <span className="font-semibold text-gray-500">Tổng</span>
-                <span className="font-bold text-primary">$167.00</span>
+                <span className="font-bold text-primary">
+                  {PriceFormat.format(cartData?.totalPrice ?? 0)}
+                </span>
               </div>
             </div>
           </div>
@@ -91,6 +133,13 @@ const OrderDetail = () => {
         <h1 className="mb-2 font-medium text-[#757575]">Đơn hàng của bạn</h1>
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           <div className="col-span-1 overflow-x-auto lg:col-span-2">
+            <div className="flex items-center gap-1">
+              <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
+                FMALL
+              </span>
+              <h1>{cartData?.cart[0]?.storeName}</h1>
+            </div>
+            <Divider className="bg-gray-300" />
             <table className="min-w-full border border-gray-300 bg-white">
               <thead className="rounded bg-gray-100">
                 <tr>
@@ -105,38 +154,29 @@ const OrderDetail = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index: number) => (
+                {cartData?.cart?.map((item, index: number) => (
                   <>
                     <tr className="border-t" key={index}>
-                      <td className="px-6 py-[34px] align-middle">
-                        <div className="flex items-center">
-                          <Image
-                            height={100}
-                            width={100}
-                            quality={100}
-                            src={Imagee}
-                            className="mr-4 h-12 w-12 rounded-[100%]"
-                            alt="Store Image"
-                          />
-                          <span>{item.storeName}</span>
-                        </div>
-                      </td>
-
                       <td className="px-6 py-[34px]">
                         <div className="flex items-center">
                           <Image
                             height={100}
                             width={100}
                             quality={100}
-                            src={Imagee}
+                            src={item?.image}
                             className="mr-4 h-12 w-12 rounded-[100%]"
                             alt="Product Image"
                           />
-                          <span>{item.productName}</span>
+                          <span>{item?.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-[34px]">{item.price}</td>
-                      <td className="px-6 py-[34px]">{item.quantity}</td>
+                      <td className="px-6 py-[34px]">
+                        {PriceFormat.format(item?.price[0].price ?? 0)}
+                      </td>
+                      <td className="px-6 py-[34px]">{item?.quantity}</td>
+                      <td className="px-6 py-[34px]">
+                        {PriceFormat.format(item?.totalProductPrice ?? 0)}
+                      </td>
                     </tr>
                   </>
                 ))}
@@ -216,7 +256,7 @@ const OrderDetail = () => {
                 </div>
                 <ButtonCustom
                   className="mt-5 h-10 w-full transform rounded py-1 text-white transition-all duration-500 active:scale-95"
-                  // onClick={handlePayment}
+                  onClick={handlePayment}
                 >
                   Thanh toán
                 </ButtonCustom>
@@ -225,7 +265,7 @@ const OrderDetail = () => {
           </div>
         </div>
       </div>
-      <InfoModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <InfoModal userInfo={userInfo} isOpen={isOpen} setIsOpen={setIsOpen} />
     </section>
   );
 };

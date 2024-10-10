@@ -51,4 +51,5 @@ export interface ProductInfo {
   isDeleted?: boolean;
   version?: string;
   rating?: number;
+  totalProductPrice?: number;
 }

@@ -21,6 +21,8 @@ import NavElement from "./NavElement";
 import { usePathname } from "next/navigation";
 import { UserInfo } from "@/types/personal.types";
 import { RolesLogin } from "@/enums";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Navbar = () => {
   const token = Cookies.get("accessToken");
@@ -34,6 +36,11 @@ const Navbar = () => {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const [styleCart, setStyleCart] = useState<string>("");
   const [styleFavor, setStyleFavor] = useState<string>("");
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
+  );
+
+  console.log("check cartData", cartData);
 
   const currentPath = usePathname();
 
@@ -212,7 +219,7 @@ const Navbar = () => {
                 </Link>
                 <Link href="/cart">
                   <div className="lg:block">
-                    <Badge count={5}>
+                    <Badge count={cartData?.totalQuantity}>
                       <ShoppingCartOutlined
                         className={`cursor-pointer text-2xl ${styleCart} hover:text-primary`}
                       />
