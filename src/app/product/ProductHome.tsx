@@ -92,12 +92,14 @@ const ProductHome = () => {
 
   const handleAddToCart = useCallback(
     (product: ProductInfo) => {
+      console.log("check product", product);
       if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
+        const isCartEmpty = !cartData?.cart || cartData.cart.length === 0;
         const isSameStore = cartData?.cart?.some(
           (item: { storeId: number }) => item.storeId === product.storeId,
         );
 
-        if (isSameStore) {
+        if (isCartEmpty || isSameStore) {
           dispatch(addToCart(product));
           notify(
             "success",
@@ -115,7 +117,7 @@ const ProductHome = () => {
         notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
       }
     },
-    [userInfo, dispatch],
+    [userInfo, dispatch, cartData],
   );
 
   return (
@@ -156,7 +158,7 @@ const ProductHome = () => {
               ?.slice(0, 8)
               .map((product: ProductInfo, index: number) => (
                 <ScrollReveal key={index}>
-                  <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
+                  <div className="relative my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
                     <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
                       <div className="group relative h-full w-full overflow-hidden">
                         <Image
@@ -214,6 +216,11 @@ const ProductHome = () => {
                           </p>
                         </div>
                       </Link>
+                    </div>
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 transform">
+                      <p className="text-[12px] font-normal text-gray-400">
+                        {product?.storeName}
+                      </p>
                     </div>
                   </div>
                 </ScrollReveal>

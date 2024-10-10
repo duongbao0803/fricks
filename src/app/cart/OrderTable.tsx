@@ -161,7 +161,7 @@ const OrderTable = () => {
                     Khuyến mãi:
                   </span>
                 </div>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col items-end gap-5">
                   <span>{PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
                   <span>Miễn phí</span>
                   <span>{PriceFormat.format(0)}</span>

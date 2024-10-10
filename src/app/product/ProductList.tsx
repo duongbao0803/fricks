@@ -93,8 +93,6 @@ const ProductList = () => {
     toggleFavorite(product?.id);
   };
 
-  console.log("check isfavorite", isFavorite);
-
   return (
     <section className="grid grid-cols-1 gap-16 leading-10 transition-all duration-500 md:grid-cols-4">
       <div className="transition-all duration-500 md:col-span-1">
