@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Map from "./Map";
 import FormContact from "./FormContact";

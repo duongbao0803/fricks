@@ -1,11 +1,14 @@
 "use client";
 import { useGetDetailProductQuery } from "@/apis/productApi";
-import { ProductInfo } from "@/types/product.types";
+import { notify } from "@/components/common/Notification";
+import { addToCart } from "@/redux/slices/cartSlice";
+import { ProductInfo, ProductPrice } from "@/types/product.types";
 import { PriceFormat } from "@/utils";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Detail = () => {
   const { id } = useParams();
@@ -13,9 +16,37 @@ const Detail = () => {
     productId: id,
   });
   const typedProduct = product as ProductInfo;
+  const [selectedPrice, setSelectedPrice] = useState<number>(
+    typedProduct?.price[0]?.price,
+  );
+
+  const handleChangeUnit = (values: any) => {
+    setSelectedPrice(values?.price);
+  };
+
+  console.log("check typedProduct", typedProduct);
+
+  const dispatch = useDispatch();
+
+  const handleAddToCart = useCallback(
+    (product: ProductInfo) => {
+      // if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
+      dispatch(addToCart(product));
+      notify(
+        "success",
+        `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
+        3,
+      );
+      // } else {
+      //   notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
+      //   return;
+      // }
+    },
+    [addToCart],
+  );
 
   return (
-    <div className="container mx-auto border border-gray-300 bg-white p-6">
+    <div className="container mx-auto bg-white p-6">
       {isLoading ? (
         <Spin size="large" tip="Đang chờ..." fullscreen />
       ) : (
@@ -28,7 +59,7 @@ const Detail = () => {
                 width={2000}
                 quality={100}
                 alt="sản phẩm"
-                className="max-h-[400px] w-full rounded-lg object-contain transition-opacity duration-300"
+                className="max-h-[400px] w-full rounded-lg object-fill transition-opacity duration-300"
               />
             </div>
 
@@ -52,7 +83,7 @@ const Detail = () => {
                 </p>
               </div>
               <p className="my-5 text-3xl font-bold text-primary">
-                {PriceFormat.format(typedProduct?.price[0]?.price)}
+                {PriceFormat.format(selectedPrice)}
               </p>
 
               <div className="mt-4 flex items-center space-x-4">
@@ -65,12 +96,24 @@ const Detail = () => {
                   />
                   <button className="px-3 py-1 text-gray-500">+</button>
                 </div>
-                <button className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary">
+                <button
+                  onClick={() => handleAddToCart(typedProduct)}
+                  className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary"
+                >
                   Thêm giỏ hàng
                 </button>
                 <button className="rounded-md border border-gray-300 p-3 text-gray-500 hover:bg-secondary">
                   &#9825;
                 </button>
+              </div>
+              <div className="flex gap-5">
+                {typedProduct?.price?.map((typeUnit, index) => (
+                  <div key={index} className="flex gap-5 border border-red-500">
+                    <button onClick={() => handleChangeUnit(typeUnit)}>
+                      {typeUnit?.unit?.name}
+                    </button>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-6 rounded-md border border-gray-500 p-4">

@@ -7,6 +7,7 @@ import { Badge, Form, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
 import { FaRegUserCircle } from "react-icons/fa";
+import { GrFavorite } from "react-icons/gr";
 import Cookies from "js-cookie";
 import { ShoppingCartOutlined, BellOutlined } from "@ant-design/icons";
 import MobileNav from "./MobileNav";
@@ -18,24 +19,38 @@ import useDebounce from "@/hooks/useDebounce";
 import { VoiceSearch } from "@/components";
 import NavElement from "./NavElement";
 import { usePathname } from "next/navigation";
+import { UserInfo } from "@/types/personal.types";
+import { RolesLogin } from "@/enums";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Navbar = () => {
   const token = Cookies.get("accessToken");
   const { data } = useGetUserInfoQuery(undefined, {
     skip: !token,
   });
+  const userInfo: UserInfo | undefined = data;
+
   const { logout } = useLogout();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const [style, setStyle] = useState<string>("");
+  const [styleCart, setStyleCart] = useState<string>("");
+  const [styleFavor, setStyleFavor] = useState<string>("");
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
+  );
+
+  console.log("check cartData", cartData);
+
   const currentPath = usePathname();
 
   useEffect(() => {
-    if (currentPath.includes("/cart")) {
-      setStyle("text-primary");
-    } else {
-      setStyle("");
-    }
+    const isCart =
+      currentPath.includes("/cart") || currentPath.includes("/checkout");
+    const isFavorite = currentPath.includes("/favorite");
+
+    setStyleCart(isCart ? "text-primary" : "");
+    setStyleFavor(isFavorite ? "text-primary" : "");
   }, [currentPath]);
 
   const handleSearchUpdate = (query: string) => {
@@ -115,7 +130,7 @@ const Navbar = () => {
                 </div>
               ))}
               <div className="h-6 w-0.5 bg-orange-600" />
-              {data ? (
+              {userInfo ? (
                 <Dropdown
                   menu={menuItems}
                   trigger={["hover"]}
@@ -124,14 +139,14 @@ const Navbar = () => {
                 >
                   <div className="flex cursor-pointer items-center gap-1 hover:text-primary">
                     <Image
-                      src={data?.avatar || User}
-                      alt={data?.fullName}
+                      src={userInfo?.avatar || User}
+                      alt={userInfo?.fullName}
                       width={30}
                       height={30}
                       className="rounded-full"
                     />
                     <span className="text-[11px] transition-all duration-500 lg:text-sm">
-                      {data?.fullName}
+                      {userInfo?.fullName}
                     </span>
                   </div>
                 </Dropdown>
@@ -149,6 +164,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+
         <div className="container mx-auto flex items-center justify-between bg-[#fff] py-4 transition-all duration-500 lg:py-5">
           <Link href="/">
             <Image
@@ -190,22 +206,28 @@ const Navbar = () => {
                 </Form.Item>
               </Form>
             </div>
-            <Link href="/cart">
-              <div className="lg:hidden">
-                <Badge count={5} size="small">
-                  <ShoppingCartOutlined
-                    className={`cursor-pointer text-2xl ${style} hover:text-primary`}
-                  />
-                </Badge>
+            {userInfo && userInfo?.role.includes(RolesLogin.CUSTOMER) && (
+              <div className="flex items-center gap-5">
+                <Link href="/favorite">
+                  <div className="lg:block">
+                    <Badge count={5}>
+                      <GrFavorite
+                        className={`cursor-pointer text-2xl ${styleFavor} hover:text-primary`}
+                      />
+                    </Badge>
+                  </div>
+                </Link>
+                <Link href="/cart">
+                  <div className="lg:block">
+                    <Badge count={cartData?.totalQuantity}>
+                      <ShoppingCartOutlined
+                        className={`cursor-pointer text-2xl ${styleCart} hover:text-primary`}
+                      />
+                    </Badge>
+                  </div>
+                </Link>
               </div>
-              <div className="hidden lg:block">
-                <Badge count={5}>
-                  <ShoppingCartOutlined
-                    className={`cursor-pointer text-2xl ${style} hover:text-primary`}
-                  />
-                </Badge>
-              </div>
-            </Link>
+            )}
           </div>
           <div className="lg:hidden">
             <MobileNav />

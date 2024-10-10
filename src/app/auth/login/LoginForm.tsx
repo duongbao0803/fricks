@@ -90,7 +90,7 @@ const LoginForm: React.FC = () => {
               Cookies.set("email", encryptedEmail);
               Cookies.set("password", encryptedPassword);
             }
-            router.push("/");
+            router.replace("/");
             notify("success", "Đăng nhập thành công", 3);
             setIsLoggingIn(false);
           }

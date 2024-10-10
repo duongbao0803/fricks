@@ -1,10 +1,17 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Rate, Skeleton, Tooltip } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
@@ -12,23 +19,39 @@ import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { PriceFormat } from "@/utils";
 import { RootState } from "@/redux/store";
-import { toggleFavorite } from "@/redux/slices/favoriteSlice";
 import { ProductInfo, ProductPrice } from "@/types/product.types";
 import { notify } from "@/components/common/Notification";
 import { ScrollReveal } from "@/components";
+import { useFavorite } from "@/hooks/useAddFavorite";
+import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import { addToCart } from "@/redux/slices/cartSlice";
+import { useGetUserInfoQuery } from "@/apis/authApi";
+import { UserInfo } from "@/types/personal.types";
+import { RolesLogin } from "@/enums";
 
 const ProductHome = () => {
   const router = useRouter();
+  const token = Cookies.get("accessToken");
+  const { data } = useGetUserInfoQuery(undefined, {
+    skip: !token,
+  });
+  const userInfo: UserInfo | undefined = data;
   const [selectedCategory, setSelectedCategory] = useState(0);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
   );
-  const dispatch = useDispatch();
-  const favoriteProducts = useSelector(
-    (state: RootState) => state.favorites.favoriteProducts,
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
   );
+  const dispatch = useDispatch();
+
+  const { isFavorite, toggleFavorite, loading } = useFavorite();
+  const { data: favoriteList = [] } = useGetFavorListQuery({
+    PageIndex: 1,
+    PageSize: 50,
+  });
 
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
@@ -63,17 +86,39 @@ const ProductHome = () => {
     return productData[selectedCategory as keyof typeof productData] || [];
   };
 
-  const handleToggleFavorite = (product: ProductInfo, item: ProductPrice) => {
-    dispatch(toggleFavorite(item?.id));
-    const isFavorite = favoriteProducts.includes(item?.id);
-    notify(
-      "success",
-      isFavorite
-        ? `Gỡ ${product?.name} khỏi danh sách yêu thích thành công`
-        : `Thêm ${product?.name} vào danh sách yêu thích thành công`,
-      2,
-    );
+  const handleToggleFavorite = (product: ProductInfo) => {
+    toggleFavorite(product?.id);
   };
+
+  const handleAddToCart = useCallback(
+    (product: ProductInfo) => {
+      console.log("check product", product);
+      if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
+        const isCartEmpty = !cartData?.cart || cartData.cart.length === 0;
+        const isSameStore = cartData?.cart?.some(
+          (item: { storeId: number }) => item.storeId === product.storeId,
+        );
+
+        if (isCartEmpty || isSameStore) {
+          dispatch(addToCart(product));
+          notify(
+            "success",
+            `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
+            2,
+          );
+        } else {
+          notify(
+            "warning",
+            "Bạn chỉ có thể thêm sản phẩm của một cửa hàng duy nhất",
+            2,
+          );
+        }
+      } else {
+        notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
+      }
+    },
+    [userInfo, dispatch, cartData],
+  );
 
   return (
     <section className="container mx-auto">
@@ -109,10 +154,11 @@ const ProductHome = () => {
       </div>
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {productData?.length > 0
-          ? productData?.slice(0, 7).map((product: ProductInfo) =>
-              product?.price?.map((item: ProductPrice, index: number) => (
+          ? productData
+              ?.slice(0, 8)
+              .map((product: ProductInfo, index: number) => (
                 <ScrollReveal key={index}>
-                  <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
+                  <div className="relative my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
                     <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
                       <div className="group relative h-full w-full overflow-hidden">
                         <Image
@@ -126,22 +172,27 @@ const ProductHome = () => {
 
                         <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
                           <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                            <button>+ Thêm vào giỏ hàng</button>
+                            <button onClick={() => handleAddToCart(product)}>
+                              + Thêm vào giỏ hàng
+                            </button>
                           </p>
                         </button>
                         <Tooltip
                           title={
-                            favoriteProducts.includes(product?.id)
-                              ? "Gỡ khỏi danh sách yêu thích"
+                            favoriteList.includes(product?.id)
+                              ? "Đã có trong danh sách yêu thích"
                               : "Thêm vào danh sách yêu thích"
                           }
                           placement="top"
                         >
                           <button
                             className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
-                            onClick={() => handleToggleFavorite(product, item)}
+                            onClick={() => handleToggleFavorite(product)}
                           >
-                            {favoriteProducts.includes(item?.id) ? (
+                            {favoriteList.some(
+                              (favorite: { productId: number }) =>
+                                favorite.productId === product.id,
+                            ) ? (
                               <AiFillHeart className="text-xl text-red-500" />
                             ) : (
                               <AiOutlineHeart className="text-xl text-gray-500" />
@@ -159,17 +210,21 @@ const ProductHome = () => {
                           />
                           <p className="mb-2 text-xl font-bold">
                             <span className="text-primary">
-                              {PriceFormat.format(item?.price)} /{" "}
-                              {item?.unit?.name || ""}
+                              {PriceFormat.format(product?.price[0]?.price)} /{" "}
+                              {product?.price[0]?.unit?.name || ""}
                             </span>
                           </p>
                         </div>
                       </Link>
                     </div>
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 transform">
+                      <p className="text-[12px] font-normal text-gray-400">
+                        {product?.storeName}
+                      </p>
+                    </div>
                   </div>
                 </ScrollReveal>
-              )),
-            )
+              ))
           : Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}

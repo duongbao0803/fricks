@@ -31,13 +31,14 @@ export const introImages = [
   { src: Intro_5, alt: "Intro Image 5" },
 ];
 
-export const tableData = [
+export const tableData = ["Sản phẩm", "Giá", "Số lượng", "Tổng"];
+
+export const tableDataCheckout = ["Sản phẩm", "Giá", "Số lượng", "Tổng"];
+export const tableFavorite = [
   "Cửa hàng",
   "Sản phẩm",
+  "Đơn vị tính",
   "Giá",
-  "Số lượng",
-  "Tổng",
+  "Trạng thái",
   "Khác",
 ];
-
-export const tableDataCheckout = ["Cửa hàng", "Sản phẩm", "Giá", "Số lượng"];
