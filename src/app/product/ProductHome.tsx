@@ -1,51 +1,32 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Rate, Skeleton, Tooltip } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import useAddToCart from "./hooks/useAddToCart";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { PriceFormat } from "@/utils";
-import { RootState } from "@/redux/store";
-import { ProductInfo, ProductPrice } from "@/types/product.types";
-import { notify } from "@/components/common/Notification";
+import { ProductInfo } from "@/types/product.types";
 import { ScrollReveal } from "@/components";
 import { useFavorite } from "@/hooks/useAddFavorite";
 import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
-import { addToCart } from "@/redux/slices/cartSlice";
-import { useGetUserInfoQuery } from "@/apis/authApi";
-import { UserInfo } from "@/types/personal.types";
-import { RolesLogin } from "@/enums";
 
 const ProductHome = () => {
   const router = useRouter();
-  const token = Cookies.get("accessToken");
-  const { data } = useGetUserInfoQuery(undefined, {
-    skip: !token,
-  });
-  const userInfo: UserInfo | undefined = data;
+  const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState(0);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
   );
-  const cartData = useSelector(
-    (state: RootState) => state.persistedReducer.cart,
-  );
-  const dispatch = useDispatch();
+  const { handleAddToCart } = useAddToCart();
 
   const { isFavorite, toggleFavorite, loading } = useFavorite();
   const { data: favoriteList = [] } = useGetFavorListQuery({
@@ -82,43 +63,12 @@ const ProductHome = () => {
     if (selectedCategory === 0) {
       return Object.values(productData).flat();
     }
-
     return productData[selectedCategory as keyof typeof productData] || [];
   };
 
   const handleToggleFavorite = (product: ProductInfo) => {
     toggleFavorite(product?.id);
   };
-
-  const handleAddToCart = useCallback(
-    (product: ProductInfo) => {
-      console.log("check product", product);
-      if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
-        const isCartEmpty = !cartData?.cart || cartData.cart.length === 0;
-        const isSameStore = cartData?.cart?.some(
-          (item: { storeId: number }) => item.storeId === product.storeId,
-        );
-
-        if (isCartEmpty || isSameStore) {
-          dispatch(addToCart(product));
-          notify(
-            "success",
-            `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
-            2,
-          );
-        } else {
-          notify(
-            "warning",
-            "Bạn chỉ có thể thêm sản phẩm của một cửa hàng duy nhất",
-            2,
-          );
-        }
-      } else {
-        notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
-      }
-    },
-    [userInfo, dispatch, cartData],
-  );
 
   return (
     <section className="container mx-auto">
