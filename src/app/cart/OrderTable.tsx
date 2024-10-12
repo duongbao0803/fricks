@@ -17,6 +17,7 @@ import { RolesLogin } from "@/enums";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { PriceFormat } from "@/utils";
 import useAddToCart from "../product/hooks/useAddToCart";
+import useUserInfo from "@/hooks/useUserInfo";
 
 const OrderTable = () => {
   const { handleAddToCart } = useAddToCart();
@@ -24,11 +25,8 @@ const OrderTable = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
-  const token = Cookies.get("accessToken");
-  const { data } = useGetUserInfoQuery(undefined, {
-    skip: !token,
-  });
-  const userInfo: UserInfo | undefined = data;
+  const { userInfo } = useUserInfo();
+
   const dispatch = useDispatch();
 
   const handleRemoveProduct = useCallback(

@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "./hooks/useAddToCart";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
@@ -16,6 +16,7 @@ import { ProductInfo } from "@/types/product.types";
 import { ScrollReveal } from "@/components";
 import { useFavorite } from "@/hooks/useAddFavorite";
 import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import { RootState } from "@/redux/store";
 
 const ProductHome = () => {
   const router = useRouter();
@@ -26,13 +27,21 @@ const ProductHome = () => {
     undefined,
     {},
   );
-  const { handleAddToCart } = useAddToCart();
 
-  const { isFavorite, toggleFavorite, loading } = useFavorite();
-  const { data: favoriteList = [] } = useGetFavorListQuery({
+  const { handleAddToCart } = useAddToCart();
+  const isFavorite = useSelector(
+    (state: RootState) => state.persistedReducer.favorites.isFavorite,
+  );
+
+  const { toggleFavorite, loading } = useFavorite();
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
     PageIndex: 1,
     PageSize: 50,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [favoriteList, refetch]);
 
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],

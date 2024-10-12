@@ -6,27 +6,22 @@ import { tableDataCheckout } from "@/constants";
 import { ButtonCustom } from "@/components/ui/button";
 import VietQR from "@/assets/images/icons/vietqr.jpeg";
 import Vnpay from "@/assets/images/icons/vnpay.webp";
-
 import InfoModal from "./InfoModal";
-import { useGetUserInfoQuery } from "@/apis/authApi";
-import Cookies from "js-cookie";
-import { UserInfo } from "@/types/personal.types";
 import { useOrderMutation } from "@/apis/orderApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { PriceFormat } from "@/utils";
 import { PAYMENT } from "@/enums";
 import { notify } from "@/components/common/Notification";
+import useUserInfo from "@/hooks/useUserInfo";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const token = Cookies.get("accessToken");
-  const { data: UserData } = useGetUserInfoQuery(undefined, {
-    skip: !token,
-  });
-  const userInfo: UserInfo | undefined = UserData;
-  const userForm = sessionStorage.getItem("form");
-  const data = JSON.parse(userForm ?? "");
+  const { userInfo } = useUserInfo();
+
+  // const userForm = sessionStorage.getItem("form");
+  // console.log('check data',userForm )
+  // const data = JSON.parse(userForm ?? "");
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
@@ -37,19 +32,20 @@ const OrderDetail = () => {
     voucherCode: "123456",
     productOrders: [
       {
-        productId: 11,
+        productId: 19,
         productUnitId: 13,
-        quantity: 10,
+        quantity: 1,
       },
     ],
-    customerPhone: data?.customerPhone,
-    customerAddress: data?.customerAddress,
-    paymentMethod: 1,
+    customerPhone: "0909113114",
+    customerAddress: "Vung Tau",
+    paymentMethod: 0,
   };
 
   const handlePayment = async () => {
     try {
       const res = await checkoutAPI(checkout);
+      console.log("chec res", res);
       if (res && res.data) {
         notify(
           "success",
@@ -61,7 +57,7 @@ const OrderDetail = () => {
         }, 3000);
       }
     } catch (err) {
-      console.error("Err checkout", err);
+      console.log("Err checkout", err);
     }
   };
   return (
@@ -90,10 +86,10 @@ const OrderDetail = () => {
                 <p>Số điện thoại:</p>
               </div>
               <div className="col-span-4">
-                <p>{data?.email}</p>
-                <p>{data?.fullName}</p>
-                <p>{data?.customerAddress || "Chưa có thông tin"}</p>
-                <p>{data?.customerPhone}</p>
+                <p>{userInfo?.email}</p>
+                <p>{userInfo?.fullName}</p>
+                <p>{userInfo?.address || "Chưa có thông tin"}</p>
+                <p>{userInfo?.phoneNumber}</p>
               </div>
             </div>
           </div>

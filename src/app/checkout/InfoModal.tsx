@@ -15,16 +15,16 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
   // const { addNewUserItem } = useUserService();
   const { setIsOpen, isOpen, userInfo } = props;
   const [form] = Form.useForm();
-  const userForm = sessionStorage.getItem("form");
-  const data = JSON.parse(userForm ?? "");
+  // const userForm = sessionStorage.getItem("form");
+  // const data = JSON.parse(userForm ?? "");
 
   useEffect(() => {
     if (isOpen && userInfo) {
       form.setFieldsValue({
-        email: data?.email || userInfo.email,
-        fullName: data?.fullName || userInfo.fullName,
-        customerAddress: data?.customerAddress || userInfo.address,
-        customerPhone: data?.customerPhone || userInfo.phoneNumber,
+        email: userInfo.email,
+        fullName: userInfo.fullName,
+        customerAddress: userInfo.address,
+        customerPhone: userInfo.phoneNumber,
       });
     }
   }, [isOpen, userInfo, form]);
