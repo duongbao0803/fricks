@@ -16,6 +16,8 @@ const PaymentSuccess: React.FC = () => {
     ? orderInfo?.orderInfo?.orderDetails
     : [];
 
+  console.log("checkl orderInfo", orderInfo);
+
   return (
     <>
       <main className="container mx-auto my-5 grid min-h-screen place-items-center">

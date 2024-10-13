@@ -33,8 +33,9 @@ const PaymentView: React.FC = () => {
     }
 
     if (status === "paid") {
-      router.replace("/payment/success");
+      console.log("Clearing cart...");
       dispatch(clearCart());
+      router.replace("/payment/success");
       sessionStorage.removeItem("form");
     } else {
       router.replace("/payment/failure");
