@@ -7,33 +7,41 @@ import { useLocation, useNavigate } from "react-router-dom";
 import IconWeb from "@/assets/images/logo/logo_web.png";
 import Image from "next/image";
 import { PriceFormat } from "@/utils";
-import { tableDataCheckout, tableInvoice } from "@/constants";
+import { tableInvoice } from "@/constants";
+import { useGetOrderStatusQuery } from "@/apis/orderApi";
 
 const PaymentView: React.FC = () => {
-  // const location = useLocation();
-  // const router = useRouter();
+  const location = useLocation();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   const queryParams = new URLSearchParams(location.search);
-  //   const parsedData: Record<string, string> = {};
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const parsedData: Record<string, string> = {};
 
-  //   queryParams.forEach((value, key) => {
-  //     parsedData[key] = value;
-  //   });
+    queryParams.forEach((value, key) => {
+      parsedData[key] = value;
+    });
 
-  //   if (parsedData && parsedData?.vnp_ResponseCode === "00") {
-  //     // setPaymentResult(parsedData);
-  //     router.replace("/payment/success");
-  //     return;
-  //   } else if (parsedData && parsedData?.vnp_ResponseCode === "24") {
-  //     // setPaymentResult(parsedData);
-  //     router.replace("/payment/failure");
-  //   } else {
-  //     router.replace("/payment/failure");
-  //   }
+    console.log("check parsedData", parsedData);
 
-  //   // setPaymentData(parsedData);
-  // }, [location.search, router]);
+    if (parsedData && parsedData?.status === "failed") {
+      // setPaymentResult(parsedData);
+      // const { data: product, isLoading } = useGetOrderStatusQuery({
+      //   orderId: id,
+      // });
+      router.replace("/payment/success");
+      sessionStorage.removeItem("form");
+      return;
+    } else if (parsedData && parsedData?.vnp_ResponseCode === "24") {
+      // setPaymentResult(parsedData);
+
+      router.replace("/payment/failure");
+    } else {
+      router.replace("/payment/failure");
+    }
+
+    // setPaymentData(parsedData);
+  }, [location.search, router]);
 
   return (
     <>

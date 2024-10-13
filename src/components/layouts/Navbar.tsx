@@ -33,14 +33,14 @@ const Navbar = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
-  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
-    PageIndex: 1,
-    PageSize: 50,
-  });
+  // const { data: favoriteList = [], refetch } = useGetFavorListQuery({
+  //   PageIndex: 1,
+  //   PageSize: 50,
+  // });
 
-  useEffect(() => {
-    refetch();
-  }, [favoriteList, refetch]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [favoriteList, refetch]);
 
   const currentPath = usePathname();
 
@@ -251,7 +251,7 @@ const Navbar = () => {
               <div className="flex items-center gap-5">
                 <Link href="/favorite">
                   <div className="lg:block">
-                    <Badge count={favoriteList.length}>
+                    <Badge count={3}>
                       <GrFavorite
                         className={`cursor-pointer text-2xl ${styleFavor} hover:text-primary`}
                       />

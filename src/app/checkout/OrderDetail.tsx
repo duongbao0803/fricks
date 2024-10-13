@@ -1,7 +1,7 @@
 "use client";
-import { Divider, Radio } from "antd";
+import { Divider, Radio, RadioChangeEvent } from "antd";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { tableDataCheckout } from "@/constants";
 import { ButtonCustom } from "@/components/ui/button";
 import VietQR from "@/assets/images/icons/vietqr.jpeg";
@@ -17,29 +17,39 @@ import useUserInfo from "@/hooks/useUserInfo";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
+  const [value, setValue] = useState<number>(0);
+
   const { userInfo } = useUserInfo();
 
-  // const userForm = sessionStorage.getItem("form");
-  // console.log('check data',userForm )
-  // const data = JSON.parse(userForm ?? "");
+  const userForm = sessionStorage.getItem("form");
+  const data = userForm ? JSON.parse(userForm) : {};
+
+  console.log("check data", data);
+
+  const onChange = (e: RadioChangeEvent) => {
+    setValue(e.target.value);
+  };
+
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
+
   const [checkoutAPI] = useOrderMutation();
+
+  const transformedData = cartData?.cart?.map((item) => ({
+    productId: item?.id,
+    productUnitId: item.price[0].unitId,
+    quantity: item.quantity,
+  }));
 
   const checkout = {
     shipFee: 0,
     voucherCode: "123456",
-    productOrders: [
-      {
-        productId: 19,
-        productUnitId: 13,
-        quantity: 1,
-      },
-    ],
-    customerPhone: "0909113114",
-    customerAddress: "Vung Tau",
-    paymentMethod: 1,
+    productOrders: transformedData,
+    customerPhone: data?.phoneNumber,
+    customerAddress: data?.address,
+    paymentMethod: value,
   };
 
   const handlePayment = async () => {
@@ -86,10 +96,10 @@ const OrderDetail = () => {
                 <p>Số điện thoại:</p>
               </div>
               <div className="col-span-4">
-                <p>{userInfo?.email}</p>
-                <p>{userInfo?.fullName}</p>
-                <p>{userInfo?.address || "Chưa có thông tin"}</p>
-                <p>{userInfo?.phoneNumber}</p>
+                <p>{data?.email || "Chưa có thông tin"}</p>
+                <p>{data?.fullName || "Chưa có thông tin"}</p>
+                <p>{data?.address || "Chưa có thông tin"}</p>
+                <p>{data?.phoneNumber || "Chưa có thông tin"}</p>
               </div>
             </div>
           </div>
@@ -187,43 +197,15 @@ const OrderDetail = () => {
           </div>
 
           <div className="col-span-1">
-            {/* <div className="border border-gray-300 bg-white">
-              <div className="flex h-[48.8px] items-center pl-4">
-                <span className="font-bold text-gray-600">Thành tiền</span>
-              </div>
-              <div className="flex flex-1 items-center justify-between p-3">
-                <div className="flex flex-col gap-5">
-                  <span className="font-semibold text-gray-500">Tổng phụ:</span>
-                  <span className="font-semibold text-gray-500">
-                    Phí vận chuyển:
-                  </span>
-                  <span className="font-semibold text-gray-500">
-                    Khuyến mãi:
-                  </span>
-                </div>
-                <div className="flex flex-col gap-5">
-                  <span>$167.00</span>
-                  <span>$3.00</span>
-                  <span>$3.00</span>
-                </div>
-              </div>
-              <Divider className="!m-0 bg-gray-300" />
-              <div className="flex flex-col justify-between p-3">
-                <div className="flex justify-between">
-                  <span className="font-semibold text-gray-500">Tổng</span>
-                  <span className="font-bold text-primary">$167.00</span>
-                </div>
-              </div>
-            </div> */}
             <div className="mb-8 border border-gray-300 bg-white">
               <label className="block rounded bg-[#fafafa] p-4 font-semibold">
                 Phương thức thanh toán
               </label>
               <div className="px-5 py-3">
                 <Radio.Group
-                  // onChange={onChange}
+                  onChange={onChange}
                   className="w-full"
-                  // value={value}
+                  value={value}
                 >
                   {/* {infoUser && infoUser?.role === Role.MEMBER && ( */}
                   <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
@@ -273,7 +255,7 @@ const OrderDetail = () => {
                   <input
                     type="checkbox"
                     required
-                    // onChange={(e) => setIsConfirm(e.target.checked)}
+                    onChange={(e) => setIsConfirm(e.target.checked)}
                   />
                   <p className="text-sm text-gray-500">
                     Vui lòng xác nhận lại đơn hàng trước khi thanh toán

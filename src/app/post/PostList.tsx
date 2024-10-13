@@ -23,10 +23,7 @@ const PostList = () => {
           {data?.length > 0
             ? data?.slice(0, 8).map((item: PostInfo, index: number) => (
                 <div key={index}>
-                  <Link
-                    href={`/post/${item?.id}`}
-                    className="relative mb-16 flex"
-                  >
+                  <div className="relative z-[50] mb-16 flex">
                     <Image
                       src={item?.image}
                       width={250}
@@ -36,9 +33,11 @@ const PostList = () => {
                       className="h-[150px] w-[230px] rounded-lg object-cover transition-all duration-300 ease-in-out"
                     />
                     <div className="flex flex-col items-start justify-start pl-5">
-                      <h3 className="mb-2 text-lg font-bold text-primary md:text-xl">
-                        {item?.title}
-                      </h3>
+                      <Link href={`/post/${item?.id}`}>
+                        <h3 className="mb-2 text-lg font-bold transition-all duration-500 hover:text-primary md:text-xl">
+                          {item?.title}
+                        </h3>
+                      </Link>
 
                       <span className="line-clamp-2 block overflow-hidden text-sm">
                         {item?.content}
@@ -47,7 +46,7 @@ const PostList = () => {
                         {formatTimestampWithHour(item.createDate)}
                       </p>
                     </div>
-                    <div className="absolute bottom-0 right-0 flex items-center gap-2">
+                    <div className="absolute bottom-0 right-0 z-[51] flex items-center gap-2">
                       <p className="text-sm font-light">Chia sẻ:</p>
                       <Link
                         target="_blank"
@@ -62,7 +61,7 @@ const PostList = () => {
                         <RiInstagramFill color="#d8457e" size="22" />
                       </Link>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               ))
             : Array.from({ length: 3 }).map((_, index) => (
@@ -115,7 +114,7 @@ const PostList = () => {
                           alt="post"
                           className="h-[80px] w-[80px] rounded-lg object-cover transition-all duration-300 ease-in-out"
                         />
-                        <div className="flex flex-col items-start justify-start pl-2">
+                        <div className="flex flex-col items-start justify-start pl-2 transition-all duration-500 hover:text-primary">
                           <h3 className="mb-2 text-[12px]">{item?.title}</h3>
 
                           <p className="absolute bottom-0 line-clamp-2 block overflow-hidden text-[10px] font-light">
