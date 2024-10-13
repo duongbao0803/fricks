@@ -70,7 +70,7 @@ const OrderDetail = () => {
         );
       }
     } catch (err) {
-      console.log("Err checkout", err);
+      console.error("Err checkout", err);
     }
   };
   return (

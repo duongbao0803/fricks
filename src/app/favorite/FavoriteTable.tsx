@@ -36,8 +36,6 @@ const FavoriteTable = () => {
     }
   };
 
-  console.log("re-render");
-
   return (
     <section className="mt-5">
       {favoriteList && favoriteList.length > 0 ? (
