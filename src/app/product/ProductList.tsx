@@ -5,17 +5,15 @@ import { Divider, Form, Skeleton, Select, Spin, Tooltip, Rate } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import useAddToCart from "./hooks/useAddToCart";
 import { PriceFormat } from "@/utils";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import useDebounce from "@/hooks/useDebounce";
 import NoProducts from "@/assets/images/logo/no-products.png";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { SortStatus } from "@/enums";
 import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
 import { ScrollReveal, VoiceSearch } from "@/components";
-import { notify } from "@/components/common/Notification";
 import { RadioCustom, SliderCustom } from "@/components/common";
 import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
 import { useFavorite } from "@/hooks/useAddFavorite";
@@ -26,15 +24,13 @@ const ProductList = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([1, 1000000]);
   const debouncedPriceRange = useDebounce(priceRange, 500);
   const [selectedSort, setSelectedSort] = useState<string>("default");
-  const dispatch = useDispatch();
   const { isFavorite, toggleFavorite, loading } = useFavorite();
-
+  const { handleAddToCart } = useAddToCart();
   const { data: favoriteList = [] } = useGetFavorListQuery(undefined, {});
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
   );
-  console.log("check favoriteList", favoriteList);
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -187,7 +183,9 @@ const ProductList = () => {
                         />
                         <button className="absolute bottom-0 flex h-full w-full cursor-default items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
                           <p className="mx-5 cursor-pointer border-2 p-2 text-[16px] font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                            <button>+ Thêm vào giỏ hàng</button>
+                            <button onClick={() => handleAddToCart(product)}>
+                              + Thêm vào giỏ hàng
+                            </button>
                           </p>
                         </button>
                         <Tooltip

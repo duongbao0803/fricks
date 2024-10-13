@@ -3,6 +3,7 @@ import { Modal, Form, Input, Select, Col, Row } from "antd";
 import { ProductInfo } from "@/types/product.types";
 import { InputCustom } from "@/components/ui/input";
 import { UserInfo } from "@/types/personal.types";
+import { notify } from "@/components/common/Notification";
 
 export interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,19 +14,17 @@ export interface AddModalProps {
 const InfoModal: React.FC<AddModalProps> = (props) => {
   // const { addNewUserItem } = useUserService();
   const { setIsOpen, isOpen, userInfo } = props;
-  const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
-  const [fileChange, setFileChange] = useState<string>("");
   const [form] = Form.useForm();
-  const { Option } = Select;
-  const { TextArea } = Input;
+  // const userForm = sessionStorage.getItem("form");
+  // const data = JSON.parse(userForm ?? "");
 
   useEffect(() => {
     if (isOpen && userInfo) {
       form.setFieldsValue({
         email: userInfo.email,
         fullName: userInfo.fullName,
-        address: userInfo.address,
-        phoneNumber: userInfo.phoneNumber,
+        customerAddress: userInfo.address,
+        customerPhone: userInfo.phoneNumber,
       });
     }
   }, [isOpen, userInfo, form]);
@@ -33,19 +32,14 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      // setIsConfirmLoading(true);
-      // setTimeout(async () => {
-      //   try {
-      //     await handleAddPost(values);
-      //     form.resetFields();
-      //     setIsConfirmLoading(false);
-      //     setIsOpen(false);
-      //   } catch (error) {
-      //     setIsConfirmLoading(false);
-      //     setIsOpen(true);
-      //   }
-      // }, 1500);
+      if (values) {
+        console.log("check values", values);
+        sessionStorage.setItem("form", JSON.stringify(values));
+        notify("success", "Cập nhật thông tin thành công", 1);
+        setIsOpen(false);
+      }
     } catch (err) {
+      setIsOpen(false);
       console.error("Validation failed:", err);
     }
   };
@@ -60,7 +54,6 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       title={<p className="text-xl font-bold text-[red]">Thông tin liên hệ</p>}
       open={isOpen}
       onOk={handleOk}
-      confirmLoading={isConfirmLoading}
       onCancel={handleCancel}
       okButtonProps={{
         style: {
@@ -102,7 +95,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="address"
+          name="customerAddress"
           rules={[
             {
               required: true,
@@ -116,7 +109,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
           <InputCustom placeholder="Địa chỉ" />
         </Form.Item>
         <Form.Item
-          name="phoneNumber"
+          name="customerPhone"
           rules={[
             {
               required: true,

@@ -13,6 +13,7 @@ import {
 } from "@/apis/favoriteProductApi";
 import { notify } from "@/components/common/Notification";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
+import { FavoriteProps } from "@/types/favorite.types";
 
 const FavoriteTable = () => {
   const router = useRouter();
@@ -26,14 +27,16 @@ const FavoriteTable = () => {
     try {
       const res = await deleteAll({}).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res.message}`, 2);
+        notify("success", `${res?.message}`, 2);
         refetch();
       }
     } catch (err: any) {
-      notify("error", `${err.data.message}`, 3);
+      notify("error", `${err?.data?.message}`, 3);
       console.error(err);
     }
   };
+
+  console.log("re-render");
 
   return (
     <section className="mt-5">
@@ -53,103 +56,57 @@ const FavoriteTable = () => {
               </tr>
             </thead>
             <tbody>
-              {favoriteList.map(
-                (
-                  item: {
-                    storeName:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | React.ReactElement<
-                          any,
-                          string | React.JSXElementConstructor<any>
-                        >
-                      | Iterable<React.ReactNode>
-                      | React.ReactPortal
-                      | Promise<React.AwaitedReactNode>
-                      | null
-                      | undefined;
-                    productName:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | React.ReactElement<
-                          any,
-                          string | React.JSXElementConstructor<any>
-                        >
-                      | Iterable<React.ReactNode>
-                      | React.ReactPortal
-                      | Promise<React.AwaitedReactNode>
-                      | null
-                      | undefined;
-                    price:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | React.ReactElement<
-                          any,
-                          string | React.JSXElementConstructor<any>
-                        >
-                      | Iterable<React.ReactNode>
-                      | React.ReactPortal
-                      | Promise<React.AwaitedReactNode>
-                      | null
-                      | undefined;
-                  },
-                  index: number,
-                ) => (
-                  <>
-                    <tr className="border-t" key={index}>
-                      <td className="px-6 py-12 align-middle">
-                        <div className="flex items-center">
-                          <Image
-                            height={100}
-                            width={100}
-                            quality={100}
-                            src={Imagee}
-                            className="mr-4 h-12 w-12 rounded-[100%]"
-                            alt="Store Image"
-                          />
-                          <span>{item.storeName}</span>
-                        </div>
-                      </td>
+              {favoriteList.map((item: FavoriteProps, index: number) => (
+                <>
+                  <tr className="border-t" key={index}>
+                    <td className="px-6 py-12 align-middle">
+                      <div className="flex items-center">
+                        <Image
+                          height={100}
+                          width={100}
+                          quality={100}
+                          src={Imagee}
+                          className="mr-4 h-12 w-12 rounded-[100%]"
+                          alt="Store Image"
+                        />
+                        <span>{item?.storeName}</span>
+                      </div>
+                    </td>
 
-                      <td className="px-6 py-12">
-                        <div className="flex items-center">
-                          <Image
-                            height={100}
-                            width={100}
-                            quality={100}
-                            src={Imagee}
-                            className="mr-4 h-12 w-12 rounded-[100%]"
-                            alt="Product Image"
-                          />
-                          <span>{item.productName}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-12">5</td>
-                      <td className="px-6 py-12">{item.price}</td>
-                      <td className="px-6 py-12">
-                        <TagCustom
-                          color="green"
-                          label="CÒN HÀNG"
-                          closable={false}
-                          className="text-[13px]"
+                    <td className="px-6 py-12">
+                      <div className="flex items-center">
+                        <Image
+                          height={100}
+                          width={100}
+                          quality={100}
+                          src={item?.productImage}
+                          className="mr-4 h-12 w-12 rounded-[100%]"
+                          alt="Product Image"
                         />
-                      </td>
-                      <td className="px-6 py-12 text-center">
-                        <CloseOutlined
-                          // onClick={() => handleDelete(record)}
-                          className="cursor-pointer text-xl text-red-500"
-                        />
-                      </td>
-                    </tr>
-                  </>
-                ),
-              )}
+                        <span>{item.productName}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-12">5</td>
+                    <td className="px-6 py-12">
+                      {item?.productPrices[0]?.price}
+                    </td>
+                    <td className="px-6 py-12">
+                      <TagCustom
+                        color="green"
+                        label="CÒN HÀNG"
+                        closable={false}
+                        className="text-[13px]"
+                      />
+                    </td>
+                    <td className="px-6 py-12 text-center">
+                      <CloseOutlined
+                        // onClick={() => handleDelete(record)}
+                        className="cursor-pointer text-xl text-red-500"
+                      />
+                    </td>
+                  </tr>
+                </>
+              ))}
             </tbody>
           </table>
           <div className="mt-5 flex justify-between">

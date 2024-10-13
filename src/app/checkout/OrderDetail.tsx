@@ -1,55 +1,43 @@
 "use client";
-import { Button, Divider, Form, Radio } from "antd";
+import { Divider, Radio } from "antd";
 import Image from "next/image";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { tableData, tableDataCheckout } from "@/constants";
-import Imagee from "@/assets/images/logo/avatar_admin.jpg";
-import { InputCustom } from "@/components/ui/input";
+import { tableDataCheckout } from "@/constants";
 import { ButtonCustom } from "@/components/ui/button";
-import BankIcon from "@/assets/images/icons/bank.png";
+import VietQR from "@/assets/images/icons/vietqr.jpeg";
+import Vnpay from "@/assets/images/icons/vnpay.webp";
 import InfoModal from "./InfoModal";
-import { useGetUserInfoQuery } from "@/apis/authApi";
-import Cookies from "js-cookie";
-import { UserInfo } from "@/types/personal.types";
 import { useOrderMutation } from "@/apis/orderApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { PriceFormat } from "@/utils";
+import { PAYMENT } from "@/enums";
+import { notify } from "@/components/common/Notification";
+import useUserInfo from "@/hooks/useUserInfo";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const token = Cookies.get("accessToken");
-  const { data: UserData } = useGetUserInfoQuery(undefined, {
-    skip: !token,
-  });
-  const userInfo: UserInfo | undefined = UserData;
+  const { userInfo } = useUserInfo();
+
+  // const userForm = sessionStorage.getItem("form");
+  // console.log('check data',userForm )
+  // const data = JSON.parse(userForm ?? "");
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
   const [checkoutAPI] = useOrderMutation();
-
-  const data = [
-    {
-      storeName: "FPT",
-      productName: "Ống nước",
-      price: "18000",
-      quantity: 20,
-      total: 30,
-    },
-  ];
 
   const checkout = {
     shipFee: 0,
     voucherCode: "123456",
     productOrders: [
       {
-        productId: 2,
-        productUnitId: 3,
-        quantity: 10,
+        productId: 19,
+        productUnitId: 13,
+        quantity: 1,
       },
     ],
-    customerPhone: "4032521844",
+    customerPhone: "0909113114",
     customerAddress: "Vung Tau",
     paymentMethod: 1,
   };
@@ -57,9 +45,19 @@ const OrderDetail = () => {
   const handlePayment = async () => {
     try {
       const res = await checkoutAPI(checkout);
-      console.log("check res", res);
+      console.log("chec res", res);
+      if (res && res.data) {
+        notify(
+          "success",
+          "Đặt đơn hàng thành công. Vui lòng chờ sau 3s để thanh toán",
+          3,
+        );
+        setTimeout(() => {
+          window.location.href = `${res?.data?.checkoutUrl}`;
+        }, 3000);
+      }
     } catch (err) {
-      console.error("Err checkout", err);
+      console.log("Err checkout", err);
     }
   };
   return (
@@ -116,7 +114,9 @@ const OrderDetail = () => {
                 <span>{PriceFormat.format(0)}</span>
               </div>
             </div>
-            <Divider className="!m-0 bg-gray-300" />
+            <div className="mx-4">
+              <Divider className="!m-0 bg-gray-300" />
+            </div>
             <div className="flex flex-col justify-between p-3">
               <div className="flex justify-between">
                 <span className="font-semibold text-gray-500">Tổng</span>
@@ -129,24 +129,26 @@ const OrderDetail = () => {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-10">
         <h1 className="mb-2 font-medium text-[#757575]">Đơn hàng của bạn</h1>
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-          <div className="col-span-1 overflow-x-auto lg:col-span-2">
-            <div className="flex items-center gap-1">
-              <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
-                FMALL
-              </span>
-              <h1>{cartData?.cart[0]?.storeName}</h1>
-            </div>
-            <Divider className="bg-gray-300" />
-            <table className="min-w-full border border-gray-300 bg-white">
-              <thead className="rounded bg-gray-100">
+          <div className="flex items-center gap-1">
+            <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
+              FMALL
+            </span>
+            <h1>{cartData?.cart[0]?.storeName}</h1>
+          </div>
+          <div></div>
+          <div className="col-span-1 overflow-auto lg:col-span-2">
+            <table className="min-w-full overflow-auto border border-gray-300 bg-white">
+              <thead className="rounded bg-thirdly">
                 <tr>
                   {tableDataCheckout.map((data, index: number) => (
                     <th
                       key={index}
-                      className="px-6 py-3 text-left text-gray-600"
+                      className={`px-6 py-3 text-left text-gray-600 ${
+                        index === 0 ? "sticky left-0 z-10 bg-thirdly" : ""
+                      }`}
                     >
                       {data}
                     </th>
@@ -157,7 +159,7 @@ const OrderDetail = () => {
                 {cartData?.cart?.map((item, index: number) => (
                   <>
                     <tr className="border-t" key={index}>
-                      <td className="px-6 py-[34px]">
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
                         <div className="flex items-center">
                           <Image
                             height={100}
@@ -224,17 +226,40 @@ const OrderDetail = () => {
                   // value={value}
                 >
                   {/* {infoUser && infoUser?.role === Role.MEMBER && ( */}
-                  <div className="relative mb-5 flex w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
-                    <Radio value={"PAYOS"} className="w-full" defaultChecked>
+                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                    <Radio
+                      value={PAYMENT.VIETQR}
+                      className="w-full object-cover"
+                      defaultChecked
+                    >
                       <div className="inline w-full">
-                        <div className="border-1 w-full">
-                          Thanh toán chuyển khoản
-                        </div>
+                        <div className="border-1 w-full">Thanh toán VIETQR</div>
                       </div>
                     </Radio>
                     <div className="ml-4">
                       <Image
-                        src={BankIcon}
+                        src={VietQR}
+                        alt="Logo-vietqr"
+                        className="w-full object-cover"
+                        height={50}
+                        width={50}
+                        quality={100}
+                      />
+                    </div>
+                  </div>
+                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                    <Radio
+                      value={PAYMENT.VNPAY}
+                      className="w-full"
+                      defaultChecked
+                    >
+                      <div className="inline w-full">
+                        <div className="border-1 w-full">Thanh toán VNPAY</div>
+                      </div>
+                    </Radio>
+                    <div className="ml-4">
+                      <Image
+                        src={Vnpay}
                         alt="Logo-vnpay"
                         className="w-11"
                         height={50}
