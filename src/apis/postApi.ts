@@ -5,7 +5,7 @@ const postApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPostList: builder.query({
       query: ({ PageIndex, PageSize }: Page) => ({
-        url: `/posts?PageIndex=${PageIndex}&PageSize=${PageSize}`,
+        url: `/posts?PageIndex=${PageIndex}&PageSize=${PageSize}&SortBy=date&Dir=desc`,
         method: "GET",
       }),
     }),

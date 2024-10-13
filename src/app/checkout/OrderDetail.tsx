@@ -39,7 +39,7 @@ const OrderDetail = () => {
     ],
     customerPhone: "0909113114",
     customerAddress: "Vung Tau",
-    paymentMethod: 0,
+    paymentMethod: 1,
   };
 
   const handlePayment = async () => {

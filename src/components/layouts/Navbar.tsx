@@ -166,8 +166,8 @@ const Navbar = () => {
         </div>
 
         <div className="container mx-auto flex items-center justify-between bg-[#fff] py-4 transition-all duration-500 lg:py-5">
-          {/* <Link href="/"> */}
-          {/* <Image
+          <Link href="/">
+            <Image
               src={IconWeb}
               width={130}
               alt="icon"
@@ -181,8 +181,8 @@ const Navbar = () => {
               quality={100}
               className="lg:hidden"
             />
-          </Link> */}
-          <span className="yt-icon-shape style-scope yt-icon yt-spec-icon-shape">
+          </Link>
+          {/* <span className="yt-icon-shape style-scope yt-icon yt-spec-icon-shape">
             <div className="w-[200px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -222,7 +222,7 @@ const Navbar = () => {
                 </svg>
               </svg>
             </div>
-          </span>
+          </span> */}
           <div className="hidden items-center gap-8 lg:flex">
             <NavElement />
           </div>

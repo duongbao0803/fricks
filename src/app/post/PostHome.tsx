@@ -108,11 +108,11 @@ const PostHome = () => {
                       cover={
                         <Image
                           alt="error"
-                          height={300}
-                          width={300}
+                          height={1000}
+                          width={1000}
                           quality={100}
                           src={post.image}
-                          className="h-[300px] w-full object-contain"
+                          className="h-[300px] w-full object-cover"
                         />
                       }
                     >
@@ -122,9 +122,6 @@ const PostHome = () => {
                             <h2 className="block text-sm font-semibold text-[black]">
                               {post.title}
                             </h2>
-                            <span className="line-clamp-2 block h-[80px] overflow-hidden text-ellipsis whitespace-normal">
-                              {post.content}
-                            </span>
                           </>
                         }
                       />

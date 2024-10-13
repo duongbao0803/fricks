@@ -5,7 +5,7 @@ export interface PostInfo {
   content: string;
   image: string;
   id: number;
-  createDate?: string;
+  createDate: string;
   updateDate?: string | null;
   isDeleted?: boolean;
   version?: string;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import successIcon from "@/assets/images/success-icon.png";
 import Image from "next/image";
 
