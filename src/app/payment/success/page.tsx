@@ -1,48 +1,24 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import successIcon from "@/assets/images/success-icon.png";
 import IconWeb from "@/assets/images/logo/logo_web.png";
+
 import Image from "next/image";
-import { PriceFormat } from "@/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { tableInvoice } from "@/constants";
-import { useGetOrderStatusQuery } from "@/apis/orderApi";
-import { useDispatch } from "react-redux";
-import { clearCart } from "@/redux/slices/cartSlice";
-import { setOrderInfo } from "@/redux/slices/orderSlice";
+import { formatTimestampWithHour, PriceFormat } from "@/utils";
 
-const PaymentView: React.FC = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [id, setId] = useState<number>(0);
-  const { data: orderInfo, isLoading } = useGetOrderStatusQuery({
-    orderId: id,
-  });
-  const dispatch = useDispatch();
+const PaymentSuccess: React.FC = () => {
+  const orderInfo = useSelector(
+    (state: RootState) => state.persistedReducer.order,
+  );
+  const orderDetails = Array.isArray(orderInfo?.orderInfo?.orderDetails)
+    ? orderInfo?.orderInfo?.orderDetails
+    : [];
 
-  useEffect(() => {
-    const status = searchParams.get("status");
-    const orderId = searchParams.get("order");
-
-    if (orderId) {
-      setId(Number(orderId));
-    }
-
-    if (orderInfo && !isLoading) {
-      dispatch(setOrderInfo(orderInfo));
-    }
-
-    if (status === "paid") {
-      router.replace("/payment/success");
-      dispatch(clearCart());
-      sessionStorage.removeItem("form");
-    } else {
-      router.replace("/payment/failure");
-    }
-  }, [searchParams, router, orderInfo, isLoading, dispatch]);
   return (
     <>
-      {/* <Spin fullscreen tip="Đang chờ..." /> */}
       <main className="container mx-auto my-5 grid min-h-screen place-items-center">
         <section className="relative h-auto min-h-[800px] border-2 border-primary shadow-xl md:w-[650px] lg:w-[800px]">
           <div className="p-10">
@@ -61,25 +37,39 @@ const PaymentView: React.FC = () => {
             <div className="leading-7">
               <p>
                 <span className="font-bold">Thời gian:</span>{" "}
-                <span>13/10/2024</span>
+                <span>
+                  {formatTimestampWithHour(orderInfo?.orderInfo?.createDate)}
+                </span>
               </p>
               <p>
                 <span className="font-bold">Mã hóa đơn: </span>
-                <span>#123123</span>
+                <span>#{orderInfo?.orderInfo?.bankTranNo}</span>
               </p>
             </div>
             <div className="my-8 flex justify-between">
               <div className="max-w-[45%]">
                 <h3 className="text-sm">CỬA HÀNG</h3>
-                <p className="py-1 text-lg font-bold">Gia đức VLXD</p>
-                <p className="py-1 text-sm">Bà Rịa Vũng Tàu</p>
-                <p className="py-1 text-sm">0909 113 114</p>
+                <p className="py-1 text-lg font-bold">
+                  {orderInfo?.orderInfo?.storeName}
+                </p>
+                <p className="py-1 text-sm">
+                  {orderInfo?.orderInfo?.storeAddress}
+                </p>
+                <p className="py-1 text-sm">
+                  {orderInfo?.orderInfo?.storePhone}
+                </p>
               </div>
               <div className="max-w-[45%] text-right">
                 <h3 className="text-sm">KHÁCH HÀNG</h3>
-                <p className="py-1 text-lg font-bold">Bảo Vũng Tàu</p>
-                <p className="py-1 text-sm">Bà Rịa Vũng Tàu</p>
-                <p className="py-1 text-sm">0909 114 115</p>
+                <p className="py-1 text-lg font-bold">
+                  {orderInfo?.orderInfo?.customerName}
+                </p>
+                <p className="py-1 text-sm">
+                  {orderInfo?.orderInfo?.customerAddress}
+                </p>
+                <p className="py-1 text-sm">
+                  {orderInfo?.orderInfo?.customerPhone}
+                </p>
               </div>
             </div>
             <div className="overflow-auto">
@@ -98,36 +88,32 @@ const PaymentView: React.FC = () => {
                     ))}
                   </tr>
                 </thead>
-                <tbody>
-                  <tr className="">
-                    <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
-                      <div className="flex items-center">
-                        <span>hihi</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-[34px]">hii</td>
-                    <td className="px-6 py-[34px]">hihi</td>
-                    <td className="px-6 py-[34px]">hihi</td>
-                  </tr>
-                  <tr className="">
-                    <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
-                      <div className="flex items-center">
-                        <span>hihi</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-[34px]">hii</td>
-                    <td className="px-6 py-[34px]">hihi</td>
-                    <td className="px-6 py-[34px]">hihi</td>
-                  </tr>
-                </tbody>
+                {orderDetails?.map((order, index) => (
+                  <tbody key={index}>
+                    <tr className="">
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
+                        <div className="flex items-center">
+                          <span>{order?.product?.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-[34px]">{order?.product?.unit}</td>
+                      <td className="px-6 py-[34px]">{order?.quantity}</td>
+                      <td className="px-6 py-[34px]">
+                        {orderInfo?.orderInfo?.total}
+                      </td>
+                    </tr>
+                  </tbody>
+                ))}
               </table>
             </div>
           </div>
           <div className="mb-10 mt-5 flex min-h-[400px] justify-center">
             <div className="flex h-[150px] w-[350px] -rotate-[15deg] flex-col items-center justify-center gap-2 rounded-3xl border-4 border-[red] font-medium text-[red]">
               <h2 className="text-4xl">ĐÃ THANH TOÁN</h2>
-              <p className="text-xl font-bold">{PriceFormat.format(12345)}</p>
-              <p>13/10/2024</p>
+              <p className="text-xl font-bold">
+                {PriceFormat.format(orderInfo?.orderInfo?.total)}
+              </p>
+              <p>{formatTimestampWithHour(orderInfo?.orderInfo?.createDate)}</p>
             </div>
           </div>
           <div className="absolute bottom-0 min-h-[150px] w-full bg-primary px-10 py-5">
@@ -144,7 +130,7 @@ const PaymentView: React.FC = () => {
                     <p>Điều khoản:</p>
                   </div>
                   <div className="col-span-2 text-left text-gray-200">
-                    <p>Gia Đức VLXD</p>
+                    <p> {orderInfo?.orderInfo?.storeName}</p>
                     <p>Thanh toán 100%</p>
                   </div>
                 </div>
@@ -156,8 +142,8 @@ const PaymentView: React.FC = () => {
                     <p>Tổng:</p>
                   </div>
                   <div className="col-span-2 text-right text-gray-200">
-                    <p>123456789</p>
-                    <p>123456789</p>
+                    <p> {PriceFormat.format(orderInfo?.orderInfo?.total)}</p>
+                    <p> {PriceFormat.format(orderInfo?.orderInfo?.total)}</p>
                   </div>
                 </div>
               </div>
@@ -173,4 +159,4 @@ const PaymentView: React.FC = () => {
   );
 };
 
-export default PaymentView;
+export default PaymentSuccess;

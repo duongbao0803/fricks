@@ -25,8 +25,6 @@ const OrderDetail = () => {
   const userForm = sessionStorage.getItem("form");
   const data = userForm ? JSON.parse(userForm) : {};
 
-  console.log("check data", data);
-
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
@@ -55,7 +53,6 @@ const OrderDetail = () => {
   const handlePayment = async () => {
     try {
       const res = await checkoutAPI(checkout);
-      console.log("chec res", res);
       if (res && res.data) {
         notify(
           "success",
@@ -65,6 +62,12 @@ const OrderDetail = () => {
         setTimeout(() => {
           window.location.href = `${res?.data?.checkoutUrl}`;
         }, 3000);
+      } else {
+        notify(
+          "error",
+          "Đặt hàng không thành công. Vui lòng điền đầy đủ thông tin đặt hàng",
+          3,
+        );
       }
     } catch (err) {
       console.log("Err checkout", err);

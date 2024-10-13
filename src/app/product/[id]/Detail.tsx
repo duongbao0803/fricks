@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
+import useAddToCart from "../hooks/useAddToCart";
 
 const Detail = () => {
   const { id } = useParams();
@@ -19,31 +20,11 @@ const Detail = () => {
   const [selectedPrice, setSelectedPrice] = useState<number>(
     typedProduct?.price[0]?.price,
   );
+  const { handleAddToCart } = useAddToCart();
 
   const handleChangeUnit = (values: any) => {
     setSelectedPrice(values?.price);
   };
-
-  console.log("check typedProduct", typedProduct);
-
-  const dispatch = useDispatch();
-
-  const handleAddToCart = useCallback(
-    (product: ProductInfo) => {
-      // if (userInfo && userInfo?.role === RolesLogin.CUSTOMER) {
-      dispatch(addToCart(product));
-      notify(
-        "success",
-        `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
-        3,
-      );
-      // } else {
-      //   notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 3);
-      //   return;
-      // }
-    },
-    [addToCart],
-  );
 
   return (
     <div className="container mx-auto bg-white p-6">
@@ -183,7 +164,10 @@ const Detail = () => {
                   <p className="mt-1 text-gray-500">
                     {typedProduct?.price[0]?.price}
                   </p>
-                  <button className="mt-2 w-full rounded-md bg-primary py-2 text-white hover:bg-secondary">
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="mt-2 w-full rounded-md bg-primary py-2 text-white hover:bg-secondary"
+                  >
                     Thêm giỏ hàng
                   </button>
                 </div>

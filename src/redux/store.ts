@@ -3,6 +3,8 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import favoriteReducer from "./slices/favoriteSlice";
 import cartReducer from "./slices/cartSlice";
+import orderReducer from "./slices/orderSlice";
+
 import authApi from "@/apis/authApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
@@ -15,6 +17,7 @@ const persistConfig = {
 const rootReducer = {
   favorites: favoriteReducer,
   cart: cartReducer,
+  order: orderReducer,
 };
 
 const persistedReducer = persistReducer(
@@ -28,7 +31,12 @@ export const store = configureStore({
     persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"],
+        ignoredPaths: ["register"],
+      },
+    }).concat(authApi.middleware),
 });
 
 export const persistor = persistStore(store);
