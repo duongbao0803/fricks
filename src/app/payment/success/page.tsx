@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import successIcon from "@/assets/images/success-icon.png";
 import IconWeb from "@/assets/images/logo/logo_web.png";
 
 import Image from "next/image";

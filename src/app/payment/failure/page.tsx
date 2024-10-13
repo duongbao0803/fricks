@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import failureIcon from "@/assets/images/failure-icon.png";
 import Image from "next/image";
+import IconWeb from "@/assets/images/logo/logo_web.png";
 
 const PaymentFailure: React.FC = () => {
   // const paymentResult = usePaymentResult((state) => state.paymentResult);
@@ -24,7 +24,7 @@ const PaymentFailure: React.FC = () => {
             </div>
             <div className="mt-[10px] flex flex-col items-center justify-center">
               <Image
-                src={failureIcon}
+                src={IconWeb}
                 alt="Lỗi"
                 width={90}
                 className="text-center"
