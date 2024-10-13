@@ -10,9 +10,15 @@ const orderApi = apiSlice.injectEndpoints({
         body: formData,
       }),
     }),
+    getOrderStatus: builder.query({
+      query: ({ orderId }) => ({
+        url: `/orders/${orderId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useOrderMutation } = orderApi;
+export const { useOrderMutation, useGetOrderStatusQuery } = orderApi;
 
 export default orderApi;

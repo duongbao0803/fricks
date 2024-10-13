@@ -1,16 +1,24 @@
 // cartSlice.js
+import { CartUser, UserInfo } from "@/types/personal.types";
 import { ProductInfo } from "@/types/product.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { current } from "immer";
 
 interface CartState {
   cart: ProductInfo[];
+  cartUser: CartUser;
   totalQuantity: number;
   totalPrice: number;
 }
 
 const initialState: CartState = {
   cart: [],
+  cartUser: {
+    email: "",
+    fullName: "",
+    customerAddress: "",
+    customerPhone: "",
+  },
   totalQuantity: 0,
   totalPrice: 0,
 };
@@ -76,8 +84,12 @@ const cartSlice = createSlice({
       state.totalQuantity = 0;
       state.totalPrice = 0;
     },
+    setCartUser(state, action: PayloadAction<CartUser>) {
+      state.cartUser = action.payload;
+    },
   },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, setCartUser } =
+  cartSlice.actions;
 export default cartSlice.reducer;

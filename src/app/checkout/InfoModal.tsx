@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Col, Row } from "antd";
-import { ProductInfo } from "@/types/product.types";
+import React, { useEffect } from "react";
+import { Modal, Form } from "antd";
 import { InputCustom } from "@/components/ui/input";
 import { UserInfo } from "@/types/personal.types";
 import { notify } from "@/components/common/Notification";
+import { useDispatch } from "react-redux";
+import { setCartUser } from "@/redux/slices/cartSlice";
 
 export interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,16 +16,19 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
   // const { addNewUserItem } = useUserService();
   const { setIsOpen, isOpen, userInfo } = props;
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const userForm = sessionStorage.getItem("form");
+  const data = userForm ? JSON.parse(userForm) : {};
   // const userForm = sessionStorage.getItem("form");
   // const data = JSON.parse(userForm ?? "");
 
   useEffect(() => {
     if (isOpen && userInfo) {
       form.setFieldsValue({
-        email: userInfo.email,
-        fullName: userInfo.fullName,
-        customerAddress: userInfo.address,
-        customerPhone: userInfo.phoneNumber,
+        email: data?.email || userInfo.email,
+        fullName: data?.fullName || userInfo.fullName,
+        customerAddress: data?.customerAddress || userInfo.address,
+        customerPhone: data?.customerPhone || userInfo.phoneNumber,
       });
     }
   }, [isOpen, userInfo, form]);
@@ -33,13 +37,12 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
     try {
       const values = await form.validateFields();
       if (values) {
-        console.log("check values", values);
         sessionStorage.setItem("form", JSON.stringify(values));
         notify("success", "Cập nhật thông tin thành công", 1);
         setIsOpen(false);
       }
     } catch (err) {
-      setIsOpen(false);
+      setIsOpen(true);
       console.error("Validation failed:", err);
     }
   };
@@ -95,7 +98,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="customerAddress"
+          name="address"
           rules={[
             {
               required: true,
@@ -109,7 +112,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
           <InputCustom placeholder="Địa chỉ" />
         </Form.Item>
         <Form.Item
-          name="customerPhone"
+          name="phoneNumber"
           rules={[
             {
               required: true,

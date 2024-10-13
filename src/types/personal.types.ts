@@ -16,3 +16,10 @@ export interface UserInfo {
   isDeleted: boolean;
   version: string;
 }
+
+export interface CartUser {
+  email: string;
+  fullName: string;
+  customerAddress: string;
+  customerPhone: string;
+}

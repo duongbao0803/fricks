@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Divider, Form, Skeleton, Select, Spin, Tooltip, Rate } from "antd";
+import {
+  Divider,
+  Form,
+  Skeleton,
+  Select,
+  Spin,
+  Tooltip,
+  Rate,
+  Pagination,
+} from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -26,7 +35,7 @@ const ProductList = () => {
   const [selectedSort, setSelectedSort] = useState<string>("default");
   const { isFavorite, toggleFavorite, loading } = useFavorite();
   const { handleAddToCart } = useAddToCart();
-  const { data: favoriteList = [] } = useGetFavorListQuery(undefined, {});
+  // const { data: favoriteList = [] } = useGetFavorListQuery(undefined, {});
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
@@ -34,6 +43,8 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(100);
 
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
@@ -41,8 +52,8 @@ const ProductList = () => {
   );
 
   const { data: productData = [], isFetching } = useGetProductListQuery({
-    PageIndex: 1,
-    PageSize: 10,
+    PageIndex: pageIndex,
+    PageSize: pageSize,
     CategoryId: selectedCategory,
     name: debouncedSearchQuery,
     MinPrice: debouncedPriceRange[0],
@@ -200,11 +211,11 @@ const ProductList = () => {
                             className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-300 ease-in-out hover:bg-gray-200"
                             onClick={() => handleToggleFavorite(product, item)}
                           >
-                            {favoriteList.includes(item?.id) ? (
+                            {/* {favoriteList.includes(item?.id) ? (
                               <AiFillHeart className="text-xl text-red-500" />
                             ) : (
                               <AiOutlineHeart className="text-xl text-gray-500" />
-                            )}
+                            )} */}
                           </button>
                         </Tooltip>
                       </div>

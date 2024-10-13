@@ -39,9 +39,9 @@ const ProductHome = () => {
     PageSize: 50,
   });
 
-  useEffect(() => {
-    refetch();
-  }, [favoriteList, refetch]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [favoriteList, refetch]);
 
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
@@ -194,7 +194,7 @@ const ProductHome = () => {
             ))}
       </div>
 
-      {getProductsToDisplay().length > 0 && (
+      {productData?.length > 0 && (
         <div className="my-7 flex justify-center">
           <button
             onClick={() => router.push("/product")}
