@@ -25,6 +25,7 @@ const initialState: OrderState = {
           name: "",
           unit: "",
         },
+        price: 0,
         quantity: 0,
       },
     ],

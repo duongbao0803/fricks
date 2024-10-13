@@ -10,6 +10,7 @@ import { useGetOrderStatusQuery } from "@/apis/orderApi";
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/redux/slices/cartSlice";
 import { setOrderInfo } from "@/redux/slices/orderSlice";
+import { Spin } from "antd";
 
 const PaymentView: React.FC = () => {
   const searchParams = useSearchParams();
@@ -35,16 +36,16 @@ const PaymentView: React.FC = () => {
     if (status === "paid") {
       console.log("Clearing cart...");
       dispatch(clearCart());
-      router.replace("/payment/success");
+      // router.replace("/payment/success");
       sessionStorage.removeItem("form");
     } else {
       router.replace("/payment/failure");
     }
   }, [searchParams, router, orderInfo, isLoading, dispatch]);
   return (
-    <>
-      {/* <Spin fullscreen tip="Đang chờ..." /> */}
-      <main className="container mx-auto my-5 grid min-h-screen place-items-center">
+    <section className="h-screen">
+      <Spin fullscreen tip="Đang chờ..." />
+      {/* <main className="container mx-auto my-5 grid min-h-screen place-items-center">
         <section className="relative h-auto min-h-[800px] border-2 border-primary shadow-xl md:w-[650px] lg:w-[800px]">
           <div className="p-10">
             <div className="flex justify-between">
@@ -169,8 +170,8 @@ const PaymentView: React.FC = () => {
             </p>
           </div>
         </section>
-      </main>
-    </>
+      </main> */}
+    </section>
   );
 };
 

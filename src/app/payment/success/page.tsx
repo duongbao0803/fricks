@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import IconWeb from "@/assets/images/logo/logo_web.png";
-
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -15,8 +14,6 @@ const PaymentSuccess: React.FC = () => {
   const orderDetails = Array.isArray(orderInfo?.orderInfo?.orderDetails)
     ? orderInfo?.orderInfo?.orderDetails
     : [];
-
-  console.log("checkl orderInfo", orderInfo);
 
   return (
     <>
@@ -100,7 +97,7 @@ const PaymentSuccess: React.FC = () => {
                       <td className="px-6 py-[34px]">{order?.product?.unit}</td>
                       <td className="px-6 py-[34px]">{order?.quantity}</td>
                       <td className="px-6 py-[34px]">
-                        {orderInfo?.orderInfo?.total}
+                        {PriceFormat.format(order?.quantity * order?.price)}
                       </td>
                     </tr>
                   </tbody>

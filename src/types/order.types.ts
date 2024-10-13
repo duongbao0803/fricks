@@ -18,6 +18,7 @@ export interface OrderInfo {
         name: string;
         unit: string;
       };
+      price: number;
       quantity: number;
     },
   ];
