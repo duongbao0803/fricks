@@ -19,7 +19,15 @@ const initialState: OrderState = {
     discount: null,
     id: 0,
     isDeleted: false,
-    orderDetails: {} as ProductInfo,
+    orderDetails: [
+      {
+        product: {
+          name: "",
+          unit: "",
+        },
+        quantity: 0,
+      },
+    ],
     paymentDate: "",
     paymentMethod: "",
     paymentStatus: "",
