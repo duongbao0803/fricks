@@ -1,14 +1,11 @@
 "use client";
 import { useGetDetailProductQuery } from "@/apis/productApi";
-import { notify } from "@/components/common/Notification";
-import { addToCart } from "@/redux/slices/cartSlice";
-import { ProductInfo, ProductPrice } from "@/types/product.types";
+import { ProductInfo } from "@/types/product.types";
 import { PriceFormat } from "@/utils";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
 import useAddToCart from "../hooks/useAddToCart";
 
 const Detail = () => {
@@ -40,7 +37,7 @@ const Detail = () => {
                 width={2000}
                 quality={100}
                 alt="sản phẩm"
-                className="max-h-[400px] w-full rounded-lg object-fill transition-opacity duration-300"
+                className="max-h-[400px] w-full rounded-lg object-contain transition-opacity duration-300"
               />
             </div>
 
