@@ -31,15 +31,15 @@ const PaymentView: React.FC = () => {
 
     if (orderInfo && !isLoading) {
       dispatch(setOrderInfo(orderInfo));
-    }
 
-    if (status === "paid") {
-      console.log("Clearing cart...");
-      dispatch(clearCart());
-      router.replace("/payment/success");
-      sessionStorage.removeItem("form");
-    } else {
-      router.replace("/payment/failure");
+      if (status === "paid") {
+        console.log("Clearing cart...");
+        dispatch(clearCart());
+        router.replace("/payment/success");
+        sessionStorage.removeItem("form");
+      } else {
+        router.replace("/payment/failure");
+      }
     }
   }, [searchParams, router, orderInfo, isLoading, dispatch]);
   return (

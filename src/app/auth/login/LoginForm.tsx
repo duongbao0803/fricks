@@ -120,6 +120,9 @@ const LoginForm: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    provider.setCustomParameters({
+      prompt: "select_account",
+    });
     try {
       const result = await signInWithPopup(auth, provider);
       const credentials = await result.user.getIdTokenResult();
