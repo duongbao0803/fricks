@@ -3,7 +3,10 @@ import apiSlice from "./apiSlice";
 const categoryApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllCatagory: builder.query({
-      query: () => "/categories/get-all-category",
+      query: () => ({
+        url: "/categories/get-all-category",
+        method: "GET",
+      }),
     }),
   }),
 });

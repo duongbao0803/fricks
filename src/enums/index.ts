@@ -8,3 +8,9 @@ export enum SortStatus {
   LOWTOHIGHT = "LOWTOHIGH",
   HIGHTOLOW = "HIGHTOLOW",
 }
+
+export enum PAYMENT {
+  VIETQR,
+  VNPAY,
+  COD,
+}

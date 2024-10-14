@@ -26,6 +26,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "citc.edu.vn",
       },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
     ],
   },
 };

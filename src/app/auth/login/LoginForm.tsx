@@ -90,7 +90,7 @@ const LoginForm: React.FC = () => {
               Cookies.set("email", encryptedEmail);
               Cookies.set("password", encryptedPassword);
             }
-            router.push("/");
+            router.replace("/");
             notify("success", "Đăng nhập thành công", 3);
             setIsLoggingIn(false);
           }
@@ -120,12 +120,14 @@ const LoginForm: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    provider.setCustomParameters({
+      prompt: "select_account",
+    });
     try {
       const result = await signInWithPopup(auth, provider);
       const credentials = await result.user.getIdTokenResult();
       const accessToken = credentials.token;
       const res = await loginGoogle(JSON.stringify(accessToken)).unwrap();
-      console.log("check res", res);
       if (res && res.httpCode === 200) {
         Cookies.set("accessToken", res.accessToken);
         Cookies.set("refreshToken", res.refreshToken);

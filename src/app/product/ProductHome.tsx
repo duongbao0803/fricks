@@ -1,23 +1,48 @@
 "use client";
-import { Skeleton } from "antd";
-import Image from "next/image";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Rate, Skeleton, Tooltip } from "antd";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import useAddToCart from "./hooks/useAddToCart";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { PriceFormat } from "@/utils";
-import { useRouter } from "next/navigation";
-import ScrollReveal from "./ScrollReveal";
+import { ProductInfo } from "@/types/product.types";
+import { ScrollReveal } from "@/components";
+import { useFavorite } from "@/hooks/useAddFavorite";
+import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import { RootState } from "@/redux/store";
 
 const ProductHome = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState(0);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
     {},
   );
+
+  const { handleAddToCart } = useAddToCart();
+  const isFavorite = useSelector(
+    (state: RootState) => state.persistedReducer.favorites.isFavorite,
+  );
+
+  const { toggleFavorite, loading } = useFavorite();
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
+    PageIndex: 1,
+    PageSize: 50,
+  });
+
+  // useEffect(() => {
+  //   refetch();
+  // }, [favoriteList, refetch]);
+
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
     [categoriesData],
@@ -47,8 +72,11 @@ const ProductHome = () => {
     if (selectedCategory === 0) {
       return Object.values(productData).flat();
     }
-
     return productData[selectedCategory as keyof typeof productData] || [];
+  };
+
+  const handleToggleFavorite = (product: ProductInfo) => {
+    toggleFavorite(product?.id);
   };
 
   return (
@@ -85,10 +113,11 @@ const ProductHome = () => {
       </div>
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {productData?.length > 0
-          ? productData?.slice(0, 7).map((product: any) =>
-              product?.price?.map((item: any, index: number) => (
+          ? productData
+              ?.slice(0, 8)
+              .map((product: ProductInfo, index: number) => (
                 <ScrollReveal key={index}>
-                  <div className="product-item my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
+                  <div className="relative my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
                     <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
                       <div className="group relative h-full w-full overflow-hidden">
                         <Image
@@ -102,28 +131,59 @@ const ProductHome = () => {
 
                         <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
                           <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                            <button>+ Thêm vào giỏ hàng</button>
+                            <button onClick={() => handleAddToCart(product)}>
+                              + Thêm vào giỏ hàng
+                            </button>
                           </p>
                         </button>
+                        <Tooltip
+                          title={
+                            favoriteList.includes(product?.id)
+                              ? "Đã có trong danh sách yêu thích"
+                              : "Thêm vào danh sách yêu thích"
+                          }
+                          placement="top"
+                        >
+                          <button
+                            className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
+                            onClick={() => handleToggleFavorite(product)}
+                          >
+                            {favoriteList.some(
+                              (favorite: { productId: number }) =>
+                                favorite.productId === product.id,
+                            ) ? (
+                              <AiFillHeart className="text-xl text-red-500" />
+                            ) : (
+                              <AiOutlineHeart className="text-xl text-gray-500" />
+                            )}
+                          </button>
+                        </Tooltip>
                       </div>
-                      <Link href={`/product/${product?._id}`}>
+                      <Link href={`/product/${product?.id}`}>
                         <div className="flex flex-col items-center p-4 text-center">
-                          <h3 className="mb-2 text-lg font-semibold">
-                            {product?.name}
-                          </h3>
-
+                          <h3 className="mb-2 text-lg">{product?.name}</h3>
+                          <Rate
+                            disabled
+                            value={product?.rating || 5}
+                            className="mb-2 text-sm"
+                          />
                           <p className="mb-2 text-xl font-bold">
                             <span className="text-primary">
-                              {PriceFormat.format(item?.price)}
+                              {PriceFormat.format(product?.price[0]?.price)} /{" "}
+                              {product?.price[0]?.unit?.name || ""}
                             </span>
                           </p>
                         </div>
                       </Link>
                     </div>
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 transform">
+                      <p className="text-[12px] font-normal text-gray-400">
+                        {product?.storeName}
+                      </p>
+                    </div>
                   </div>
                 </ScrollReveal>
-              )),
-            )
+              ))
           : Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
@@ -134,7 +194,7 @@ const ProductHome = () => {
             ))}
       </div>
 
-      {getProductsToDisplay().length > 0 && (
+      {productData?.length > 0 && (
         <div className="my-7 flex justify-center">
           <button
             onClick={() => router.push("/product")}

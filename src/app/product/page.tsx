@@ -1,6 +1,5 @@
-import BannerProduct from "@/components/BannerProduct";
-import { BreadScrumb } from "@/components/common";
-import { ProductList } from "@/components";
+import { BannerCustom, BreadScrumb } from "@/components/common";
+import ProductList from "./ProductList";
 
 const ProductPage = () => {
   const items = [
@@ -11,7 +10,7 @@ const ProductPage = () => {
 
   return (
     <main className="min-h-screen">
-      <BannerProduct />
+      <BannerCustom title="Danh sách sản phẩm" />
       <section className="container mx-auto">
         <div className="my-10">
           <BreadScrumb items={items} />
