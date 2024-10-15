@@ -58,7 +58,7 @@ const PostHome = () => {
               spaceBetween: 5,
             },
             1150: {
-              slidesPerView: 2,
+              slidesPerView: 3,
               spaceBetween: 5,
             },
             1600: {
@@ -100,11 +100,11 @@ const PostHome = () => {
                 >
                   <Link
                     href={`/post/${post?.id}`}
-                    className="gap-5 transition-all duration-500"
+                    className="transition-all duration-500"
                   >
                     <Card
                       hoverable
-                      className="h-[400px] w-[350px] overflow-hidden border-2"
+                      className="mx-auto h-[400px] w-[350px] overflow-hidden border-2"
                       cover={
                         <Image
                           alt="error"

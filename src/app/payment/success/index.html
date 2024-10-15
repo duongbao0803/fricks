@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .invoice-container {
+      margin: 5rem auto;
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+    }
+
+    .invoice {
+      position: relative;
+      min-height: 800px;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .invoice__content {
+      padding: 2.5rem;
+    }
+
+    .invoice__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .invoice__title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+    }
+
+    .invoice__logo {
+      width: 150px;
+      margin-bottom: 0.75rem;
+    }
+
+    .invoice__details {
+      line-height: 1.75;
+    }
+
+    .invoice__label {
+      font-weight: bold;
+    }
+
+    .invoice__contacts {
+      display: flex;
+      justify-content: space-between;
+      margin: 2rem 0;
+    }
+
+    .invoice__store,
+    .invoice__customer {
+      max-width: 45%;
+    }
+
+    .invoice__contact-title {
+      font-size: 0.875rem;
+    }
+
+    .invoice__store-name,
+    .invoice__customer-name {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .invoice__store-location,
+    .invoice__customer-location,
+    .invoice__store-phone,
+    .invoice__customer-phone {
+      font-size: 0.875rem;
+    }
+
+    .invoice__table-wrapper {
+      overflow-x: auto;
+    }
+
+    .invoice__table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .invoice__table-header {
+      border-bottom: 2px solid #ccc;
+      padding: 1rem;
+      text-align: left;
+      color: #666;
+    }
+
+    .invoice__table-cell {
+      padding: 1rem;
+    }
+
+    .invoice__table-cell--sticky {
+      position: sticky;
+      left: 0;
+      background-color: #fff;
+      z-index: 10;
+    }
+
+    .payment-status {
+      display: flex;
+      justify-content: center;
+      min-height: 400px;
+    }
+
+    .payment-status__stamp {
+      transform: rotate(-15deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 150px;
+      width: 350px;
+      border: 4px solid red;
+      border-radius: 1.5rem;
+      font-weight: 500;
+      color: red;
+    }
+
+    .payment-status__text {
+      font-size: 2.5rem;
+    }
+
+    .payment-status__amount {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .payment-status__date {
+      font-size: 1rem;
+    }
+
+    .invoice__footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: var(--primary-color);
+      padding: 2.5rem;
+    }
+
+    .invoice__footer-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .invoice__footer-divider {
+      margin: 0.5rem 0;
+      height: 2px;
+      background-color: #fff;
+    }
+
+    .invoice__footer-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .invoice__footer-section {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      line-height: 2;
+    }
+
+    .invoice__footer-label {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .invoice__footer-value {
+      color: #ccc;
+    }
+
+    .invoice__footer-thanks {
+      text-align: center;
+      color: #fff;
+    }
+  </style>
+  <body>
+    <main class="invoice-container">
+      <section class="invoice">
+        <div class="invoice__content">
+          <div class="invoice__header">
+            <h1 class="invoice__title">HÓA ĐƠN</h1>
+            <img src="{IconWeb}" alt="icon" class="invoice__logo" />
+          </div>
+          <div class="invoice__details">
+            <p>
+              <span class="invoice__label">Thời gian:</span>
+              <span>13/10/2024</span>
+            </p>
+            <p>
+              <span class="invoice__label">Mã hóa đơn:</span>
+              <span>#123123</span>
+            </p>
+          </div>
+          <div class="invoice__contacts">
+            <div class="invoice__store">
+              <h3 class="invoice__contact-title">CỬA HÀNG</h3>
+              <p class="invoice__store-name">Gia đức VLXD</p>
+              <p class="invoice__store-location">Bà Rịa Vũng Tàu</p>
+              <p class="invoice__store-phone">0909 113 114</p>
+            </div>
+            <div class="invoice__customer">
+              <h3 class="invoice__contact-title">KHÁCH HÀNG</h3>
+              <p class="invoice__customer-name">Bảo Vũng Tàu</p>
+              <p class="invoice__customer-location">Bà Rịa Vũng Tàu</p>
+              <p class="invoice__customer-phone">0909 114 115</p>
+            </div>
+          </div>
+          <div class="invoice__table-wrapper">
+            <table class="invoice__table">
+              <thead>
+                <tr>
+                  {tableInvoice.map((data, index) => (
+                  <th key="{index}" class="invoice__table-header">{data}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="invoice__table-cell invoice__table-cell--sticky">
+                    hihi
+                  </td>
+                  <td class="invoice__table-cell">hii</td>
+                  <td class="invoice__table-cell">hihi</td>
+                  <td class="invoice__table-cell">hihi</td>
+                </tr>
+                <tr>
+                  <td class="invoice__table-cell invoice__table-cell--sticky">
+                    hihi
+                  </td>
+                  <td class="invoice__table-cell">hii</td>
+                  <td class="invoice__table-cell">hihi</td>
+                  <td class="invoice__table-cell">hihi</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="payment-status">
+          <div class="payment-status__stamp">
+            <h2 class="payment-status__text">ĐÃ THANH TOÁN</h2>
+            <p class="payment-status__amount">{PriceFormat.format(12345)}</p>
+            <p class="payment-status__date">13/10/2024</p>
+          </div>
+        </div>
+        <div class="invoice__footer">
+          <div class="invoice__footer-header">
+            <p class="invoice__footer-info">Thông tin bổ sung</p>
+            <p class="invoice__footer-total">Tổng</p>
+          </div>
+          <div class="invoice__footer-divider"></div>
+          <div class="invoice__footer-content">
+            <div class="invoice__footer-section">
+              <p class="invoice__footer-label">Cửa hàng:</p>
+              <p class="invoice__footer-value">Gia Đức VLXD</p>
+              <p class="invoice__footer-label">Điều khoản:</p>
+              <p class="invoice__footer-value">Thanh toán 100%</p>
+            </div>
+            <div class="invoice__footer-section">
+              <p class="invoice__footer-label">Tạm tính:</p>
+              <p class="invoice__footer-value">123456789</p>
+              <p class="invoice__footer-label">Tổng:</p>
+              <p class="invoice__footer-value">123456789</p>
+            </div>
+          </div>
+          <div class="invoice__footer-divider"></div>
+          <p class="invoice__footer-thanks">Xin cảm ơn quý khách đã ủng hộ</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

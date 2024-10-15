@@ -63,7 +63,7 @@ const Navbar = () => {
         {
           key: "profile",
           label: (
-            <Link href="/profile" className="flex items-center gap-2">
+            <Link href="/user/personal" className="flex items-center gap-2">
               <span>Thông tin cá nhân</span>
             </Link>
           ),
