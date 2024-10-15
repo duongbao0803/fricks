@@ -94,7 +94,7 @@ const PaymentSuccess: React.FC = () => {
                           <span>{order?.product?.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-[34px]">{order?.product?.unit}</td>
+                      <td className="px-6 py-[34px]">{order?.productUnit}</td>
                       <td className="px-6 py-[34px]">{order?.quantity}</td>
                       <td className="px-6 py-[34px]">
                         {PriceFormat.format(order?.quantity * order?.price)}
@@ -148,7 +148,7 @@ const PaymentSuccess: React.FC = () => {
             </div>
             <div className="my-2 h-[2px] w-full bg-white" />
             <p className="text-center text-white">
-              Xin cảm ơn quý khách đã ủng hộ
+              Xin cảm ơn quý khách đã mua hàng tại Fricks
             </p>
           </div>
         </section>
