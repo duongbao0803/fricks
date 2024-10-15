@@ -9,6 +9,7 @@ import PostImage from "@/assets/images/item/post.jpg";
 import React from "react";
 import { FaFacebook } from "react-icons/fa6";
 import { formatTimestampWithHour } from "@/utils";
+import parse from "html-react-parser";
 
 const PostList = () => {
   const { data } = useGetPostListQuery({
@@ -39,8 +40,8 @@ const PostList = () => {
                         </h3>
                       </Link>
 
-                      <span className="line-clamp-2 block overflow-hidden text-sm">
-                        {item?.content}
+                      <span className="line-clamp-2 block overflow-hidden text-sm text-gray-400">
+                        {parse(item?.content)}
                       </span>
                       <p className="absolute bottom-0 line-clamp-2 block overflow-hidden text-[12px] font-light">
                         {formatTimestampWithHour(item.createDate)}
