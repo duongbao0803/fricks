@@ -21,7 +21,7 @@ export const buttonsData: ButtonData[] = [
     path: "/user/personal",
     icon: <FiUser />,
   },
-  { id: 2, label: "Đổi mật khẩu", path: "/password", icon: <FiLock /> },
+  { id: 2, label: "Đổi mật khẩu", path: "/user/password", icon: <FiLock /> },
   {
     id: 3,
     label: "Đơn hàng của tôi",
@@ -52,7 +52,7 @@ const SidebarButtons: React.FC<SidebarButtonsProps> = ({
               : handleButtonClick(button.id, button.path)
           }
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center gap-3 lg:justify-start">
             {button.icon}
             <span>{button.label}</span>
           </div>

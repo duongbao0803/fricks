@@ -2,13 +2,19 @@
 import { UploadImage } from "@/components/common";
 import { ButtonCustom } from "@/components/ui/button";
 import useUserInfo from "@/hooks/useUserInfo";
-// import { Input } from "@/components/ui/input";
-import { DatePicker, Divider, Form, Input, Select } from "antd";
+import moment from "moment";
+import dayjs from "dayjs";
+import { DatePicker, Form, Input, Select } from "antd";
 import React, { useEffect } from "react";
+import { useUpdateUserMutation } from "@/apis/userApi";
 
 const Personal = () => {
   const [form] = Form.useForm();
   const userInfo = useUserInfo();
+  const disabledDate = (current: object) => {
+    return current && current > moment().startOf("day");
+  };
+  const [updateUser] = useUpdateUserMutation();
 
   const handleFileChange = () => {
     console.log("hihi");
@@ -20,22 +26,31 @@ const Personal = () => {
     }
   }, [form, userInfo]);
 
+  const onFinish = (values: any) => {
+    try {
+      const { dob } = values;
+      console.log("check dob", dayjs(dob));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <section>
       <h1 className="mb-2">Thông tin</h1>
       <div className="mx-auto rounded-xl bg-[#fff] p-7 shadow-sm">
-        <div className="grid h-full grid-cols-1 items-center justify-center gap-5 md:grid-cols-7">
-          <div className="col-span-1 md:col-span-4">
-            <Form form={form}>
+        <Form form={form} onFinish={onFinish}>
+          <div className="grid h-full grid-cols-1 items-center justify-center gap-5 md:grid-cols-7">
+            <div className="col-span-1 md:col-span-4">
               <table className="h-full w-full">
                 <tbody>
                   <tr>
-                    <td className="align-baseline">
+                    <td className="w-[30%] align-baseline">
                       <p>
                         <span className="text-lg text-[red]">*</span> Email:
                       </p>
                     </td>
-                    <td className="align-baseline">
+                    <td className="w-[70%] align-baseline">
                       <Form.Item name="email" className="formItem">
                         <Input
                           placeholder="Nhập email"
@@ -46,12 +61,12 @@ const Personal = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="align-baseline">
+                    <td className="w-[30%] align-baseline">
                       <p>
                         <span className="text-lg text-[red]">*</span> Họ và tên:
                       </p>
                     </td>
-                    <td className="align-baseline">
+                    <td className="w-[70%] align-baseline">
                       <Form.Item
                         name="fullName"
                         hasFeedback
@@ -76,23 +91,19 @@ const Personal = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="align-baseline">
+                    <td className="w-[30%] align-baseline">
                       <p>
                         <span className="text-lg text-[red]">*</span> Ngày sinh:
                       </p>
                     </td>
-                    <td className="align-baseline">
+                    <td className="w-[70%] align-baseline">
                       <Form.Item
                         name="dob"
                         hasFeedback
                         rules={[
                           {
                             required: true,
-                            message: "Vui lòng nhập email của bạn",
-                          },
-                          {
-                            type: "email",
-                            message: "Vui lòng nhập đúng kiểu email",
+                            message: "Vui lòng chọn ngày tháng năm sinh",
                           },
                         ]}
                         className="formItem"
@@ -100,29 +111,27 @@ const Personal = () => {
                         <DatePicker
                           placeholder="Chọn ngày sinh"
                           className="w-full p-2"
+                          disabledDate={disabledDate}
+                          format="DD/MM/YYYY"
                           allowClear
                         />
                       </Form.Item>
                     </td>
                   </tr>
                   <tr>
-                    <td className="align-baseline">
+                    <td className="w-[30%] align-baseline">
                       <p>
                         <span className="text-lg text-[red]">*</span> Giới tính:
                       </p>
                     </td>
-                    <td className="align-baseline">
+                    <td className="w-[70%] align-baseline">
                       <Form.Item
                         name="gender"
                         hasFeedback
                         rules={[
                           {
                             required: true,
-                            message: "Vui lòng nhập email của bạn",
-                          },
-                          {
-                            type: "email",
-                            message: "Vui lòng nhập đúng kiểu email",
+                            message: "Vui lòng chọn giới tính",
                           },
                         ]}
                         className="formItem"
@@ -139,13 +148,13 @@ const Personal = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="align-baseline">
+                    <td className="w-[30%] align-baseline">
                       <p>
                         <span className="text-lg text-[red]">*</span> Số điện
                         thoại:
                       </p>
                     </td>
-                    <td className="align-baseline">
+                    <td className="w-[70%] align-baseline">
                       <Form.Item
                         name="phoneNumber"
                         hasFeedback
@@ -171,8 +180,8 @@ const Personal = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="align-baseline"></td>
-                    <td className="align-baseline">
+                    <td className="w-[30%] align-baseline"></td>
+                    <td className="w-[70%] align-baseline">
                       <ButtonCustom className="mt-4 w-36 text-white">
                         Cập nhật
                       </ButtonCustom>
@@ -180,18 +189,29 @@ const Personal = () => {
                   </tr>
                 </tbody>
               </table>
-            </Form>
-          </div>
-          <div className="relative col-span-1 ml-5 grid h-full place-items-center border-l-0 border-gray-100 md:col-span-3 md:border-l-2">
-            <div className="">
-              <UploadImage
-                titleButton="Upload"
-                initialImage=""
-                onFileChange={handleFileChange}
-              />
+            </div>
+            <div className="col-span-1 ml-5 mt-5 flex h-full items-center justify-center border-l-0 border-gray-100 md:col-span-3 md:border-l-2 lg:mt-0">
+              <Form.Item
+                name="avatar"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn hình ảnh",
+                  },
+                ]}
+                className="flex w-full items-center justify-center"
+              >
+                <div className="flex w-full flex-col items-center">
+                  <UploadImage
+                    titleButton="Upload"
+                    initialImage=""
+                    onFileChange={handleFileChange}
+                  />
+                </div>
+              </Form.Item>
             </div>
           </div>
-        </div>
+        </Form>
       </div>
     </section>
   );

@@ -13,11 +13,11 @@ export default function LoadingWrapper({
 
   const token = Cookies.get("accessToken");
 
-  // useEffect(() => {
-  //   if (token) {
-  //     router.push("/");
-  //   }
-  // }, [token, router]);
+  useEffect(() => {
+    if (token) {
+      router.push("/");
+    }
+  }, [token, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

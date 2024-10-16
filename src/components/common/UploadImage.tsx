@@ -95,7 +95,6 @@ const UploadImage: React.FC<UploadImageProps> = (props) => {
         onPreview={handlePreview}
         onChange={handleChange}
         accept="image/*"
-        className="object-cover"
         beforeUpload={() => false}
       >
         {file ? null : uploadButton}
@@ -103,8 +102,6 @@ const UploadImage: React.FC<UploadImageProps> = (props) => {
       {previewImage && (
         <Image
           alt="error"
-          className="object-cover"
-          wrapperStyle={{ display: "none" }}
           preview={{
             visible: previewOpen,
             onVisibleChange: (visible) => setPreviewOpen(visible),

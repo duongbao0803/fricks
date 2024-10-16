@@ -13,8 +13,8 @@ const userApi = apiSlice.injectEndpoints({
       }),
     }),
     updateUser: builder.mutation({
-      query: ({ userId, userData }: { userId: number; userData: any }) => ({
-        url: `/users/${userId}`,
+      query: (userData) => ({
+        url: `/users`,
         method: "PUT",
         body: userData,
       }),

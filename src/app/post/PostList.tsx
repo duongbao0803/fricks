@@ -35,7 +35,7 @@ const PostList = () => {
                     />
                     <div className="flex flex-col items-start justify-start pl-5">
                       <Link href={`/post/${item?.id}`}>
-                        <h3 className="mb-2 text-lg font-bold transition-all duration-500 hover:text-primary md:text-xl">
+                        <h3 className="mb-2 text-lg font-semibold transition-all duration-500 hover:text-primary md:text-xl">
                           {item?.title}
                         </h3>
                       </Link>

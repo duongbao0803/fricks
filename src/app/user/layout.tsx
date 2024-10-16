@@ -6,14 +6,19 @@ import { BreadScrumb } from "@/components/common";
 import SidebarButtons from "@/components/layouts/SidebarButtons";
 import Image from "next/image";
 import Avatar from "@/assets/images/logo/avatar_admin.jpg";
+import useUserInfo from "@/hooks/useUserInfo";
+import { MobileNav } from "@/components/layouts";
+import MobileSide from "@/components/layouts/MobileSide";
 
-export default function ProfileLayout({
+function ProfileLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const router = useRouter();
   const pathname = usePathname();
+  const userInfo = useUserInfo();
+
   const [activeButton, setActiveButton] = useState<number>(1);
   const { logout } = useLogout();
 
@@ -50,19 +55,20 @@ export default function ProfileLayout({
         <div className="py-16">
           <BreadScrumb items={items} />
         </div>
-
         <div className="grid grid-cols-4 gap-10">
           <div className="col-span-1 hidden lg:block">
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-4">
               <Image
                 src={Avatar}
                 height={500}
                 width={500}
                 quality={100}
                 alt="avatar"
-                className="size-12 rounded-[100%]"
+                className="size-14 rounded-[100%]"
               />
-              <span className="font-bold">Duong Bao</span>
+              <span className="font-semibold">
+                {userInfo?.userInfo?.fullName}
+              </span>
             </div>
             <div className="my-3 h-0.5 w-full bg-[#eeeeee]" />
             <SidebarButtons
@@ -70,6 +76,9 @@ export default function ProfileLayout({
               handleButtonClick={handleButtonClick}
               logout={logout}
             />
+          </div>
+          <div className="lg:hidden">
+            <MobileSide />
           </div>
           <div key={pathname} className="col-span-4 items-center lg:col-span-3">
             {children}
