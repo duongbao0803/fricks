@@ -19,12 +19,6 @@ const MobileSide = () => {
   const [activeButton, setActiveButton] = useState<number>(1);
   const { logout } = useLogout();
 
-  const items = [
-    {
-      title: "Thông tin tài khoản",
-    },
-  ];
-
   useEffect(() => {
     switch (pathname) {
       case "/user/personal":
@@ -45,6 +39,7 @@ const MobileSide = () => {
     setActiveButton(buttonName);
     router.push(path);
   };
+
   return (
     <Sheet>
       <SheetTrigger className="flex items-center justify-center">

@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
@@ -10,14 +10,15 @@ export default function LoadingWrapper({
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   const token = Cookies.get("accessToken");
 
   useEffect(() => {
-    if (token) {
+    if (token && pathname === "/auth") {
       router.push("/");
     }
-  }, [token, router]);
+  }, [token, pathname, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

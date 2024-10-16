@@ -10,7 +10,7 @@ import useUserInfo from "@/hooks/useUserInfo";
 import { MobileNav } from "@/components/layouts";
 import MobileSide from "@/components/layouts/MobileSide";
 
-function ProfileLayout({
+export default function ProfileLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -59,12 +59,12 @@ function ProfileLayout({
           <div className="col-span-1 hidden lg:block">
             <div className="flex items-center gap-4">
               <Image
-                src={Avatar}
+                src={userInfo?.userInfo?.avatar}
                 height={500}
                 width={500}
                 quality={100}
                 alt="avatar"
-                className="size-14 rounded-[100%]"
+                className="size-14 rounded-[100%] object-cover"
               />
               <span className="font-semibold">
                 {userInfo?.userInfo?.fullName}

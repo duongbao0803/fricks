@@ -21,7 +21,6 @@ import { RolesLogin } from "@/enums";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useUserInfo from "@/hooks/useUserInfo";
-import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
 
 const Navbar = () => {
   const { userInfo } = useUserInfo();

@@ -3,35 +3,47 @@ import { UploadImage } from "@/components/common";
 import { ButtonCustom } from "@/components/ui/button";
 import useUserInfo from "@/hooks/useUserInfo";
 import moment from "moment";
-import dayjs from "dayjs";
 import { DatePicker, Form, Input, Select } from "antd";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useUpdateUserMutation } from "@/apis/userApi";
+import { GENDER } from "@/enums";
+import { notify } from "@/components/common/Notification";
 
 const Personal = () => {
   const [form] = Form.useForm();
   const userInfo = useUserInfo();
+  const [fileChange, setFileChange] = useState<string>("");
   const disabledDate = (current: object) => {
     return current && current > moment().startOf("day");
   };
   const [updateUser] = useUpdateUserMutation();
-
-  const handleFileChange = () => {
-    console.log("hihi");
-  };
+  const handleFileChange = useCallback((newFileChange: string) => {
+    setFileChange(newFileChange);
+  }, []);
 
   useEffect(() => {
-    if (userInfo) {
-      form.setFieldsValue(userInfo?.userInfo);
-    }
-  }, [form, userInfo]);
+    if (userInfo?.userInfo) {
+      const { avatar, ...restUserInfo } = userInfo.userInfo;
 
-  const onFinish = (values: any) => {
+      form.setFieldsValue({
+        ...restUserInfo,
+        avatar: fileChange,
+      });
+    }
+  }, [fileChange, form, userInfo]);
+
+  const onFinish = async (values: any) => {
     try {
       const { dob } = values;
-      console.log("check dob", dayjs(dob));
-    } catch (err) {
-      console.error(err);
+      const formattedDob = dob ? moment(dob).toISOString() : "";
+      const userId = userInfo?.userInfo?.id;
+      const updatedValues = { ...values, dob: formattedDob, userId };
+      const res = await updateUser(updatedValues).unwrap();
+      if (res && res.httpCode === 200) {
+        notify("success", `${res.message}`, 2);
+      }
+    } catch (err: any) {
+      notify("error", `${err.data.message}`, 3);
     }
   };
 
@@ -140,9 +152,13 @@ const Personal = () => {
                           placeholder="Chọn giới tính"
                           className="h-[39.33px]"
                         >
-                          <Select.Option value="male">Nam</Select.Option>
-                          <Select.Option value="female">Nữ</Select.Option>
-                          <Select.Option value="other">Khác</Select.Option>
+                          <Select.Option value={GENDER.MALE}>Nam</Select.Option>
+                          <Select.Option value={GENDER.FEMALE}>
+                            Nữ
+                          </Select.Option>
+                          <Select.Option value={GENDER.OTHER}>
+                            Khác
+                          </Select.Option>
                         </Select>
                       </Form.Item>
                     </td>
@@ -180,6 +196,32 @@ const Personal = () => {
                     </td>
                   </tr>
                   <tr>
+                    <td className="w-[30%] align-baseline">
+                      <p>
+                        <span className="text-lg text-[red]">*</span> Địa chỉ:
+                      </p>
+                    </td>
+                    <td className="w-[70%] align-baseline">
+                      <Form.Item
+                        name="address"
+                        hasFeedback
+                        className="formItem"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Vui lòng nhập địa chỉ",
+                          },
+                        ]}
+                      >
+                        <Input
+                          placeholder="Nhập địa chỉ"
+                          className="p-2"
+                          allowClear
+                        />
+                      </Form.Item>
+                    </td>
+                  </tr>
+                  <tr>
                     <td className="w-[30%] align-baseline"></td>
                     <td className="w-[70%] align-baseline">
                       <ButtonCustom className="mt-4 w-36 text-white">
@@ -203,8 +245,8 @@ const Personal = () => {
               >
                 <div className="flex w-full flex-col items-center">
                   <UploadImage
-                    titleButton="Upload"
-                    initialImage=""
+                    titleButton="Thêm ảnh"
+                    initialImage={userInfo?.userInfo?.avatar}
                     onFileChange={handleFileChange}
                   />
                 </div>

@@ -7,7 +7,6 @@ import {
   Subscribe,
 } from "@/components";
 import "./globals.css";
-import "./globals.css";
 import ProductHome from "./product/ProductHome";
 import PostHome from "./post/PostHome";
 
