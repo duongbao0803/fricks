@@ -60,7 +60,10 @@ const Personal = () => {
                     name="oldPassword"
                     className="formItem"
                   >
-                    <Input placeholder="Mật khẩu cũ" className="p-2" />
+                    <Input
+                      placeholder="Mật khẩu cũ"
+                      className="w-[90%] max-w-[400px] p-2"
+                    />
                   </Form.Item>
                 </td>
               </tr>
@@ -84,7 +87,7 @@ const Personal = () => {
                   >
                     <Input
                       placeholder="Mật khẩu mới"
-                      className="p-2"
+                      className="w-[90%] max-w-[400px] p-2"
                       allowClear
                     />
                   </Form.Item>
@@ -117,7 +120,7 @@ const Personal = () => {
                   >
                     <Input
                       placeholder="Nhập họ và tên"
-                      className="p-2"
+                      className="w-[90%] max-w-[400px] p-2"
                       allowClear
                     />
                   </Form.Item>
