@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "../product/hooks/useAddToCart";
+import { notify } from "@/components/common/Notification";
 
 const OrderTable = () => {
   const { handleAddToCart } = useAddToCart();
@@ -109,7 +110,10 @@ const OrderTable = () => {
               </div>
               <div className="flex flex-1 flex-col items-center justify-between gap-3 p-3">
                 <InputCustom placeholder="Mã giảm giá" className="" />
-                <button className="w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95">
+                <button
+                  onClick={() => notify("info", "Tính năng sẽ sớm ra mắt", 2)}
+                  className="w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95"
+                >
                   ÁP DỤNG
                 </button>
               </div>

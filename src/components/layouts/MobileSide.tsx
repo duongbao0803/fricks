@@ -1,14 +1,12 @@
-import Link from "next/link";
-import { CiMenuFries } from "react-icons/ci";
-import Image from "next/image";
+import "@/app/globals.css";
 import IconWeb from "@/assets/images/logo/logo_web.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import "@/app/globals.css";
-import useUserInfo from "@/hooks/useUserInfo";
-import SidebarButtons from "./SidebarButtons";
 import { useLogout } from "@/hooks/useLogout";
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { CiMenuFries } from "react-icons/ci";
+import SidebarButtons from "./SidebarButtons";
 // import NavElement from "./NavElement";
 
 const MobileSide = () => {
@@ -66,4 +64,4 @@ const MobileSide = () => {
   );
 };
 
-export default MobileSide;
+export default React.memo(MobileSide);

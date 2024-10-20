@@ -1,18 +1,16 @@
 "use client";
 import { TagCustom } from "@/components/common";
-import { CheckCircleFilled } from "@ant-design/icons";
+import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { Divider, Modal, Spin } from "antd";
-import Image from "next/image";
 
-import PaymentSuccess from "@/app/payment/success/page";
-import ADMIN from "@/assets/images/logo/avatar_admin.jpg";
-import { ButtonCustom } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
-import { TbTruckDelivery } from "react-icons/tb";
 import { useGetListOrderQuery } from "@/apis/orderApi";
+import PaymentSuccess from "@/app/payment/success/page";
+import { ButtonCustom } from "@/components/ui/button";
 import { OrderInfo } from "@/types/order.types";
 import { formatTimestamp } from "@/utils";
+import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { TbTruckDelivery } from "react-icons/tb";
 
 // Spinner component
 const Spinner = () => (
@@ -38,8 +36,6 @@ const OrderedList = () => {
     OrderStatus: "",
     PaymentStatus: "",
   });
-
-  console.log("check listOrder", listOrder);
 
   const showLoading = () => {
     setOpen(true);
@@ -124,12 +120,21 @@ const OrderedList = () => {
               <div className="flex items-center gap-3 font-medium">
                 <div className="flex items-center gap-3 text-sm">
                   <p className="text-gray-500">Trạng thái:</p>
-                  <TagCustom
-                    className="!mr-0"
-                    label="ĐÃ THANH TOÁN"
-                    color="green"
-                    closable={false}
-                  />
+                  {order?.paymentStatus !== "FAILED" ? (
+                    <TagCustom
+                      className="!mr-0"
+                      label="ĐÃ THANH TOÁN"
+                      color="green"
+                      closable={false}
+                    />
+                  ) : (
+                    <TagCustom
+                      className="!mr-0"
+                      label="CHƯA THANH TOÁN"
+                      color="red"
+                      closable={false}
+                    />
+                  )}
                 </div>
                 <div className="h-full w-[1px] bg-gray-500" />
                 <div className="flex items-center gap-1 text-gray-500">
@@ -143,27 +148,38 @@ const OrderedList = () => {
             <Divider className="!my-2 bg-gray-200"></Divider>
             <div>
               <div className="my-6 flex items-center justify-between px-2 text-sm">
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-4">
                   <div>
                     <p>{order?.storeName}</p>
                     <p>{order?.storeAddress}</p>
+                    <p>{order?.storePhone}</p>
                   </div>
                 </div>
                 <div>
-                  <FaArrowRightLong size={50} />
+                  <FaArrowRightLong size={20} color="orange" />
                 </div>
                 <div className="flex justify-end gap-4">
                   <div>
                     <p>{order?.customerName}</p>
                     <p>{order?.customerAddress}</p>
+                    <p>{order?.customerPhone}</p>
                   </div>
                 </div>
               </div>
               <Divider className="!m-0 bg-gray-200"></Divider>
               <div className="mt-4 flex items-center justify-between">
-                <div className="flex gap-2 text-sm text-[#2bc02b]">
-                  <CheckCircleFilled color="green" />
-                  <p>Đã giao hàng</p>
+                <div className="flex flex-col justify-between gap-3">
+                  {order?.paymentStatus !== "FAILED" ? (
+                    <div className="flex gap-2 text-sm text-[#2bc02b]">
+                      <CheckCircleFilled color="green" />
+                      <p>Đã giao hàng</p>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 text-sm text-[red]">
+                      <CloseCircleFilled color="red" />
+                      <p>Đang chờ...</p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-3">
                   <div className="flex justify-between gap-5">

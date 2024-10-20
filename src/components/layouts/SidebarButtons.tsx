@@ -62,4 +62,4 @@ const SidebarButtons: React.FC<SidebarButtonsProps> = ({
   );
 };
 
-export default SidebarButtons;
+export default React.memo(SidebarButtons);

@@ -12,7 +12,7 @@ const orderApi = apiSlice.injectEndpoints({
     }),
     getListOrder: builder.query({
       query: ({ PageIndex, PageSize, orderStatus, paymentStatus }) => ({
-        url: `/orders?PageIndex=${PageIndex}&PageSize=${PageSize}&OrderStatus=${orderStatus}&PaymentStatus=${paymentStatus}`,
+        url: `/orders?PageIndex=${PageIndex}&PageSize=${PageSize}&SortBy=date&Dir=desc`,
         method: "GET",
       }),
     }),
