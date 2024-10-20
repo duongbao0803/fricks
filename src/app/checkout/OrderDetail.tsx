@@ -232,7 +232,7 @@ const OrderDetail = () => {
                       />
                     </div>
                   </div>
-                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                  {/* <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
                     <Radio
                       value={PAYMENT.VNPAY}
                       className="w-full"
@@ -252,7 +252,7 @@ const OrderDetail = () => {
                         quality={100}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </Radio.Group>
                 <div className="flex gap-2">
                   <input

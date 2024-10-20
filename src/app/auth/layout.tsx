@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { FloatButton } from "antd";
 import ProgressBar from "@/components/ProgressBar";
 import { Footer, Navbar } from "@/components/layouts";
+import useUserInfo from "@/hooks/useUserInfo";
 
 export default function ClientLayout({
   children,
@@ -11,6 +12,7 @@ export default function ClientLayout({
 }>) {
   const pathname = usePathname();
   const showNavbar = pathname !== "/auth";
+  const userInfo = useUserInfo();
 
   return (
     <>

@@ -1,14 +1,12 @@
 "use client";
+import { BreadScrumb } from "@/components/common";
+import MobileSide from "@/components/layouts/MobileSide";
+import SidebarButtons from "@/components/layouts/SidebarButtons";
+import { useLogout } from "@/hooks/useLogout";
+import useUserSelector from "@/redux/hooks/useUserSelector";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useLogout } from "@/hooks/useLogout";
-import { BreadScrumb } from "@/components/common";
-import SidebarButtons from "@/components/layouts/SidebarButtons";
-import Image from "next/image";
-import Avatar from "@/assets/images/logo/avatar_admin.jpg";
-import useUserInfo from "@/hooks/useUserInfo";
-import { MobileNav } from "@/components/layouts";
-import MobileSide from "@/components/layouts/MobileSide";
 
 export default function ProfileLayout({
   children,
@@ -17,7 +15,7 @@ export default function ProfileLayout({
 }>) {
   const router = useRouter();
   const pathname = usePathname();
-  const userInfo = useUserInfo();
+  const { userInfo } = useUserSelector();
 
   const [activeButton, setActiveButton] = useState<number>(1);
   const { logout } = useLogout();
@@ -59,16 +57,14 @@ export default function ProfileLayout({
           <div className="col-span-1 hidden lg:block">
             <div className="flex items-center gap-4">
               <Image
-                src={userInfo?.userInfo?.avatar}
+                src={userInfo?.avatar ?? ""}
                 height={500}
                 width={500}
                 quality={100}
                 alt="avatar"
                 className="size-14 rounded-[100%] object-cover"
               />
-              <span className="font-semibold">
-                {userInfo?.userInfo?.fullName}
-              </span>
+              <span className="font-semibold">{userInfo?.fullName}</span>
             </div>
             <div className="my-3 h-0.5 w-full bg-[#eeeeee]" />
             <SidebarButtons

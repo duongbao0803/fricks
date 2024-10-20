@@ -7,8 +7,8 @@ import {
   Subscribe,
 } from "@/components";
 import "./globals.css";
-import ProductHome from "./product/ProductHome";
 import PostHome from "./post/PostHome";
+import ProductHome from "./product/ProductHome";
 
 export default function Home() {
   return (

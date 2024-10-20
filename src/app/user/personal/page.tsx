@@ -1,21 +1,20 @@
 "use client";
-import { UploadImage } from "@/components/common";
-import { ButtonCustom } from "@/components/ui/button";
-import useUserInfo from "@/hooks/useUserInfo";
+import { useCallback, useEffect, useState } from "react";
+import dayjs from "dayjs";
 import moment from "moment";
 import { DatePicker, Form, Input, Select } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import { useUpdateUserMutation } from "@/apis/userApi";
-import { GENDER } from "@/enums";
-import { notify } from "@/components/common/Notification";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "@/redux/slices/userSlice";
+import { useUpdateUserMutation } from "@/apis/userApi";
+import { UploadImage } from "@/components/common";
+import { notify } from "@/components/common/Notification";
+import { ButtonCustom } from "@/components/ui/button";
+import { GENDER, GENDER_INFO } from "@/enums";
 import useUserSelector from "@/redux/hooks/useUserSelector";
+import { setUserInfo } from "@/redux/slices/userSlice";
 
 const Personal = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  // const userInfo = useSelector((state: any) => state.user.userInfo);
   const { userInfo } = useUserSelector();
   const [fileChange, setFileChange] = useState<string>("");
   const disabledDate = (current: object) => {
@@ -29,31 +28,43 @@ const Personal = () => {
   useEffect(() => {
     if (userInfo) {
       const { avatar, ...restUserInfo } = userInfo;
-
       form.setFieldsValue({
         ...restUserInfo,
         avatar: fileChange,
+        gender:
+          restUserInfo?.gender === GENDER.MALE
+            ? GENDER_INFO.MALE
+            : restUserInfo?.gender === GENDER.FEMALE
+              ? GENDER_INFO.FEMALE
+              : GENDER_INFO.OTHER,
+        dob: dayjs(restUserInfo.dob),
       });
     }
   }, [fileChange, form, userInfo]);
 
-  const onFinish = async (values: any) => {
+  const onFinish = useCallback(async (values: any) => {
     try {
-      const { dob } = values;
-      const formattedDob = dob ? moment(dob).toISOString() : "";
-      const userId = userInfo?.id;
-      const updatedValues = { ...values, dob: formattedDob, userId };
-
+      const { gender } = values;
+      const updatedValues = {
+        ...values,
+        gender:
+          gender === GENDER_INFO.MALE
+            ? GENDER.MALE
+            : gender === GENDER_INFO.FEMALE
+              ? GENDER.FEMALE
+              : GENDER.OTHER,
+        userId: userInfo?.id,
+      };
+      console.log("check updatedValues", updatedValues);
       const res = await updateUser(updatedValues).unwrap();
-
       if (res && res.httpCode === 200) {
-        dispatch(setUserInfo(res.data));
+        dispatch(setUserInfo(res));
         notify("success", `${res.message}`, 2);
       }
     } catch (err: any) {
       notify("error", `${err.data.message}`, 3);
     }
-  };
+  }, []);
 
   return (
     <section>
@@ -129,6 +140,7 @@ const Personal = () => {
                         className="formItem"
                       >
                         <DatePicker
+                          picker="date"
                           placeholder="Chọn ngày sinh"
                           className="w-full p-2"
                           disabledDate={disabledDate}
@@ -254,7 +266,7 @@ const Personal = () => {
                 <div className="flex w-full flex-col items-center">
                   <UploadImage
                     titleButton="Thêm ảnh"
-                    initialImage={userInfo?.avatar}
+                    initialImage={userInfo?.avatar ?? ""}
                     onFileChange={handleFileChange}
                   />
                 </div>

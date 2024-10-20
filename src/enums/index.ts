@@ -15,6 +15,12 @@ export enum GENDER {
   OTHER,
 }
 
+export enum GENDER_INFO {
+  MALE = "Nam",
+  FEMALE = "Nữ",
+  OTHER = "Khác",
+}
+
 export enum PAYMENT {
   VIETQR,
   VNPAY,

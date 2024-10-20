@@ -1,14 +1,18 @@
 "use client";
 import { TagCustom } from "@/components/common";
+import { CheckCircleFilled } from "@ant-design/icons";
 import { Divider, Modal, Spin } from "antd";
 import Image from "next/image";
-import { CheckCircleFilled, CheckCircleOutlined } from "@ant-design/icons";
 
-import React, { useState, useEffect } from "react";
-import { TbTruckDelivery } from "react-icons/tb";
+import PaymentSuccess from "@/app/payment/success/page";
 import ADMIN from "@/assets/images/logo/avatar_admin.jpg";
 import { ButtonCustom } from "@/components/ui/button";
-import PaymentSuccess from "@/app/payment/success/page";
+import React, { useEffect, useState } from "react";
+import { TbTruckDelivery } from "react-icons/tb";
+import { useGetListOrderQuery } from "@/apis/orderApi";
+import { OrderInfo } from "@/types/order.types";
+import { formatTimestamp } from "@/utils";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 // Spinner component
 const Spinner = () => (
@@ -28,6 +32,14 @@ const OrderedList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const { data: listOrder = [] } = useGetListOrderQuery({
+    PageIndex: 1,
+    PageSize: 10,
+    OrderStatus: "",
+    PaymentStatus: "",
+  });
+
+  console.log("check listOrder", listOrder);
 
   const showLoading = () => {
     setOpen(true);
@@ -100,124 +112,91 @@ const OrderedList = () => {
           }}
         />
       </div>
-      <div className="mx-auto rounded-xl bg-[#fff] p-3 shadow-sm transition-all duration-500">
-        <div className="flex justify-between">
-          <h3 className="font-semibold text-primary">#200803</h3>
-          <div className="flex items-center gap-3 font-medium">
-            <div className="flex items-center gap-3 text-sm">
-              <p className="text-gray-500">Trạng thái:</p>
-              <TagCustom
-                className="!mr-0"
-                label="ĐÃ THANH TOÁN"
-                color="green"
-                closable={false}
-              />
-            </div>
-            <div className="h-full w-[1px] bg-gray-500" />
-            <div className="flex items-center gap-1 text-gray-500">
-              <TbTruckDelivery /> <span className="text-sm">14/06/2024</span>
-            </div>
-          </div>
-        </div>
-        <Divider className="!my-2 bg-gray-200"></Divider>
-        <div>
-          <div className="my-6 flex justify-between px-2 text-sm">
-            <div className="flex gap-4">
-              <Image
-                src={ADMIN}
-                width={500}
-                height={500}
-                quality={100}
-                alt=""
-                className="size-12 object-contain"
-              />
-              <div>
-                <p>Xi măng</p>
-                <p>x1/cái</p>
+      {listOrder &&
+        listOrder?.length > 0 &&
+        listOrder.map((order: OrderInfo, index: number) => (
+          <div
+            className="mx-auto mb-5 rounded-xl bg-[#fff] p-3 shadow-sm transition-all duration-500"
+            key={index}
+          >
+            <div className="flex justify-between">
+              <h3 className="font-semibold text-primary">#{order?.code}</h3>
+              <div className="flex items-center gap-3 font-medium">
+                <div className="flex items-center gap-3 text-sm">
+                  <p className="text-gray-500">Trạng thái:</p>
+                  <TagCustom
+                    className="!mr-0"
+                    label="ĐÃ THANH TOÁN"
+                    color="green"
+                    closable={false}
+                  />
+                </div>
+                <div className="h-full w-[1px] bg-gray-500" />
+                <div className="flex items-center gap-1 text-gray-500">
+                  <TbTruckDelivery />{" "}
+                  <span className="text-sm">
+                    {formatTimestamp(order?.paymentDate)}
+                  </span>
+                </div>
               </div>
             </div>
-            <div>190.000 đ</div>
-          </div>
-          <div className="my-6 flex justify-between px-2 text-sm">
-            <div className="flex gap-4">
-              <Image
-                src={ADMIN}
-                width={500}
-                height={500}
-                quality={100}
-                alt=""
-                className="size-12 object-contain"
-              />
-              <div>
-                <p>Xi măng</p>
-                <p>x1/cái</p>
+            <Divider className="!my-2 bg-gray-200"></Divider>
+            <div>
+              <div className="my-6 flex items-center justify-between px-2 text-sm">
+                <div className="flex gap-4">
+                  <div>
+                    <p>{order?.storeName}</p>
+                    <p>{order?.storeAddress}</p>
+                  </div>
+                </div>
+                <div>
+                  <FaArrowRightLong size={50} />
+                </div>
+                <div className="flex justify-end gap-4">
+                  <div>
+                    <p>{order?.customerName}</p>
+                    <p>{order?.customerAddress}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>190.000 đ</div>
-          </div>{" "}
-          <div className="my-6 flex justify-between px-2 text-sm">
-            <div className="flex gap-4">
-              <Image
-                src={ADMIN}
-                width={500}
-                height={500}
-                quality={100}
-                alt=""
-                className="size-12 object-contain"
-              />
-              <div>
-                <p>Xi măng</p>
-                <p>x1/cái</p>
-              </div>
-            </div>
-            <div>190.000 đ</div>
-          </div>{" "}
-          <div className="my-6 flex justify-between px-2 text-sm">
-            <div className="flex gap-4">
-              <Image
-                src={ADMIN}
-                width={500}
-                height={500}
-                quality={100}
-                alt=""
-                className="size-12 object-contain"
-              />
-              <div>
-                <p>Xi măng</p>
-                <p>x1/cái</p>
-              </div>
-            </div>
-            <div>190.000 đ</div>
-          </div>
-          <Divider className="!m-0 bg-gray-200"></Divider>
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex gap-2 text-sm text-[#2bc02b]">
-              <CheckCircleFilled color="green" />
-              <p>Đã giao hàng</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex gap-5">
-                <div>Tổng:</div>
-                <div>380.000 đ</div>
-              </div>
-              <div className="w-full">
-                <ButtonCustom
-                  onClick={showLoading}
-                  className="float-right w-[60%] text-white"
-                >
-                  Chi tiết
-                </ButtonCustom>
+              <Divider className="!m-0 bg-gray-200"></Divider>
+              <div className="mt-4 flex items-center justify-between">
+                <div className="flex gap-2 text-sm text-[#2bc02b]">
+                  <CheckCircleFilled color="green" />
+                  <p>Đã giao hàng</p>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <div className="flex justify-between gap-5">
+                    <div>Phí vận chuyển:</div>
+                    <div>0đ</div>
+                  </div>
+                  <div className="flex justify-between gap-5">
+                    <div>Giảm giá:</div>
+                    <div>0đ</div>
+                  </div>
+                  <div className="flex justify-between gap-5">
+                    <div>Tổng:</div>
+                    <div>380.000 đ</div>
+                  </div>
+                  <div className="w-full">
+                    <ButtonCustom
+                      onClick={showLoading}
+                      className="float-right w-[60%] text-white"
+                    >
+                      Chi tiết
+                    </ButtonCustom>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        ))}
+
       <Modal
         width={1000}
         height={600}
         footer={null}
         loading={loading}
-        centered
         open={open}
         onCancel={() => setOpen(false)}
         styles={{

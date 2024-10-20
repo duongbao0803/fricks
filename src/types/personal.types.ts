@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface UserInfo {
   email: string;
   confirmEmail: boolean;
@@ -6,8 +8,9 @@ export interface UserInfo {
   fullName: string;
   unsignFullName: string;
   address: string | null;
+  gender: string | null | number;
   phoneNumber: string;
-  dob: string | null;
+  dob?: string | number | Date | Dayjs | null | undefined;
   role: "CUSTOMER";
   status: "ACTIVE" | "INACTIVE";
   id: number;

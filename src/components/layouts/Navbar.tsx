@@ -20,10 +20,10 @@ import { usePathname } from "next/navigation";
 import { RolesLogin } from "@/enums";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import useUserInfo from "@/hooks/useUserInfo";
+import useUserSelector from "@/redux/hooks/useUserSelector";
 
 const Navbar = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUserSelector();
   const { logout } = useLogout();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -246,7 +246,7 @@ const Navbar = () => {
                 </Form.Item>
               </Form>
             </div>
-            {userInfo && userInfo?.role.includes(RolesLogin.CUSTOMER) && (
+            {userInfo && userInfo?.role?.includes(RolesLogin.CUSTOMER) && (
               <div className="flex items-center gap-5">
                 <Link href="/favorite">
                   <div className="lg:block">
