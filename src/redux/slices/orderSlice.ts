@@ -26,6 +26,7 @@ const initialState: OrderState = {
         },
         price: 0,
         quantity: 0,
+        productUnit: "",
       },
     ],
     paymentDate: "",

@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Roboto_Slab } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
 import LoadingWrapper from "@/components/LoadingWrapper";
 import { NotificationProvider } from "@/components/common/Notification";
 import { Providers } from "@/redux/provider";
@@ -17,6 +24,13 @@ const robotoSlab = Roboto_Slab({
 export const metadata: Metadata = {
   title: "Fricks",
 };
+
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 
 export default function RootLayout({
   children,

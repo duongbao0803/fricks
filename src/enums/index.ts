@@ -9,6 +9,18 @@ export enum SortStatus {
   HIGHTOLOW = "HIGHTOLOW",
 }
 
+export enum GENDER {
+  MALE,
+  FEMALE,
+  OTHER,
+}
+
+export enum GENDER_INFO {
+  MALE = "Nam",
+  FEMALE = "Nữ",
+  OTHER = "Khác",
+}
+
 export enum PAYMENT {
   VIETQR,
   VNPAY,

@@ -78,7 +78,7 @@ const LoginForm: React.FC = () => {
               "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             ];
           if (role !== RolesLogin.CUSTOMER) {
-            notify("error", "Bạn không có quyền truy cập và trang này", 3);
+            notify("error", "Bạn không có quyền truy cập vào trang này", 3);
             setIsLoggingIn(false);
             return;
           } else {

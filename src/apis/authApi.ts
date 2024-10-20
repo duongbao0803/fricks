@@ -65,6 +65,13 @@ const authApi = apiSlice.injectEndpoints({
         body: information,
       }),
     }),
+    changePassword: builder.mutation({
+      query: (information) => ({
+        url: "/authen/change-password",
+        method: "POST",
+        body: information,
+      }),
+    }),
     getUserInfo: builder.query({
       query: () => ({
         url: "/authen/current-user",
@@ -85,6 +92,7 @@ export const {
   useResetPasswordMutation,
   useResetPasswordConfirmMutation,
   useConfirmNewPasswordMutation,
+  useChangePasswordMutation,
 } = authApi;
 
 export default authApi;

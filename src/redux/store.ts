@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import favoriteReducer from "./slices/favoriteSlice";
 import cartReducer from "./slices/cartSlice";
 import orderReducer from "./slices/orderSlice";
+import userReducer from "./slices/userSlice";
 
 import authApi from "@/apis/authApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
@@ -18,6 +19,7 @@ const rootReducer = {
   favorites: favoriteReducer,
   cart: cartReducer,
   order: orderReducer,
+  user: userReducer,
 };
 
 const persistedReducer = persistReducer(

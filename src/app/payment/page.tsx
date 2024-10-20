@@ -2,10 +2,6 @@
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import IconWeb from "@/assets/images/logo/logo_web.png";
-import Image from "next/image";
-import { PriceFormat } from "@/utils";
-import { tableInvoice } from "@/constants";
 import { useGetOrderStatusQuery } from "@/apis/orderApi";
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/redux/slices/cartSlice";

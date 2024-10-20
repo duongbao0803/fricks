@@ -14,7 +14,7 @@ export interface OrderInfo {
   isDeleted: boolean;
   orderDetails: [
     {
-      productUnit: ReactNode;
+      productUnit: string;
       product: {
         name: string;
         unit: string;

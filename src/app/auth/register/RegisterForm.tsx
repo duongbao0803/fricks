@@ -32,6 +32,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useValidateFieldsMatch } from "@/hooks/useValidateFieldMatch";
 
 interface IProps {
   isShowRegister: boolean;
@@ -55,14 +56,7 @@ const RegisterForm: React.FC<IProps> = ({
 
   const [form] = Form.useForm();
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
-
-  const validatePassword = (_: unknown, value: string) => {
-    const password = form.getFieldValue("password");
-    if (value && password && value !== password) {
-      return Promise.reject("Mật khẩu không trùng");
-    }
-    return Promise.resolve();
-  };
+  const { validateFieldsMatch } = useValidateFieldsMatch(form);
 
   const onCaptchaChange = (value: string | null) => {
     if (value) {
@@ -334,7 +328,12 @@ const RegisterForm: React.FC<IProps> = ({
                     required: true,
                     message: "Vui lòng xác nhận mật khẩu",
                   },
-                  { validator: validatePassword },
+                  {
+                    validator: validateFieldsMatch(
+                      "newPassword",
+                      "Mật khẩu xác nhận không trùng khớp",
+                    ),
+                  },
                 ]}
                 labelCol={{ span: 24 }}
                 className="formItem"

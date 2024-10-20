@@ -10,6 +10,12 @@ const orderApi = apiSlice.injectEndpoints({
         body: formData,
       }),
     }),
+    getListOrder: builder.query({
+      query: ({ PageIndex, PageSize, orderStatus, paymentStatus }) => ({
+        url: `/orders?PageIndex=${PageIndex}&PageSize=${PageSize}&SortBy=date&Dir=desc`,
+        method: "GET",
+      }),
+    }),
     getOrderStatus: builder.query({
       query: ({ orderId }) => ({
         url: `/orders/${orderId}`,
@@ -19,6 +25,10 @@ const orderApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useOrderMutation, useGetOrderStatusQuery } = orderApi;
+export const {
+  useOrderMutation,
+  useGetOrderStatusQuery,
+  useGetListOrderQuery,
+} = orderApi;
 
 export default orderApi;
