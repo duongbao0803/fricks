@@ -12,7 +12,6 @@ import { usePathname, useRouter } from "next/navigation";
 // import NavElement from "./NavElement";
 
 const MobileSide = () => {
-  const userInfo = useUserInfo();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -45,8 +44,8 @@ const MobileSide = () => {
       <SheetTrigger className="flex items-center justify-center">
         <CiMenuFries className="text-4xl font-black text-primary" />
       </SheetTrigger>
-      <SheetContent side={"left"} className="flex flex-col">
-        <nav className="mt-32 flex flex-col items-center justify-center">
+      <SheetContent side={"left"} className="mx-auto flex flex-col">
+        <nav className="mx-10 mt-32 flex flex-col items-center justify-center">
           <div className="mb-16 flex justify-center text-center">
             <Image
               src={IconWeb}

@@ -142,7 +142,7 @@ const Navbar = () => {
                       alt={userInfo?.fullName}
                       width={30}
                       height={30}
-                      className="rounded-full"
+                      className="size-7 rounded-full object-cover"
                     />
                     <span className="text-[11px] transition-all duration-500 lg:text-sm">
                       {userInfo?.fullName}

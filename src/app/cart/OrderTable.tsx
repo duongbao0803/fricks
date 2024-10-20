@@ -1,23 +1,20 @@
 "use client";
-import { Divider } from "antd";
-import Image from "next/image";
-import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import React, { useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { tableData } from "@/constants";
+import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { InputCustom } from "@/components/ui/input";
-import { useDispatch, useSelector } from "react-redux";
+import { tableData } from "@/constants";
+import { RolesLogin } from "@/enums";
+import useUserInfo from "@/hooks/useUserInfo";
+import { removeFromCart } from "@/redux/slices/cartSlice";
 import { RootState } from "@/redux/store";
 import { ProductInfo } from "@/types/product.types";
-import { removeFromCart } from "@/redux/slices/cartSlice";
-import { useGetUserInfoQuery } from "@/apis/authApi";
-import { UserInfo } from "@/types/personal.types";
-import { RolesLogin } from "@/enums";
-import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { PriceFormat } from "@/utils";
+import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Divider } from "antd";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "../product/hooks/useAddToCart";
-import useUserInfo from "@/hooks/useUserInfo";
 
 const OrderTable = () => {
   const { handleAddToCart } = useAddToCart();

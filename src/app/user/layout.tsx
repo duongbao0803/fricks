@@ -50,7 +50,7 @@ export default function ProfileLayout({
   };
 
   return (
-    <main className="bg-[#f1f6fa]">
+    <main className="bg-[#f1f6fa] pb-10">
       <div className="container mx-auto min-h-screen">
         <div className="py-16">
           <BreadScrumb items={items} />

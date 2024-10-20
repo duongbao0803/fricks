@@ -8,10 +8,15 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useUpdateUserMutation } from "@/apis/userApi";
 import { GENDER } from "@/enums";
 import { notify } from "@/components/common/Notification";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "@/redux/slices/userSlice";
+import useUserSelector from "@/redux/hooks/useUserSelector";
 
 const Personal = () => {
   const [form] = Form.useForm();
-  const userInfo = useUserInfo();
+  const dispatch = useDispatch();
+  // const userInfo = useSelector((state: any) => state.user.userInfo);
+  const { userInfo } = useUserSelector();
   const [fileChange, setFileChange] = useState<string>("");
   const disabledDate = (current: object) => {
     return current && current > moment().startOf("day");
@@ -22,8 +27,8 @@ const Personal = () => {
   }, []);
 
   useEffect(() => {
-    if (userInfo?.userInfo) {
-      const { avatar, ...restUserInfo } = userInfo.userInfo;
+    if (userInfo) {
+      const { avatar, ...restUserInfo } = userInfo;
 
       form.setFieldsValue({
         ...restUserInfo,
@@ -36,10 +41,13 @@ const Personal = () => {
     try {
       const { dob } = values;
       const formattedDob = dob ? moment(dob).toISOString() : "";
-      const userId = userInfo?.userInfo?.id;
+      const userId = userInfo?.id;
       const updatedValues = { ...values, dob: formattedDob, userId };
+
       const res = await updateUser(updatedValues).unwrap();
+
       if (res && res.httpCode === 200) {
+        dispatch(setUserInfo(res.data));
         notify("success", `${res.message}`, 2);
       }
     } catch (err: any) {
@@ -246,7 +254,7 @@ const Personal = () => {
                 <div className="flex w-full flex-col items-center">
                   <UploadImage
                     titleButton="Thêm ảnh"
-                    initialImage={userInfo?.userInfo?.avatar}
+                    initialImage={userInfo?.avatar}
                     onFileChange={handleFileChange}
                   />
                 </div>
