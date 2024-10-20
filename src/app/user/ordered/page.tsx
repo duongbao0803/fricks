@@ -7,7 +7,7 @@ import { useGetListOrderQuery } from "@/apis/orderApi";
 import PaymentSuccess from "@/app/payment/success/page";
 import { ButtonCustom } from "@/components/ui/button";
 import { OrderInfo } from "@/types/order.types";
-import { formatTimestamp } from "@/utils";
+import { formatTimestamp, PriceFormat } from "@/utils";
 import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -170,9 +170,9 @@ const OrderedList = () => {
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex flex-col justify-between gap-3">
                   {order?.paymentStatus !== "FAILED" ? (
-                    <div className="flex gap-2 text-sm text-[#2bc02b]">
-                      <CheckCircleFilled color="green" />
-                      <p>Đã giao hàng</p>
+                    <div className="flex gap-2 text-sm text-[#00b7ff]">
+                      <CheckCircleFilled color="blue" />
+                      <p>Đang giao hàng...</p>
                     </div>
                   ) : (
                     <div className="flex gap-2 text-sm text-[red]">
@@ -184,15 +184,15 @@ const OrderedList = () => {
                 <div className="flex flex-col gap-3">
                   <div className="flex justify-between gap-5">
                     <div>Phí vận chuyển:</div>
-                    <div>0đ</div>
+                    <div>{PriceFormat.format(0)}</div>
                   </div>
                   <div className="flex justify-between gap-5">
                     <div>Giảm giá:</div>
-                    <div>0đ</div>
+                    <div>{PriceFormat.format(0)}</div>
                   </div>
                   <div className="flex justify-between gap-5">
                     <div>Tổng:</div>
-                    <div>380.000 đ</div>
+                    <div>{PriceFormat.format(order?.total)}</div>
                   </div>
                   <div className="w-full">
                     <ButtonCustom
