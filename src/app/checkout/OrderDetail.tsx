@@ -1,37 +1,44 @@
 "use client";
-import { Divider, Radio, RadioChangeEvent } from "antd";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { tableDataCheckout } from "@/constants";
-import { ButtonCustom } from "@/components/ui/button";
-import VietQR from "@/assets/images/icons/vietqr.jpeg";
-import Vnpay from "@/assets/images/icons/vnpay.webp";
-import InfoModal from "./InfoModal";
 import { useOrderMutation } from "@/apis/orderApi";
-import { useSelector } from "react-redux";
+import VietQR from "@/assets/images/icons/vietqr.jpeg";
+import { notify } from "@/components/common/Notification";
+import { ButtonCustom } from "@/components/ui/button";
+import { tableDataCheckout } from "@/constants";
+import { PAYMENT } from "@/enums";
+import useUserInfo from "@/hooks/useUserInfo";
 import { RootState } from "@/redux/store";
 import { PriceFormat } from "@/utils";
-import { PAYMENT } from "@/enums";
-import { notify } from "@/components/common/Notification";
-import useUserInfo from "@/hooks/useUserInfo";
+import { Divider, Radio, RadioChangeEvent } from "antd";
+import Image from "next/image";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import InfoModal from "./InfoModal";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
+  );
+  const { data: store } = useGetStoreDetailQuery({storeId: cartData?.cart[0]?.storeId})
+
+  console.log("checl store", store)
 
   const { userInfo } = useUserInfo();
 
   const userForm = sessionStorage.getItem("form");
   const data = userForm ? JSON.parse(userForm) : {};
 
+  console.log("check userForm", userForm);
+
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
 
-  const cartData = useSelector(
-    (state: RootState) => state.persistedReducer.cart,
-  );
+
+
 
   const [checkoutAPI] = useOrderMutation();
 
@@ -41,12 +48,14 @@ const OrderDetail = () => {
     quantity: item.quantity,
   }));
 
+  
+
   const checkout = {
-    shipFee: 0,
+    shipFee: 30000,
     voucherCode: "123456",
     productOrders: transformedData,
     customerPhone: data?.phoneNumber,
-    customerAddress: data?.address,
+    customerAddress: `${data?.address}, ${data?.ward}, ${data?.district}, ${data?.city}`,
     paymentMethod: value,
   };
 
@@ -101,7 +110,12 @@ const OrderDetail = () => {
               <div className="col-span-4">
                 <p>{data?.email || "Chưa có thông tin"}</p>
                 <p>{data?.fullName || "Chưa có thông tin"}</p>
-                <p>{data?.address || "Chưa có thông tin"}</p>
+                <p>
+                  {data?.address
+                    ? `${data.address}, ${data.ward}, ${data.district}, ${data.city}`
+                    : "Chưa có thông tin"}
+                </p>
+
                 <p>{data?.phoneNumber || "Chưa có thông tin"}</p>
               </div>
             </div>
@@ -123,7 +137,7 @@ const OrderDetail = () => {
               </div>
               <div className="flex flex-col items-end gap-5">
                 <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                <span>Miễn phí</span>
+                <span>{PriceFormat.format(30000)}</span>
                 <span>{PriceFormat.format(0)}</span>
               </div>
             </div>

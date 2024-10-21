@@ -1,4 +1,4 @@
-import { Page } from "@/types/page.,types";
+import { Page } from "@/types/page.types";
 import apiSlice from "./apiSlice";
 
 const postApi = apiSlice.injectEndpoints({
