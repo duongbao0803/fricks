@@ -1,16 +1,16 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
-import dayjs from "dayjs";
-import moment from "moment";
-import { DatePicker, Form, Input, Select } from "antd";
-import { useDispatch } from "react-redux";
 import { useUpdateUserMutation } from "@/apis/userApi";
 import { UploadImage } from "@/components/common";
 import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
-import { GENDER, GENDER_INFO } from "@/enums";
+import { GENDER } from "@/enums";
 import useUserSelector from "@/redux/hooks/useUserSelector";
 import { setUserInfo } from "@/redux/slices/userSlice";
+import { DatePicker, Form, Input, Select } from "antd";
+import dayjs from "dayjs";
+import moment from "moment";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Personal = () => {
   const [form] = Form.useForm();
@@ -25,46 +25,38 @@ const Personal = () => {
     setFileChange(newFileChange);
   }, []);
 
+  console.log("check userInfo", userInfo);
   useEffect(() => {
     if (userInfo) {
       const { avatar, ...restUserInfo } = userInfo;
       form.setFieldsValue({
         ...restUserInfo,
         avatar: fileChange,
-        gender:
-          restUserInfo?.gender === GENDER.MALE
-            ? GENDER_INFO.MALE
-            : restUserInfo?.gender === GENDER.FEMALE
-              ? GENDER_INFO.FEMALE
-              : GENDER_INFO.OTHER,
+
         dob: dayjs(restUserInfo.dob),
       });
     }
   }, [fileChange, form, userInfo]);
 
-  const onFinish = useCallback(async (values: any) => {
-    try {
-      const { gender } = values;
-      const updatedValues = {
-        ...values,
-        gender:
-          gender === GENDER_INFO.MALE
-            ? GENDER.MALE
-            : gender === GENDER_INFO.FEMALE
-              ? GENDER.FEMALE
-              : GENDER.OTHER,
-        userId: userInfo?.id,
-      };
-      console.log("check updatedValues", updatedValues);
-      const res = await updateUser(updatedValues).unwrap();
-      if (res && res.httpCode === 200) {
-        dispatch(setUserInfo(res));
-        notify("success", `${res.message}`, 2);
+  const onFinish = useCallback(
+    async (values: any) => {
+      try {
+        const updatedValues = {
+          ...values,
+          userId: userInfo?.id,
+        };
+        console.log("check updatedValues", updatedValues);
+        const res = await updateUser(updatedValues).unwrap();
+        if (res && res.httpCode === 200) {
+          dispatch(setUserInfo(res.data));
+          notify("success", `${res.message}`, 2);
+        }
+      } catch (err: any) {
+        notify("error", `${err.data.message}`, 3);
       }
-    } catch (err: any) {
-      notify("error", `${err.data.message}`, 3);
-    }
-  }, []);
+    },
+    [dispatch, updateUser, userInfo?.id],
+  );
 
   return (
     <section>
@@ -201,9 +193,9 @@ const Personal = () => {
                             message: "Vui lòng nhập số điện thoại",
                           },
                           {
-                            pattern: /^[0-9]{10,11}$/,
+                            pattern: /^[0-9]{10}$/,
                             message:
-                              "Vui lòng nhập đúng số điện thoại (10-11 chữ số)",
+                              "Vui lòng nhập đúng số điện thoại (10 chữ số)",
                           },
                         ]}
                       >

@@ -2,7 +2,6 @@
 import { TagCustom } from "@/components/common";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { Divider, Modal, Spin } from "antd";
-
 import { useGetListOrderQuery } from "@/apis/orderApi";
 import PaymentSuccess from "@/app/payment/success/page";
 import { ButtonCustom } from "@/components/ui/button";
@@ -12,14 +11,12 @@ import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { TbTruckDelivery } from "react-icons/tb";
 
-// Spinner component
 const Spinner = () => (
   <div className="flex items-center justify-center">
     <div className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-primary"></div>
   </div>
 );
 
-// Dummy components for each tab
 const AllTransactions = () => <p>Tất cả giao dịch</p>;
 const SuccessfulTransactions = () => <p>Giao dịch thành công</p>;
 const FailedTransactions = () => <p>Giao dịch thất bại</p>;
