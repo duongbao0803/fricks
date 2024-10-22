@@ -16,16 +16,19 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "../product/hooks/useAddToCart";
 import { notify } from "@/components/common/Notification";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderTable = () => {
+  const dispatch = useDispatch();
   const { handleAddToCart } = useAddToCart();
   const router = useRouter();
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
+  const { data: store } = useGetStoreDetailQuery({
+    storeId: cartData?.cart[0]?.storeId,
+  });
   const { userInfo } = useUserInfo();
-
-  const dispatch = useDispatch();
 
   const handleRemoveProduct = useCallback(
     (product: ProductInfo) => {
@@ -134,7 +137,7 @@ const OrderTable = () => {
                 </div>
                 <div className="flex flex-col items-end gap-5">
                   <span>{PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                  <span>Miễn phí</span>
+                  <span>{PriceFormat.format(store?.defaultShip)}</span>
                   <span>{PriceFormat.format(0)}</span>
                 </div>
               </div>

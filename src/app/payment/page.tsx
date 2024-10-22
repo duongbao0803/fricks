@@ -29,7 +29,6 @@ const PaymentView: React.FC = () => {
       dispatch(setOrderInfo(orderInfo));
 
       if (status === "paid") {
-        console.log("Clearing cart...");
         dispatch(clearCart());
         router.replace("/payment/success");
         sessionStorage.removeItem("form");

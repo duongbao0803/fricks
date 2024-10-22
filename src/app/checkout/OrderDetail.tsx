@@ -19,19 +19,16 @@ const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
+  const { userInfo } = useUserInfo();
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
   const { data: store } = useGetStoreDetailQuery({
-    storeId: cartData.cart[0].storeId,
+    storeId: cartData?.cart[0]?.storeId,
   });
-
-  const { userInfo } = useUserInfo();
 
   const userForm = sessionStorage.getItem("form");
   const data = userForm ? JSON.parse(userForm) : {};
-
-  console.log("check userForm", userForm);
 
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
@@ -46,7 +43,7 @@ const OrderDetail = () => {
   }));
 
   const checkout = {
-    shipFee: 30000,
+    shipFee: store?.defaultShip,
     voucherCode: "123456",
     productOrders: transformedData,
     customerPhone: data?.phoneNumber,
