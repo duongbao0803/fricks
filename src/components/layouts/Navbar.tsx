@@ -20,11 +20,10 @@ import { usePathname } from "next/navigation";
 import { RolesLogin } from "@/enums";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import useUserInfo from "@/hooks/useUserInfo";
-import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import useUserSelector from "@/redux/hooks/useUserSelector";
 
 const Navbar = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUserSelector();
   const { logout } = useLogout();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -33,6 +32,7 @@ const Navbar = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
+
   // const { data: favoriteList = [], refetch } = useGetFavorListQuery({
   //   PageIndex: 1,
   //   PageSize: 50,
@@ -63,7 +63,7 @@ const Navbar = () => {
         {
           key: "profile",
           label: (
-            <Link href="/profile" className="flex items-center gap-2">
+            <Link href="/user/personal" className="flex items-center gap-2">
               <span>Thông tin cá nhân</span>
             </Link>
           ),
@@ -143,7 +143,7 @@ const Navbar = () => {
                       alt={userInfo?.fullName}
                       width={30}
                       height={30}
-                      className="rounded-full"
+                      className="size-7 rounded-full object-cover"
                     />
                     <span className="text-[11px] transition-all duration-500 lg:text-sm">
                       {userInfo?.fullName}
@@ -247,7 +247,7 @@ const Navbar = () => {
                 </Form.Item>
               </Form>
             </div>
-            {userInfo && userInfo?.role.includes(RolesLogin.CUSTOMER) && (
+            {userInfo && userInfo?.role?.includes(RolesLogin.CUSTOMER) && (
               <div className="flex items-center gap-5">
                 <Link href="/favorite">
                   <div className="lg:block">

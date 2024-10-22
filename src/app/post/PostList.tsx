@@ -9,6 +9,7 @@ import PostImage from "@/assets/images/item/post.jpg";
 import React from "react";
 import { FaFacebook } from "react-icons/fa6";
 import { formatTimestampWithHour } from "@/utils";
+import parse from "html-react-parser";
 
 const PostList = () => {
   const { data } = useGetPostListQuery({
@@ -23,30 +24,30 @@ const PostList = () => {
           {data?.length > 0
             ? data?.slice(0, 8).map((item: PostInfo, index: number) => (
                 <div key={index}>
-                  <div className="relative z-[50] mb-16 flex">
+                  <div className="relative z-[50] mb-16 block lg:flex">
                     <Image
                       src={item?.image}
                       width={250}
                       height={250}
                       quality={100}
                       alt="post"
-                      className="h-[150px] w-[230px] rounded-lg object-cover transition-all duration-300 ease-in-out"
+                      className="h-[300px] w-full rounded-lg object-cover transition-all duration-300 ease-in-out lg:h-[150px] lg:w-[230px]"
                     />
-                    <div className="flex flex-col items-start justify-start pl-5">
+                    <div className="flex flex-col items-start justify-start lg:pl-5">
                       <Link href={`/post/${item?.id}`}>
-                        <h3 className="mb-2 text-lg font-bold transition-all duration-500 hover:text-primary md:text-xl">
+                        <h3 className="mb-2 text-lg font-semibold transition-all duration-500 hover:text-primary md:text-xl">
                           {item?.title}
                         </h3>
                       </Link>
 
-                      <span className="line-clamp-2 block overflow-hidden text-sm">
-                        {item?.content}
+                      <span className="line-clamp-2 block overflow-hidden text-sm text-gray-400">
+                        {parse(item?.content)}
                       </span>
-                      <p className="absolute bottom-0 line-clamp-2 block overflow-hidden text-[12px] font-light">
+                      <p className="absolute bottom-[-30px] line-clamp-2 block overflow-hidden text-[12px] font-light lg:bottom-0">
                         {formatTimestampWithHour(item.createDate)}
                       </p>
                     </div>
-                    <div className="absolute bottom-0 right-0 z-[51] flex items-center gap-2">
+                    <div className="absolute bottom-[-30px] right-0 z-[51] flex items-center gap-2 lg:bottom-0">
                       <p className="text-sm font-light">Chia sẻ:</p>
                       <Link
                         target="_blank"

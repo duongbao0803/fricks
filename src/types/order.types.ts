@@ -14,6 +14,7 @@ export interface OrderInfo {
   isDeleted: boolean;
   orderDetails: [
     {
+      productUnit: string;
       product: {
         name: string;
         unit: string;
@@ -37,4 +38,5 @@ export interface OrderInfo {
   userId: number;
   version: string;
   voucherId?: null;
+  productUnit?: string;
 }

@@ -1,26 +1,31 @@
 "use client";
-import { Divider, Radio, RadioChangeEvent } from "antd";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { tableDataCheckout } from "@/constants";
-import { ButtonCustom } from "@/components/ui/button";
-import VietQR from "@/assets/images/icons/vietqr.jpeg";
-import Vnpay from "@/assets/images/icons/vnpay.webp";
-import InfoModal from "./InfoModal";
 import { useOrderMutation } from "@/apis/orderApi";
-import { useSelector } from "react-redux";
+import VietQR from "@/assets/images/icons/vietqr.jpeg";
+import { notify } from "@/components/common/Notification";
+import { ButtonCustom } from "@/components/ui/button";
+import { tableDataCheckout } from "@/constants";
+import { PAYMENT } from "@/enums";
+import useUserInfo from "@/hooks/useUserInfo";
 import { RootState } from "@/redux/store";
 import { PriceFormat } from "@/utils";
-import { PAYMENT } from "@/enums";
-import { notify } from "@/components/common/Notification";
-import useUserInfo from "@/hooks/useUserInfo";
+import { Divider, Radio, RadioChangeEvent } from "antd";
+import Image from "next/image";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import InfoModal from "./InfoModal";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
-
   const { userInfo } = useUserInfo();
+  const cartData = useSelector(
+    (state: RootState) => state.persistedReducer.cart,
+  );
+  const { data: store } = useGetStoreDetailQuery({
+    storeId: cartData?.cart[0]?.storeId,
+  });
 
   const userForm = sessionStorage.getItem("form");
   const data = userForm ? JSON.parse(userForm) : {};
@@ -28,10 +33,6 @@ const OrderDetail = () => {
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
-
-  const cartData = useSelector(
-    (state: RootState) => state.persistedReducer.cart,
-  );
 
   const [checkoutAPI] = useOrderMutation();
 
@@ -42,11 +43,11 @@ const OrderDetail = () => {
   }));
 
   const checkout = {
-    shipFee: 0,
+    shipFee: store?.defaultShip,
     voucherCode: "123456",
     productOrders: transformedData,
     customerPhone: data?.phoneNumber,
-    customerAddress: data?.address,
+    customerAddress: `${data?.address}, ${data?.ward}, ${data?.district}, ${data?.city}`,
     paymentMethod: value,
   };
 
@@ -101,7 +102,12 @@ const OrderDetail = () => {
               <div className="col-span-4">
                 <p>{data?.email || "Chưa có thông tin"}</p>
                 <p>{data?.fullName || "Chưa có thông tin"}</p>
-                <p>{data?.address || "Chưa có thông tin"}</p>
+                <p>
+                  {data?.address
+                    ? `${data.address}, ${data.ward}, ${data.district}, ${data.city}`
+                    : "Chưa có thông tin"}
+                </p>
+
                 <p>{data?.phoneNumber || "Chưa có thông tin"}</p>
               </div>
             </div>
@@ -123,7 +129,7 @@ const OrderDetail = () => {
               </div>
               <div className="flex flex-col items-end gap-5">
                 <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                <span>Miễn phí</span>
+                <span>{PriceFormat.format(store?.defaultShip)}</span>
                 <span>{PriceFormat.format(0)}</span>
               </div>
             </div>
@@ -134,7 +140,11 @@ const OrderDetail = () => {
               <div className="flex justify-between">
                 <span className="font-semibold text-gray-500">Tổng</span>
                 <span className="font-bold text-primary">
-                  {PriceFormat.format(cartData?.totalPrice ?? 0)}
+                  <span>
+                    {PriceFormat.format(
+                      cartData?.totalPrice - (store?.defaultShip || 0),
+                    )}
+                  </span>
                 </span>
               </div>
             </div>
@@ -232,7 +242,7 @@ const OrderDetail = () => {
                       />
                     </div>
                   </div>
-                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                  {/* <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
                     <Radio
                       value={PAYMENT.VNPAY}
                       className="w-full"
@@ -252,7 +262,7 @@ const OrderDetail = () => {
                         quality={100}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </Radio.Group>
                 <div className="flex gap-2">
                   <input

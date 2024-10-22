@@ -12,7 +12,7 @@ const MobileNav = () => {
       <SheetTrigger className="flex items-center justify-center">
         <CiMenuFries className="text-4xl font-black text-primary" />
       </SheetTrigger>
-      <SheetContent className="flex flex-col">
+      <SheetContent side={"right"} className="flex flex-col">
         <div className="mb-12 mt-32 flex justify-center text-center">
           <Link href="/">
             <Image

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import CountUp from "react-countup";
 import { FaPeopleGroup, FaUser } from "react-icons/fa6";
 import { MdFavorite, MdProductionQuantityLimits } from "react-icons/md";
@@ -10,25 +9,25 @@ const Statistical = () => {
   const stats = [
     {
       id: 1,
-      value: <CountUp end={500} duration={3} delay={1.5} />,
+      value: <CountUp end={500} duration={3} delay={2.2} />,
       label: "SẢN PHẨM",
       icon: <MdProductionQuantityLimits />,
     },
     {
       id: 2,
-      value: <CountUp end={1500} duration={3} delay={1.5} />,
+      value: <CountUp end={1500} duration={3} delay={2.2} />,
       label: "KHÁCH HÀNG",
       icon: <FaUser />,
     },
     {
       id: 3,
-      value: <CountUp end={250} duration={3} delay={1.5} />,
+      value: <CountUp end={250} duration={3} delay={2.2} />,
       label: "ĐỐI TÁC",
       icon: <FaPeopleGroup />,
     },
     {
       id: 4,
-      value: <CountUp end={1900} duration={3} delay={1.5} />,
+      value: <CountUp end={1900} duration={3} delay={2.2} />,
       label: "HẢI LÒNG",
       icon: <MdFavorite />,
     },
@@ -46,7 +45,6 @@ const Statistical = () => {
                     {stat.icon}
                   </span>
                 </div>
-
                 <h3 className="mt-2 text-3xl font-bold md:text-5xl">
                   {stat.value}
                 </h3>

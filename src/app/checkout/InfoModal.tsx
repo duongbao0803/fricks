@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { Modal, Form } from "antd";
-import { InputCustom } from "@/components/ui/input";
-import { UserInfo } from "@/types/personal.types";
 import { notify } from "@/components/common/Notification";
-import { useDispatch } from "react-redux";
-import { setCartUser } from "@/redux/slices/cartSlice";
+import { InputCustom } from "@/components/ui/input";
+import { ADDRESS_OPTIONS } from "@/constants";
+import { UserInfo } from "@/types/personal.types";
+import { Col, Form, Modal, Row, Select } from "antd";
+import React, { useEffect } from "react";
 
 export interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +15,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
   // const { addNewUserItem } = useUserService();
   const { setIsOpen, isOpen, userInfo } = props;
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
+  const { Option } = Select;
   const userForm = sessionStorage.getItem("form");
   const data = userForm ? JSON.parse(userForm) : {};
   // const userForm = sessionStorage.getItem("form");
@@ -35,7 +34,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
 
   const handleOk = async () => {
     try {
-      const values = await form.validateFields();
+      const values = await form.validateFields(); 
       if (values) {
         sessionStorage.setItem("form", JSON.stringify(values));
         notify("success", "Cập nhật thông tin thành công", 1);
@@ -52,12 +51,19 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
     form.resetFields();
   };
 
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string },
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
   return (
     <Modal
       title={<p className="text-xl font-bold text-[red]">Thông tin liên hệ</p>}
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
+      okText="Xác nhận"
+      cancelText="Hủy"
       okButtonProps={{
         style: {
           backgroundColor: "#ff7b29",
@@ -98,20 +104,6 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="address"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng nhập địa chỉ",
-            },
-          ]}
-          colon={true}
-          labelCol={{ span: 24 }}
-          className="formItem mb-7"
-        >
-          <InputCustom placeholder="Địa chỉ" />
-        </Form.Item>
-        <Form.Item
           name="phoneNumber"
           rules={[
             {
@@ -130,6 +122,86 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
         >
           <InputCustom placeholder="Số điện thoại" />
         </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="city"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập tỉnh/thành phố",
+                },
+              ]}
+              colon={true}
+              labelCol={{ span: 24 }}
+              className="formItem mb-7"
+              initialValue={"TP. Hồ Chí Minh"}
+            >
+              <InputCustom placeholder="Thành phố" readOnly />
+            </Form.Item>
+            <Form.Item
+              name="ward"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn phường",
+                },
+              ]}
+              colon={true}
+              labelCol={{ span: 24 }}
+              className="formItem h-[39.33px]"
+            >
+              <Select
+                placeholder="Chọn phường"
+                showSearch
+                optionFilterProp="children"
+                filterOption={filterOption}
+                className="formItem h-[39.33px]"
+              >
+                {ADDRESS_OPTIONS.map((address, index) => (
+                  <Option
+                    key={index}
+                    value={address?.label}
+                    label={address?.label}
+                  >
+                    {address.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="district"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập quận/huyện",
+                },
+              ]}
+              colon={true}
+              labelCol={{ span: 24 }}
+              className="formItem mb-7"
+              initialValue={"TP. Thủ Đức"}
+            >
+              <InputCustom placeholder="Quận/huyện" readOnly />
+            </Form.Item>
+            <Form.Item
+              name="address"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập địa chỉ",
+                },
+              ]}
+              colon={true}
+              labelCol={{ span: 24 }}
+              className="formItem h-[39.33px]"
+            >
+              <InputCustom placeholder="Địa chỉ" />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );

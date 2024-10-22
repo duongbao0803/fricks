@@ -1,33 +1,34 @@
 "use client";
-import { Divider } from "antd";
-import Image from "next/image";
-import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import React, { useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { tableData } from "@/constants";
+import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { InputCustom } from "@/components/ui/input";
-import { useDispatch, useSelector } from "react-redux";
+import { tableData } from "@/constants";
+import { RolesLogin } from "@/enums";
+import useUserInfo from "@/hooks/useUserInfo";
+import { removeFromCart } from "@/redux/slices/cartSlice";
 import { RootState } from "@/redux/store";
 import { ProductInfo } from "@/types/product.types";
-import { removeFromCart } from "@/redux/slices/cartSlice";
-import { useGetUserInfoQuery } from "@/apis/authApi";
-import { UserInfo } from "@/types/personal.types";
-import { RolesLogin } from "@/enums";
-import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { PriceFormat } from "@/utils";
+import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Divider } from "antd";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "../product/hooks/useAddToCart";
-import useUserInfo from "@/hooks/useUserInfo";
+import { notify } from "@/components/common/Notification";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderTable = () => {
+  const dispatch = useDispatch();
   const { handleAddToCart } = useAddToCart();
   const router = useRouter();
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
+  const { data: store } = useGetStoreDetailQuery({
+    storeId: cartData?.cart[0]?.storeId,
+  });
   const { userInfo } = useUserInfo();
-
-  const dispatch = useDispatch();
 
   const handleRemoveProduct = useCallback(
     (product: ProductInfo) => {
@@ -112,7 +113,10 @@ const OrderTable = () => {
               </div>
               <div className="flex flex-1 flex-col items-center justify-between gap-3 p-3">
                 <InputCustom placeholder="Mã giảm giá" className="" />
-                <button className="w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95">
+                <button
+                  onClick={() => notify("info", "Tính năng sẽ sớm ra mắt", 2)}
+                  className="w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95"
+                >
                   ÁP DỤNG
                 </button>
               </div>
@@ -133,7 +137,7 @@ const OrderTable = () => {
                 </div>
                 <div className="flex flex-col items-end gap-5">
                   <span>{PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                  <span>Miễn phí</span>
+                  <span>{PriceFormat.format(store?.defaultShip)}</span>
                   <span>{PriceFormat.format(0)}</span>
                 </div>
               </div>
@@ -141,7 +145,11 @@ const OrderTable = () => {
               <div className="flex flex-col justify-between p-3">
                 <div className="flex justify-between">
                   <span className="font-semibold text-gray-500">Tổng</span>
-                  <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
+                  <span>
+                    {PriceFormat.format(
+                      cartData?.totalPrice - (store?.defaultShip || 0),
+                    )}
+                  </span>
                 </div>
                 <div className="mt-5">
                   <button
