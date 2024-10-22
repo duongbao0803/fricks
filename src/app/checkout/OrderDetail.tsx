@@ -22,9 +22,9 @@ const OrderDetail = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
-  const { data: store } = useGetStoreDetailQuery({storeId: cartData?.cart[0]?.storeId})
-
-  console.log("checl store", store)
+  const { data: store } = useGetStoreDetailQuery({
+    storeId: cartData.cart[0].storeId,
+  });
 
   const { userInfo } = useUserInfo();
 
@@ -37,9 +37,6 @@ const OrderDetail = () => {
     setValue(e.target.value);
   };
 
-
-
-
   const [checkoutAPI] = useOrderMutation();
 
   const transformedData = cartData?.cart?.map((item) => ({
@@ -47,8 +44,6 @@ const OrderDetail = () => {
     productUnitId: item.price[0].unitId,
     quantity: item.quantity,
   }));
-
-  
 
   const checkout = {
     shipFee: 30000,
@@ -137,7 +132,7 @@ const OrderDetail = () => {
               </div>
               <div className="flex flex-col items-end gap-5">
                 <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                <span>{PriceFormat.format(30000)}</span>
+                <span>{PriceFormat.format(store?.defaultShip)}</span>
                 <span>{PriceFormat.format(0)}</span>
               </div>
             </div>
