@@ -14,7 +14,6 @@ const ProductDetail = () => {
           <BreadScrumb items={items} />
         </div>
         <div className="my-5">
-          {/* <ProductList /> */}
           <Detail />
         </div>
       </section>

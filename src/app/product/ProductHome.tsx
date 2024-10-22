@@ -1,26 +1,25 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useGetAllCatagoryQuery } from "@/apis/categortApi";
+import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import { useGetProductListQuery } from "@/apis/productApi";
+import NotFoundImage from "@/assets/images/logo/not-found.jpg";
+import { ScrollReveal } from "@/components";
+import { useFavorite } from "@/hooks/useAddFavorite";
+import { RootState } from "@/redux/store";
+import { ProductInfo } from "@/types/product.types";
+import { PriceFormat } from "@/utils";
 import { Rate, Skeleton, Tooltip } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "./hooks/useAddToCart";
-import { useGetAllCatagoryQuery } from "@/apis/categortApi";
-import { useGetProductListQuery } from "@/apis/productApi";
-import NotFoundImage from "@/assets/images/logo/not-found.jpg";
-import { PriceFormat } from "@/utils";
-import { ProductInfo } from "@/types/product.types";
-import { ScrollReveal } from "@/components";
-import { useFavorite } from "@/hooks/useAddFavorite";
-import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
-import { RootState } from "@/redux/store";
 
 const ProductHome = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState(0);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
@@ -67,13 +66,6 @@ const ProductHome = () => {
     MinPrice: 0,
     MaxPrice: 0,
   });
-
-  const getProductsToDisplay = () => {
-    if (selectedCategory === 0) {
-      return Object.values(productData).flat();
-    }
-    return productData[selectedCategory as keyof typeof productData] || [];
-  };
 
   const handleToggleFavorite = (product: ProductInfo) => {
     toggleFavorite(product?.id);

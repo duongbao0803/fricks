@@ -26,3 +26,8 @@ export enum PAYMENT {
   VNPAY,
   COD,
 }
+
+export enum PAYMENT_STATUS {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+}

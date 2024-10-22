@@ -1,6 +1,6 @@
 import { url } from "inspector";
 import apiSlice from "./apiSlice";
-import { Page } from "@/types/page.,types";
+import { Page } from "@/types/page.types";
 
 const favoriteProductApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

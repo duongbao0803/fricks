@@ -1,20 +1,13 @@
 "use client";
-import React from "react";
 import IconWeb from "@/assets/images/logo/logo_web.png";
-import Image from "next/image";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { tableInvoice } from "@/constants";
+import { PAYMENT_STATUS } from "@/enums";
+import { OrderInfo } from "@/types/order.types";
 import { formatTimestampWithHour, PriceFormat } from "@/utils";
+import Image from "next/image";
 
-const PaymentFailure: React.FC = () => {
-  const orderInfo = useSelector(
-    (state: RootState) => state.persistedReducer.order,
-  );
-  const orderDetails = Array.isArray(orderInfo?.orderInfo?.orderDetails)
-    ? orderInfo?.orderInfo?.orderDetails
-    : [];
-
+const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
+  console.log("check order", orderInfo);
   return (
     <>
       <main className="container mx-auto my-5 grid min-h-screen place-items-center">
@@ -35,40 +28,28 @@ const PaymentFailure: React.FC = () => {
             <div className="leading-7">
               <p>
                 <span className="font-bold">Thời gian:</span>{" "}
-                <span>
-                  {formatTimestampWithHour(orderInfo?.orderInfo?.createDate)}
-                </span>
+                <span>{formatTimestampWithHour(orderInfo?.createDate)}</span>
               </p>
               <p>
                 <span className="font-bold">Mã hóa đơn: </span>
-                <span>#{orderInfo?.orderInfo?.bankTranNo}</span>
+                <span>#{orderInfo?.bankTranNo}</span>
               </p>
             </div>
 
             <div className="my-8 flex justify-between">
               <div className="max-w-[45%]">
                 <h3 className="text-sm">CỬA HÀNG</h3>
-                <p className="py-1 text-lg font-bold">
-                  {orderInfo?.orderInfo?.storeName}
-                </p>
-                <p className="py-1 text-sm">
-                  {orderInfo?.orderInfo?.storeAddress}
-                </p>
-                <p className="py-1 text-sm">
-                  {orderInfo?.orderInfo?.storePhone}
-                </p>
+                <p className="py-1 text-lg font-bold">{orderInfo?.storeName}</p>
+                <p className="py-1 text-sm">{orderInfo?.storeAddress}</p>
+                <p className="py-1 text-sm">{orderInfo?.storePhone}</p>
               </div>
               <div className="max-w-[45%] text-right">
                 <h3 className="text-sm">KHÁCH HÀNG</h3>
                 <p className="py-1 text-lg font-bold">
-                  {orderInfo?.orderInfo?.customerName}
+                  {orderInfo?.customerName}
                 </p>
-                <p className="py-1 text-sm">
-                  {orderInfo?.orderInfo?.customerAddress}
-                </p>
-                <p className="py-1 text-sm">
-                  {orderInfo?.orderInfo?.customerPhone}
-                </p>
+                <p className="py-1 text-sm">{orderInfo?.customerAddress}</p>
+                <p className="py-1 text-sm">{orderInfo?.customerPhone}</p>
               </div>
             </div>
             <div className="overflow-auto">
@@ -87,17 +68,17 @@ const PaymentFailure: React.FC = () => {
                     ))}
                   </tr>
                 </thead>
-                {orderDetails?.map((order, index) => (
+                {orderInfo?.orderDetails?.map((order, index) => (
                   <tbody key={index}>
                     <tr className="">
-                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[15px]">
                         <div className="flex items-center">
                           <span>{order?.product?.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-[34px]">{order?.productUnit}</td>
-                      <td className="px-6 py-[34px]">{order?.quantity}</td>
-                      <td className="px-6 py-[34px]">
+                      <td className="px-6 py-[15px]">{order?.productUnit}</td>
+                      <td className="px-6 py-[15px]">{order?.quantity}</td>
+                      <td className="px-6 py-[15px]">
                         {PriceFormat.format(order?.quantity * order?.price)}
                       </td>
                     </tr>
@@ -108,11 +89,15 @@ const PaymentFailure: React.FC = () => {
           </div>
           <div className="mb-10 mt-5 flex min-h-[400px] justify-center">
             <div className="flex h-[120px] w-[70%] max-w-[350px] -rotate-[15deg] flex-col items-center justify-center gap-2 rounded-3xl border-4 border-[red] font-medium text-[red] lg:h-[150px]">
-              <h2 className="text-2xl lg:text-4xl">CHƯA THANH TOÁN</h2>
+              {orderInfo?.paymentStatus.includes(PAYMENT_STATUS.SUCCESS) ? (
+                <h2 className="text-2xl lg:text-4xl">ĐÃ THANH TOÁN</h2>
+              ) : (
+                <h2 className="text-2xl lg:text-4xl">CHƯA THANH TOÁN</h2>
+              )}
               <p className="text-xl font-bold">
-                {PriceFormat.format(orderInfo?.orderInfo?.total)}
+                {PriceFormat.format(orderInfo?.total)}
               </p>
-              <p>{formatTimestampWithHour(orderInfo?.orderInfo?.createDate)}</p>
+              <p>{formatTimestampWithHour(orderInfo?.createDate)}</p>
             </div>
           </div>
           {/* footer */}
@@ -130,7 +115,7 @@ const PaymentFailure: React.FC = () => {
                     <p>Điều khoản:</p>
                   </div>
                   <div className="col-span-2 text-left text-gray-200">
-                    <p> {orderInfo?.orderInfo?.storeName}</p>
+                    <p> {orderInfo?.storeName}</p>
                     <p>Thanh toán 100%</p>
                   </div>
                 </div>
@@ -142,8 +127,8 @@ const PaymentFailure: React.FC = () => {
                     <p>Tổng:</p>
                   </div>
                   <div className="col-span-2 text-right text-gray-200">
-                    <p> {PriceFormat.format(orderInfo?.orderInfo?.total)}</p>
-                    <p> {PriceFormat.format(orderInfo?.orderInfo?.total)}</p>
+                    <p> {PriceFormat.format(orderInfo?.total)}</p>
+                    <p> {PriceFormat.format(orderInfo?.total)}</p>
                   </div>
                 </div>
               </div>
@@ -159,4 +144,4 @@ const PaymentFailure: React.FC = () => {
   );
 };
 
-export default PaymentFailure;
+export default OrderedBill;

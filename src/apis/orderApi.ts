@@ -1,4 +1,3 @@
-import { Page } from "@/types/page.,types";
 import apiSlice from "./apiSlice";
 
 const orderApi = apiSlice.injectEndpoints({
