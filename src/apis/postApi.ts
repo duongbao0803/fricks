@@ -9,9 +9,15 @@ const postApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getDetailPost: builder.query({
+      query: ({ postId }) => ({
+        url: `/posts/${postId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetPostListQuery } = postApi;
+export const { useGetPostListQuery, useGetDetailPostQuery } = postApi;
 
 export default postApi;

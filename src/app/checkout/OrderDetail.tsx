@@ -140,7 +140,11 @@ const OrderDetail = () => {
               <div className="flex justify-between">
                 <span className="font-semibold text-gray-500">Tổng</span>
                 <span className="font-bold text-primary">
-                  {PriceFormat.format(cartData?.totalPrice ?? 0)}
+                  <span>
+                    {PriceFormat.format(
+                      cartData?.totalPrice - (store?.defaultShip || 0),
+                    )}
+                  </span>
                 </span>
               </div>
             </div>

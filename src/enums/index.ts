@@ -27,3 +27,7 @@ export enum PAYMENT {
   COD,
 }
 
+export enum PAYMENT_STATUS {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+}

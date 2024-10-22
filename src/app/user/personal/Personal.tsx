@@ -67,7 +67,11 @@ const Personal = () => {
               />
             </div>
           </div>
-          <ButtonCustom className="mt-4 w-36 text-white">Cập nhật</ButtonCustom>
+          <div className="ml-[135px]">
+            <ButtonCustom className="mt-4 w-36 text-white">
+              Cập nhật
+            </ButtonCustom>
+          </div>
         </Form>
       </div>
     </section>

@@ -53,8 +53,8 @@ export default function ProfileLayout({
         <div className="py-16">
           <BreadScrumb items={items} />
         </div>
-        <div className="grid grid-cols-4 gap-10">
-          <div className="col-span-1 hidden lg:block">
+        <div className="grid grid-cols-4 gap-10 transition-all duration-500">
+          <div className="col-span-1 hidden transition-all duration-500 lg:block">
             <div className="flex items-center gap-4">
               <Image
                 src={userInfo?.avatar ?? ""}

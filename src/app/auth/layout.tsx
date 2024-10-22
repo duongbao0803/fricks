@@ -31,7 +31,7 @@ export default function ClientLayout({
     <>
       {showNavbar && <Navbar />}
       {children}
-      <FloatButton.BackTop className="!fixed !bottom-[200px] !right-[20px]" />
+      <FloatButton.BackTop className="!fixed !bottom-[150px] !right-[5px]" />
       <ProgressBar />
       {showNavbar && <Footer />}
     </>

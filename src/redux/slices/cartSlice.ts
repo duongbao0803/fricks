@@ -9,6 +9,7 @@ interface CartState {
   cartUser: CartUser;
   totalQuantity: number;
   totalPrice: number;
+  shippingFee: number;
 }
 
 const initialState: CartState = {
@@ -19,6 +20,7 @@ const initialState: CartState = {
     customerAddress: "",
     customerPhone: "",
   },
+  shippingFee: 0,
   totalQuantity: 0,
   totalPrice: 0,
 };
