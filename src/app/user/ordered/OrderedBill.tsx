@@ -89,10 +89,10 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
           </div>
           <div className="mb-10 mt-5 flex min-h-[400px] justify-center">
             <div className="flex h-[120px] w-[70%] max-w-[350px] -rotate-[15deg] flex-col items-center justify-center gap-2 rounded-3xl border-4 border-[red] font-medium text-[red] lg:h-[150px]">
-              {orderInfo?.paymentStatus.includes(PAYMENT_STATUS.SUCCESS) ? (
-                <h2 className="text-2xl lg:text-4xl">ĐÃ THANH TOÁN</h2>
+              {orderInfo?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
+                <h2 className="text-2xl lg:text-3xl">ĐÃ THANH TOÁN</h2>
               ) : (
-                <h2 className="text-2xl lg:text-4xl">CHƯA THANH TOÁN</h2>
+                <h2 className="text-2xl lg:text-3xl">CHƯA THANH TOÁN</h2>
               )}
               <p className="text-xl font-bold">
                 {PriceFormat.format(orderInfo?.total)}

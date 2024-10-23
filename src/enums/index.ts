@@ -28,6 +28,7 @@ export enum PAYMENT {
 }
 
 export enum PAYMENT_STATUS {
-  SUCCESS = "SUCCESS",
+  PAID = "PAID",
   FAILED = "FAILED",
+  PENDING = "PENDING",
 }

@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Roboto_Slab } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { NextProgressBar } from "@/components";
 import LoadingWrapper from "@/components/LoadingWrapper";
 import { NotificationProvider } from "@/components/common/Notification";
 import { Providers } from "@/redux/provider";
-import { NextProgressBar } from "@/components";
 import ClientLayout from "./auth/layout";
 
 const robotoSlab = Roboto_Slab({
@@ -15,7 +15,31 @@ const robotoSlab = Roboto_Slab({
 });
 
 export const metadata: Metadata = {
-  title: "Fricks",
+  title: "Fricks | Trang chủ",
+  description:
+    "Fricks chuyên cung cấp các sản phẩm liên quan đến vật liệu xây dựng và công trình với chất lượng cao và giá cả hợp lý.",
+  keywords: [
+    "vật liệu xây dựng",
+    "công trình",
+    "sắt thép",
+    "xi măng",
+    "gạch",
+    "Fricks",
+  ],
+  openGraph: {
+    title: "Fricks | Trang chủ",
+    description:
+      "Tìm mua các vật liệu xây dựng tốt nhất cho công trình của bạn tại Fricks. Chúng tôi cung cấp đầy đủ các loại sản phẩm từ gạch, xi măng, sắt thép và nhiều hơn nữa.",
+    url: "https://www.frickshop.site/",
+    images: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2Flogo_web.png?alt=media&token=65731b70-968e-444b-8319-f279217d02ee",
+        width: 1200,
+        height: 630,
+        alt: "Fricks | Trang chủ",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

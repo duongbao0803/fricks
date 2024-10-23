@@ -1,6 +1,7 @@
 "use client";
 import { TagCustom } from "@/components/common";
 import { ButtonCustom } from "@/components/ui/button";
+import { PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
 import { PriceFormat, formatTimestamp } from "@/utils";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
@@ -21,18 +22,25 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
         <div className="flex flex-wrap items-center gap-3 font-medium">
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <p className="text-gray-500">Trạng thái:</p>
-            {order?.paymentStatus !== "FAILED" ? (
+            {order?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
               <TagCustom
                 className="!mr-0"
                 label="ĐÃ THANH TOÁN"
                 color="green"
                 closable={false}
               />
+            ) : order?.paymentStatus.includes(PAYMENT_STATUS.FAILED) ? (
+              <TagCustom
+                className="!mr-0"
+                label="THANH TOÁN THẤT BẠI"
+                color="red"
+                closable={false}
+              />
             ) : (
               <TagCustom
                 className="!mr-0"
                 label="CHƯA THANH TOÁN"
-                color="red"
+                color="blue"
                 closable={false}
               />
             )}
@@ -70,7 +78,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
         <Divider className="!m-0 bg-gray-200"></Divider>
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col justify-between gap-3">
-            {order?.paymentStatus !== "FAILED" ? (
+            {order?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
               <div className="flex gap-2 text-sm text-[#00b7ff]">
                 <CheckCircleFilled color="blue" />
                 <p>Đang giao hàng...</p>
@@ -78,7 +86,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
             ) : (
               <div className="flex gap-2 text-sm text-[red]">
                 <CloseCircleFilled color="red" />
-                <p>Đang chờ...</p>
+                <p>Đã hủy</p>
               </div>
             )}
           </div>

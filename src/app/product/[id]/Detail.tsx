@@ -5,7 +5,7 @@ import { PriceFormat } from "@/utils";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAddToCart from "../hooks/useAddToCart";
 
 const Detail = () => {
@@ -17,11 +17,27 @@ const Detail = () => {
   const [selectedPrice, setSelectedPrice] = useState<number>(
     typedProduct?.price[0]?.price,
   );
+  const [quantity, setQuantity] = useState<number>(1);
+
   const { handleAddToCart } = useAddToCart();
 
   const handleChangeUnit = (values: any) => {
     setSelectedPrice(values?.price);
   };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity > 0) setQuantity(newQuantity);
+  };
+
+  const handleAddToCartWithQuantity = () => {
+    handleAddToCart(typedProduct, quantity);
+  };
+
+  useEffect(() => {
+    if (typedProduct?.price?.length > 0) {
+      setSelectedPrice(typedProduct.price[0].price);
+    }
+  }, [typedProduct]);
 
   return (
     <div className="container mx-auto bg-white p-6">
@@ -45,45 +61,41 @@ const Detail = () => {
               <h2 className="text-3xl font-semibold text-gray-700">
                 {typedProduct?.name}
               </h2>
-              <div className="mt-2 items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(4)].map((_, i) => (
-                    <span key={i}>&#9733;</span>
-                  ))}
-                  <span className="text-gray-400">&#9733;</span>
-                  <span className="ml-2 text-gray-400">4/5</span>
-                </div>
-                <p className="text-sm text-gray-500">
-                  Thương hiệu:{" "}
-                  <span className="text-primary">
-                    {typedProduct?.brand?.name}
-                  </span>
-                </p>
-              </div>
               <p className="my-5 text-3xl font-bold text-primary">
                 {PriceFormat.format(selectedPrice)}
               </p>
 
               <div className="mt-4 flex items-center space-x-4">
                 <div className="flex items-center rounded-md border border-gray-300">
-                  <button className="px-3 py-1 text-gray-500">-</button>
+                  <button
+                    className="px-3 py-1 text-gray-500"
+                    onClick={() => handleQuantityChange(quantity - 1)}
+                  >
+                    -
+                  </button>
                   <input
                     type="number"
-                    value="1"
+                    value={quantity}
+                    onChange={(e) =>
+                      handleQuantityChange(Number(e.target.value))
+                    }
                     className="w-12 border-l border-r border-gray-300 text-center outline-none"
                   />
-                  <button className="px-3 py-1 text-gray-500">+</button>
+                  <button
+                    className="px-3 py-1 text-gray-500"
+                    onClick={() => handleQuantityChange(quantity + 1)}
+                  >
+                    +
+                  </button>
                 </div>
                 <button
-                  onClick={() => handleAddToCart(typedProduct)}
+                  onClick={handleAddToCartWithQuantity}
                   className="rounded-md bg-primary px-8 py-3 font-semibold text-white hover:bg-secondary"
                 >
                   Thêm giỏ hàng
                 </button>
-                <button className="rounded-md border border-gray-300 p-3 text-gray-500 hover:bg-secondary">
-                  &#9825;
-                </button>
               </div>
+
               <div className="flex gap-5">
                 {typedProduct?.price?.map((typeUnit, index) => (
                   <div key={index} className="flex gap-5 border border-red-500">
@@ -93,7 +105,6 @@ const Detail = () => {
                   </div>
                 ))}
               </div>
-
               <div className="mt-6 rounded-md border border-gray-500 p-4">
                 <h3 className="mb-2 font-semibold text-gray-700">
                   CHÍNH SÁCH BÁN HÀNG
