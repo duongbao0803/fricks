@@ -1,4 +1,3 @@
-"use client";
 import {
   CarouselHome,
   IntroHome,
@@ -6,10 +5,10 @@ import {
   Statistical,
   Subscribe,
 } from "@/components";
+import { Metadata } from "next";
 import "./globals.css";
 import PostHome from "./post/PostHome";
 import ProductHome from "./product/ProductHome";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Fricks | Trang chủ",
