@@ -10,19 +10,10 @@ import { skipToken } from "@reduxjs/toolkit/query";
 const favoriteProductApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getFavorList: builder.query({
-      query: ({ PageIndex, PageSize }) => {
-        const token = getToken();
-        if (!token) {
-          return skipToken; // Skip the query if there's no token
-        }
-        return {
-          url: `/favorites/user?PageIndex=${PageIndex}&PageSize=${PageSize}`,
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`, // Add your token here if needed
-          },
-        };
-      },
+      query: ({ PageIndex, PageSize }) => ({
+        url: `/favorites/user?PageIndex=${PageIndex}&PageSize=${PageSize}`,
+        method: "GET",
+      }),
     }),
     addFavorite: builder.mutation({
       query: (productId) => ({
