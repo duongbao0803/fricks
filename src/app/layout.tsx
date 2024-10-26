@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
-import { Roboto_Slab } from "next/font/google";
-import Script from "next/script";
-import "./globals.css";
 import { NextProgressBar } from "@/components";
 import LoadingWrapper from "@/components/LoadingWrapper";
 import { NotificationProvider } from "@/components/common/Notification";
 import { Providers } from "@/redux/provider";
+import { Roboto_Slab } from "next/font/google";
+import Script from "next/script";
 import ClientLayout from "./auth/layout";
+import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
   subsets: ["latin"],

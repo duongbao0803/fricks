@@ -1,11 +1,11 @@
-import { Carousel, Skeleton } from "antd";
-import React from "react";
-import ImageSliderCustom from "./common/ImageSliderCustom";
-import Slide1 from "@/assets/images/logo/banner.png";
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { CiCoinInsert } from "react-icons/ci";
-import { BiSupport } from "react-icons/bi";
+"use client";
 import { useGetListBannerQuery } from "@/apis/bannerApi";
+import { Carousel } from "antd";
+import React from "react";
+import { BiSupport } from "react-icons/bi";
+import { CiCoinInsert } from "react-icons/ci";
+import { LiaShippingFastSolid } from "react-icons/lia";
+import ImageSliderCustom from "./common/ImageSliderCustom";
 
 const CarouselHome = () => {
   const { data: banner } = useGetListBannerQuery({});
