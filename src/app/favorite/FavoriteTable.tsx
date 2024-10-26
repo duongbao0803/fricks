@@ -14,6 +14,8 @@ import {
 import { notify } from "@/components/common/Notification";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { FavoriteProps } from "@/types/favorite.types";
+import { useDispatch } from "react-redux";
+import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
 
 const FavoriteTable = () => {
   const router = useRouter();
@@ -22,12 +24,14 @@ const FavoriteTable = () => {
     PageSize: 50,
   });
   const [deleteAll] = useDeleteFavoriteAllMutation();
+  const dispatch = useDispatch();
 
   const handleDelete = async () => {
     try {
       const res = await deleteAll({}).unwrap();
       if (res && res.httpCode === 200) {
         notify("success", `${res?.message}`, 2);
+        dispatch(clearFavoriteCount());
         refetch();
       }
     } catch (err: any) {

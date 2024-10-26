@@ -66,7 +66,6 @@ const axiosBaseQuery = async (
           );
         }
       } else {
-        // Navigate to login
       }
     }
   }

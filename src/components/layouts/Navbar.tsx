@@ -21,6 +21,7 @@ import { RolesLogin } from "@/enums";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useUserSelector from "@/redux/hooks/useUserSelector";
+import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
 
 const Navbar = () => {
   const { userInfo } = useUserSelector();
@@ -33,11 +34,13 @@ const Navbar = () => {
     (state: RootState) => state.persistedReducer.cart,
   );
 
-  // const { data: favoriteList = [], refetch } = useGetFavorListQuery({
-  //   PageIndex: 1,
-  //   PageSize: 50,
-  // });
-
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
+    PageIndex: 1,
+    PageSize: 50,
+  });
+  const count = useSelector(
+    (state: RootState) => state.persistedReducer.favorites.count,
+  );
   // useEffect(() => {
   //   refetch();
   // }, [favoriteList, refetch]);
@@ -251,7 +254,7 @@ const Navbar = () => {
               <div className="flex items-center gap-5">
                 <Link href="/favorite">
                   <div className="lg:block">
-                    <Badge count={3}>
+                    <Badge count={count}>
                       <GrFavorite
                         className={`cursor-pointer text-2xl ${styleFavor} hover:text-primary`}
                       />

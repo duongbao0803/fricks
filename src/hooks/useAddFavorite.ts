@@ -13,6 +13,7 @@ export const useFavorite = () => {
   const isFavorite = useSelector(
     (state: RootState) => state.persistedReducer.favorites.isFavorite,
   );
+  const dispatch = useDispatch();
 
   const [addFavorite] = useAddFavoriteMutation();
 
@@ -27,6 +28,7 @@ export const useFavorite = () => {
           productId: productId,
         }).unwrap();
         notify("success", "Thêm vào danh sách yêu thích thành công", 2);
+        dispatch(incrementFavoriteCount());
       }
     } catch (error) {
       setLoading(false);

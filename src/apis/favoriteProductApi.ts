@@ -1,14 +1,28 @@
-import { url } from "inspector";
+import {
+  decrementFavoriteCount,
+  incrementFavoriteCount,
+} from "@/redux/slices/favoriteSlice";
 import apiSlice from "./apiSlice";
-import { Page } from "@/types/page.types";
+import Cookies from "js-cookie";
+import { getToken } from "@/hooks/useToken";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 const favoriteProductApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getFavorList: builder.query({
-      query: ({ PageIndex, PageSize }) => ({
-        url: `/favorites/user?PageIndex=${PageIndex}&PageSize=${PageSize}`,
-        method: "GET",
-      }),
+      query: ({ PageIndex, PageSize }) => {
+        const token = getToken();
+        if (!token) {
+          return skipToken; // Skip the query if there's no token
+        }
+        return {
+          url: `/favorites/user?PageIndex=${PageIndex}&PageSize=${PageSize}`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`, // Add your token here if needed
+          },
+        };
+      },
     }),
     addFavorite: builder.mutation({
       query: (productId) => ({
@@ -16,6 +30,14 @@ const favoriteProductApi = apiSlice.injectEndpoints({
         method: "POST",
         body: productId,
       }),
+      async onQueryStarted(productId, { dispatch, queryFulfilled }) {
+        dispatch(incrementFavoriteCount());
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(decrementFavoriteCount());
+        }
+      },
     }),
     deleteFavorite: builder.mutation({
       query: (id) => ({

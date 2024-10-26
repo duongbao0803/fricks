@@ -24,13 +24,21 @@ import { SortStatus } from "@/enums";
 import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
 import { ScrollReveal, VoiceSearch } from "@/components";
 import { RadioCustom, SliderCustom } from "@/components/common";
-import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import {
+  useAddFavoriteMutation,
+  useGetFavorListQuery,
+} from "@/apis/favoriteProductApi";
 import { useFavorite } from "@/hooks/useAddFavorite";
+import useUserInfo from "@/hooks/useUserInfo";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 const { Option } = Select;
 
 const ProductList = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([1, 1000000]);
+  const { userInfo } = useUserInfo();
   const debouncedPriceRange = useDebounce(priceRange, 500);
   const [selectedSort, setSelectedSort] = useState<string>("default");
   const { isFavorite, toggleFavorite, loading } = useFavorite();
@@ -40,12 +48,16 @@ const ProductList = () => {
     undefined,
     {},
   );
+  const token = Cookies.get("accessToken");
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(100);
-
+  const [addFavorite] = useAddFavoriteMutation();
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery(
+    token ? { PageIndex: 1, PageSize: 50 } : skipToken,
+  );
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
     [categoriesData],
@@ -96,9 +108,15 @@ const ProductList = () => {
     setPriceRange(value);
   };
 
-  const handleToggleFavorite = (product: ProductInfo, item: ProductPrice) => {
-    toggleFavorite(product?.id);
+  // const handleToggleFavorite = (product: ProductInfo, item: ProductPrice) => {
+  //   toggleFavorite(product?.id);
+  // };
+
+  const handleToggleFavorite = async (productId: number) => {
+    await addFavorite({ productId }).unwrap();
   };
+
+  const dispatch = useDispatch();
 
   return (
     <section className="grid grid-cols-1 gap-16 leading-10 transition-all duration-500 md:grid-cols-4">
@@ -199,25 +217,33 @@ const ProductList = () => {
                             </button>
                           </p>
                         </button>
-                        <Tooltip
-                          title={
-                            isFavorite
-                              ? "Thêm vào danh sách yêu thích"
-                              : "Gỡ khỏi danh sách yêu thích"
-                          }
-                          placement="top"
-                        >
-                          <button
-                            className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-300 ease-in-out hover:bg-gray-200"
-                            onClick={() => handleToggleFavorite(product, item)}
+                        {userInfo && (
+                          <Tooltip
+                            title={
+                              favoriteList.some(
+                                (favorite: { productId: number }) =>
+                                  favorite.productId === product.id,
+                              )
+                                ? "Đã có trong danh sách yêu thích"
+                                : "Thêm vào danh sách yêu thích"
+                            }
+                            placement="top"
                           >
-                            {/* {favoriteList.includes(item?.id) ? (
-                              <AiFillHeart className="text-xl text-red-500" />
-                            ) : (
-                              <AiOutlineHeart className="text-xl text-gray-500" />
-                            )} */}
-                          </button>
-                        </Tooltip>
+                            <button
+                              className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
+                              onClick={() => handleToggleFavorite(product?.id)}
+                            >
+                              {favoriteList.some(
+                                (favorite: { productId: number }) =>
+                                  favorite.productId === product.id,
+                              ) ? (
+                                <AiFillHeart className="text-xl text-red-500" />
+                              ) : (
+                                <AiOutlineHeart className="text-xl text-gray-500" />
+                              )}
+                            </button>
+                          </Tooltip>
+                        )}
                       </div>
                       <Link href={`/product/${product?.id}`}>
                         <div className="flex flex-col items-center p-4 text-center">
