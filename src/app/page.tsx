@@ -9,6 +9,8 @@ import { Metadata } from "next";
 import "./globals.css";
 import PostHome from "./post/PostHome";
 import ProductHome from "./product/ProductHome";
+import { useEffect } from "react";
+import Modal from "@/components/Modal";
 
 export const metadata: Metadata = {
   title: "Fricks | Trang chủ",
@@ -41,20 +43,18 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <Modal></Modal>;
       <CarouselHome />
       <ProductHome />
       <ScrollReveal>
         <IntroHome />
       </ScrollReveal>
-
       <ScrollReveal>
         <Statistical />
       </ScrollReveal>
-
       <ScrollReveal>
         <PostHome />
       </ScrollReveal>
-
       <ScrollReveal>
         <Subscribe />
       </ScrollReveal>
