@@ -1,15 +1,12 @@
-// cartSlice.js
-import { CartUser, UserInfo } from "@/types/personal.types";
+import { CartUser } from "@/types/personal.types";
 import { ProductInfo } from "@/types/product.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { current } from "immer";
 
 interface CartState {
   cart: ProductInfo[];
   cartUser: CartUser;
   totalQuantity: number;
   totalPrice: number;
-  shippingFee: number;
 }
 
 const initialState: CartState = {
@@ -20,7 +17,6 @@ const initialState: CartState = {
     customerAddress: "",
     customerPhone: "",
   },
-  shippingFee: 0,
   totalQuantity: 0,
   totalPrice: 0,
 };
@@ -28,8 +24,11 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart(state, action: PayloadAction<ProductInfo>) {
-      const product = action.payload;
+    addToCart(
+      state,
+      action: PayloadAction<{ product: ProductInfo; quantity: number }>,
+    ) {
+      const { product, quantity } = action.payload;
       const existingItem = state.cart.find((item) => item.id === product.id);
 
       if (existingItem) {
@@ -37,21 +36,22 @@ const cartSlice = createSlice({
           cartItem.id === product.id
             ? {
                 ...cartItem,
-                quantity: cartItem.quantity + 1,
+                quantity: cartItem.quantity + quantity,
                 totalProductPrice:
-                  (cartItem.quantity + 1) * (cartItem.price[0].price || 0),
+                  (cartItem.quantity + quantity) *
+                  (cartItem.price[0].price || 0),
               }
             : cartItem,
         );
       } else {
         state.cart.push({
           ...product,
-          quantity: 1,
+          quantity: quantity,
           totalProductPrice: product.price[0].price || 0,
         });
         state.totalQuantity += 1;
       }
-      state.totalPrice += product.price[0].price || 0;
+      state.totalPrice += quantity * product.price[0].price || 0;
     },
 
     removeFromCart(state, action: PayloadAction<ProductInfo>) {

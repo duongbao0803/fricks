@@ -21,6 +21,7 @@ export interface UserInfo {
 }
 
 export interface CartUser {
+  storeName?: string;
   email: string;
   fullName: string;
   customerAddress: string;

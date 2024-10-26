@@ -1,9 +1,10 @@
 "use client";
 import { useOrderMutation } from "@/apis/orderApi";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 import VietQR from "@/assets/images/icons/vietqr.jpeg";
 import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
-import { tableDataCheckout } from "@/constants";
+import { tableData } from "@/constants";
 import { PAYMENT } from "@/enums";
 import useUserInfo from "@/hooks/useUserInfo";
 import { RootState } from "@/redux/store";
@@ -13,7 +14,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import InfoModal from "./InfoModal";
-import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -36,11 +36,13 @@ const OrderDetail = () => {
 
   const [checkoutAPI] = useOrderMutation();
 
-  const transformedData = cartData?.cart?.map((item) => ({
-    productId: item?.id,
-    productUnitId: item.price[0].unitId,
-    quantity: item.quantity,
-  }));
+  const transformedData = cartData?.cart?.map(
+    (item: { id: any; price: { unitId: any }[]; quantity: any }) => ({
+      productId: item?.id,
+      productUnitId: item.price[0].unitId,
+      quantity: item.quantity,
+    }),
+  );
 
   const checkout = {
     shipFee: store?.defaultShip,
@@ -54,15 +56,16 @@ const OrderDetail = () => {
   const handlePayment = async () => {
     try {
       const res = await checkoutAPI(checkout);
+      console.log("check res", res);
       if (res && res.data) {
         notify(
           "success",
           "Đặt đơn hàng thành công. Vui lòng chờ sau 3s để thanh toán",
           3,
         );
-        setTimeout(() => {
-          window.location.href = `${res?.data?.checkoutUrl}`;
-        }, 3000);
+        // setTimeout(() => {
+        //   window.location.href = `${res?.data?.checkoutUrl}`;
+        // }, 3000);
       } else {
         notify(
           "error",
@@ -142,7 +145,7 @@ const OrderDetail = () => {
                 <span className="font-bold text-primary">
                   <span>
                     {PriceFormat.format(
-                      cartData?.totalPrice - (store?.defaultShip || 0),
+                      cartData?.totalPrice + (store?.defaultShip || 0),
                     )}
                   </span>
                 </span>
@@ -159,14 +162,14 @@ const OrderDetail = () => {
             <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
               FMALL
             </span>
-            <h1>{cartData?.cart[0]?.storeName}</h1>
+            <h1>{cartData?.cartUser?.storeName}</h1>
           </div>
           <div></div>
           <div className="col-span-1 overflow-auto lg:col-span-2">
             <table className="min-w-full overflow-auto border border-gray-300 bg-white">
               <thead className="rounded bg-thirdly">
                 <tr>
-                  {tableDataCheckout.map((data, index: number) => (
+                  {tableData.map((data, index: number) => (
                     <th
                       key={index}
                       className={`px-6 py-3 text-left text-gray-600 ${
@@ -197,6 +200,9 @@ const OrderDetail = () => {
                       </td>
                       <td className="px-6 py-[34px]">
                         {PriceFormat.format(item?.price[0].price ?? 0)}
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {item?.price[0]?.unit.name}
                       </td>
                       <td className="px-6 py-[34px]">{item?.quantity}</td>
                       <td className="px-6 py-[34px]">

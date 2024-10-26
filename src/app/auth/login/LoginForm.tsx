@@ -132,7 +132,7 @@ const LoginForm: React.FC = () => {
         Cookies.set("accessToken", res.accessToken);
         Cookies.set("refreshToken", res.refreshToken);
         router.replace("/");
-        notify("success", `${res.message}`, 3);
+        notify("success", `${res.message}`, 2);
       }
     } catch (err) {
       if (isErrorResponse(err)) {
@@ -145,7 +145,7 @@ const LoginForm: React.FC = () => {
     const email = form.getFieldValue("email");
     let information = { email, otpCode };
     if (otpCode.length < 6) {
-      notify("warning", "Vui lòng nhập otp", 3);
+      notify("warning", "Vui lòng nhập otp", 2);
       return;
     }
     try {
@@ -156,7 +156,7 @@ const LoginForm: React.FC = () => {
           Cookies.set("accessToken", res.accessToken);
           Cookies.set("refreshToken", res.refreshToken);
           router.push("/");
-          notify("success", "Đăng nhập thành công", 3);
+          notify("success", "Đăng nhập thành công", 2);
         }
       }
     } catch (err) {

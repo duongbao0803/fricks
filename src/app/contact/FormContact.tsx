@@ -17,11 +17,11 @@ const FormContact = () => {
   const Contacts = [
     {
       icon: <FaPhoneAlt />,
-      text: "+024 113 114 115",
+      text: "(+84) 909 251 504",
     },
     {
       icon: <FaEarthAfrica />,
-      text: "https://fricks.vercel.app",
+      text: "https://www.frickshop.site",
     },
     {
       icon: <FaMapMarkerAlt />,

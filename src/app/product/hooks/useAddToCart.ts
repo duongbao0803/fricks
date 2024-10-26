@@ -6,7 +6,7 @@ import { RootState } from "@/redux/store";
 import { ProductInfo } from "@/types/product.types";
 import { useGetUserInfoQuery } from "@/apis/authApi";
 import { UserInfo } from "@/types/personal.types";
-import { addToCart } from "@/redux/slices/cartSlice";
+import { addToCart, clearCart } from "@/redux/slices/cartSlice";
 import { notify } from "@/components/common/Notification";
 
 const useAddToCart = () => {
@@ -19,20 +19,34 @@ const useAddToCart = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
+  const MAX_PRODUCTS = 50;
 
   const handleAddToCart = useCallback(
-    (product: ProductInfo) => {
+    (product: ProductInfo, quantity: number = 1) => {
       if (userInfo && userInfo.role === RolesLogin.CUSTOMER) {
         const isCartEmpty = !cartData?.cart || cartData.cart.length === 0;
         const isSameStore = cartData?.cart?.some(
           (item: { storeId: number }) => item.storeId === product.storeId,
         );
+        const totalItems = cartData?.cart.reduce(
+          (acc: number, item: ProductInfo) => acc + item.quantity,
+          0,
+        );
+
+        if (totalItems + quantity > MAX_PRODUCTS) {
+          notify(
+            "warning",
+            `Không thể thêm quá ${MAX_PRODUCTS} sản phẩm vào giỏ hàng`,
+            1,
+          );
+          return;
+        }
 
         if (isCartEmpty || isSameStore) {
-          dispatch(addToCart(product));
+          dispatch(addToCart({ product, quantity }));
           notify(
             "success",
-            `Bạn đã thêm ${product?.name} vào giỏ hàng thành công`,
+            `Bạn đã thêm ${quantity} ${product?.name} vào giỏ hàng thành công`,
             1,
           );
         } else {
@@ -49,7 +63,11 @@ const useAddToCart = () => {
     [userInfo, cartData, dispatch],
   );
 
-  return { handleAddToCart };
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
+
+  return { handleAddToCart, handleClearCart };
 };
 
 export default useAddToCart;
