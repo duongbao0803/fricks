@@ -132,6 +132,11 @@ body {
 }
 
 /* antd */
+.ant-upload-list-item-thumbnail img {
+  object-fit: cover !important;
+}
+
+/* antd */
 /* .ant-radio-inner {
   background-color: var(--c-primary) !important;
   border: var(--c-primary) !important;

@@ -63,9 +63,9 @@ const OrderDetail = () => {
           "Đặt đơn hàng thành công. Vui lòng chờ sau 3s để thanh toán",
           3,
         );
-        // setTimeout(() => {
-        //   window.location.href = `${res?.data?.checkoutUrl}`;
-        // }, 3000);
+        setTimeout(() => {
+          window.location.href = `${res?.data?.checkoutUrl}`;
+        }, 3000);
       } else {
         notify(
           "error",
@@ -260,7 +260,7 @@ const OrderDetail = () => {
                     </Radio>
                     <div className="ml-4">
                       <Image
-                        src={Vnpay}
+                        src={VietQR}
                         alt="Logo-vnpay"
                         className="w-11"
                         height={50}
