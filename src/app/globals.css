@@ -196,7 +196,7 @@ input[type="number"] {
 }
 
 /* antd */
-.ant-upload-list-item-thumbnail img {
+.ant-upload-list-item-thumbnail > img {
   object-fit: cover !important;
 }
 
