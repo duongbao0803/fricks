@@ -62,13 +62,12 @@ const ForgotPasswordForm: React.FC<IProps> = ({
       const res = await resetPassword(JSON.stringify(email)).unwrap();
       if (res && res.httpCode === 200) {
         setIsSending(false);
-        notify("success", `${res.message}`, 3);
+        notify("success", `${res.message}`, 2);
         setTimeout(() => {
           setIsDrawerVisible(true);
         }, 1000);
       }
     } catch (err) {
-      console.error(err);
       if (isErrorResponse(err)) {
         notify("error", `${err.data.message}`, 3);
         setIsSending(false);
@@ -80,7 +79,7 @@ const ForgotPasswordForm: React.FC<IProps> = ({
     const email = form.getFieldValue("email");
     let information = { email, otpCode };
     if (otpCode.length < 6) {
-      notify("warning", "Vui lòng nhập otp", 3);
+      notify("warning", "Vui lòng nhập otp", 1);
       return;
     }
     try {
@@ -89,7 +88,6 @@ const ForgotPasswordForm: React.FC<IProps> = ({
         setIsOTPSubmitted(true);
       }
     } catch (err) {
-      console.error(err);
       if (isErrorResponse(err)) {
         notify("error", `${err.data.message}`, 3);
       } else {
@@ -105,18 +103,17 @@ const ForgotPasswordForm: React.FC<IProps> = ({
     const password = form.getFieldValue("password");
     const information = { email, password };
     if (!email || !password) {
-      notify("warning", "Vui lòng nhập đầy đủ thông tin", 3);
+      notify("warning", "Vui lòng nhập đầy đủ thông tin", 2);
       return;
     }
     try {
       const res = await confirmNewPassword(information).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res.message}`, 3);
+        notify("success", `${res.message}`, 2);
         setIsDrawerVisible(false);
         setIsShowRegister(true);
       }
     } catch (err) {
-      console.error(err);
       if (isErrorResponse(err)) {
         notify("error", `${err.data.message}`, 3);
       } else {

@@ -5,7 +5,7 @@ import { useLogout } from "@/hooks/useLogout";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { CiMenuFries } from "react-icons/ci";
+import { CiMenuKebab } from "react-icons/ci";
 import SidebarButtons from "./SidebarButtons";
 // import NavElement from "./NavElement";
 
@@ -40,10 +40,10 @@ const MobileSide = () => {
   return (
     <Sheet>
       <SheetTrigger className="flex items-center justify-center">
-        <CiMenuFries className="text-4xl font-black text-primary" />
+        <CiMenuKebab className="rotate-90 text-4xl font-black text-primary" />
       </SheetTrigger>
       <SheetContent side={"left"} className="mx-auto flex flex-col">
-        <nav className="mx-10 mt-32 flex flex-col items-center justify-center">
+        <nav className="mx-5 mt-32 flex flex-col items-center justify-center">
           <div className="mb-16 flex justify-center text-center">
             <Image
               src={IconWeb}

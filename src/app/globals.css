@@ -123,12 +123,76 @@ body {
   --n: 4;
 }
 
+.button-hire__custom {
+  color: var(--c-light);
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 7px 2px;
+  width: 130px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: 0.5s;
+  overflow: hidden;
+  background-color: var(--c-primary);
+}
+
+.button-hire__custom span {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+  background-color: var(--c-light);
+  transform: translateY(150%);
+  border-radius: 50%;
+  left: calc((var(--n) - 1) * 25%);
+  transition: 0.8s;
+  transition-delay: calc((var(--n) - 1) * 0.1s);
+  z-index: -1;
+}
+
+.button-hire__custom:hover {
+  color: var(--c-semidark);
+  letter-spacing: 3px;
+  overflow: hidden;
+}
+
+.button-hire__custom:hover span {
+  transform: translateY(0) scale(2);
+}
+
+.button-hire__custom span:nth-child(1) {
+  --n: 1;
+}
+
+.button-hire__custom span:nth-child(2) {
+  --n: 2;
+}
+
+.button-hire__custom span:nth-child(3) {
+  --n: 3;
+}
+
+.button-hire__custom span:nth-child(4) {
+  --n: 4;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 /* antd */

@@ -1,10 +1,11 @@
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { notify } from "@/components/common/Notification";
-import { useDispatch } from "react-redux";
-import { setUserInfo } from "@/redux/slices/userSlice";
 import apiSlice from "@/apis/apiSlice";
+import { notify } from "@/components/common/Notification";
 import { clearCart } from "@/redux/slices/cartSlice";
+import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
+import { setUserInfo } from "@/redux/slices/userSlice";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 export const useLogout = () => {
   const router = useRouter();
@@ -18,9 +19,10 @@ export const useLogout = () => {
     setTimeout(() => {
       dispatch(setUserInfo(null));
       dispatch(clearCart());
+      dispatch(clearFavoriteCount());
       dispatch(apiSlice.util.resetApiState());
     }, 1000);
-    notify("success", "Đăng xuất thành công", 3);
+    notify("success", "Đăng xuất thành công", 2);
   };
 
   return { logout };

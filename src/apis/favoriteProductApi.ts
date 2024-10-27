@@ -3,9 +3,6 @@ import {
   incrementFavoriteCount,
 } from "@/redux/slices/favoriteSlice";
 import apiSlice from "./apiSlice";
-import Cookies from "js-cookie";
-import { getToken } from "@/hooks/useToken";
-import { skipToken } from "@reduxjs/toolkit/query";
 
 const favoriteProductApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,10 +28,18 @@ const favoriteProductApi = apiSlice.injectEndpoints({
       },
     }),
     deleteFavorite: builder.mutation({
-      query: (id) => ({
-        url: `/favorites/${id}`,
+      query: (productId) => ({
+        url: `/favorites/${productId}`,
         method: "DELETE",
       }),
+      async onQueryStarted(productId, { dispatch, queryFulfilled }) {
+        dispatch(decrementFavoriteCount());
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(incrementFavoriteCount());
+        }
+      },
     }),
     deleteFavoriteAll: builder.mutation({
       query: () => ({

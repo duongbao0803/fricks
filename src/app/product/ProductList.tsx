@@ -1,38 +1,39 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  Divider,
-  Form,
-  Skeleton,
-  Select,
-  Spin,
-  Tooltip,
-  Rate,
-  Pagination,
-} from "antd";
-import Image from "next/image";
-import Link from "next/link";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import useAddToCart from "./hooks/useAddToCart";
-import { PriceFormat } from "@/utils";
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
-import { useGetProductListQuery } from "@/apis/productApi";
-import useDebounce from "@/hooks/useDebounce";
-import NoProducts from "@/assets/images/logo/no-products.png";
-import { SortStatus } from "@/enums";
-import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
-import { ScrollReveal, VoiceSearch } from "@/components";
-import { RadioCustom, SliderCustom } from "@/components/common";
 import {
   useAddFavoriteMutation,
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
-import { useFavorite } from "@/hooks/useAddFavorite";
+import { useGetProductListQuery } from "@/apis/productApi";
+import NoProducts from "@/assets/images/logo/no-products.png";
+import { ScrollReveal, VoiceSearch } from "@/components";
+import { RadioCustom, SliderCustom } from "@/components/common";
+import { notify } from "@/components/common/Notification";
+import { SortStatus } from "@/enums";
+import useDebounce from "@/hooks/useDebounce";
 import useUserInfo from "@/hooks/useUserInfo";
-import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
+import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
+import { PriceFormat } from "@/utils";
 import { skipToken } from "@reduxjs/toolkit/query";
+import {
+  Divider,
+  Form,
+  Pagination,
+  Rate,
+  Select,
+  Skeleton,
+  Spin,
+  Tooltip,
+} from "antd";
+import Cookies from "js-cookie";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import useAddToCart from "./hooks/useAddToCart";
+import { useGetListStoreQuery } from "@/apis/storeApi";
 
 const { Option } = Select;
 
@@ -41,7 +42,6 @@ const ProductList = () => {
   const { userInfo } = useUserInfo();
   const debouncedPriceRange = useDebounce(priceRange, 500);
   const [selectedSort, setSelectedSort] = useState<string>("default");
-  const { isFavorite, toggleFavorite, loading } = useFavorite();
   const { handleAddToCart } = useAddToCart();
   // const { data: favoriteList = [] } = useGetFavorListQuery(undefined, {});
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
@@ -50,10 +50,11 @@ const ProductList = () => {
   );
   const token = Cookies.get("accessToken");
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
+  const [selectedStore, setSelectedStore] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(100);
+  const [pageSize, setPageSize] = useState<number>(9);
   const [addFavorite] = useAddFavoriteMutation();
   const { data: favoriteList = [], refetch } = useGetFavorListQuery(
     token ? { PageIndex: 1, PageSize: 50 } : skipToken,
@@ -63,38 +64,53 @@ const ProductList = () => {
     [categoriesData],
   );
 
-  const { data: productData = [], isFetching } = useGetProductListQuery({
+  const { data: store } = useGetListStoreQuery({});
+
+  const [favorites, setFavorites] = useState<{ [key: number]: boolean }>({});
+  const [prevFavoriteList, setPrevFavoriteList] = useState([]);
+
+  const { data: productData, isFetching } = useGetProductListQuery({
     PageIndex: pageIndex,
     PageSize: pageSize,
     CategoryId: selectedCategory,
     name: debouncedSearchQuery,
     MinPrice: debouncedPriceRange[0],
     MaxPrice: debouncedPriceRange[1],
+    StoreId: selectedStore,
   });
 
   useEffect(() => {
     setSelectedCategory(0);
+    setSelectedStore(0);
   }, []);
 
   const handleSortChange = (value: string) => {
     setSelectedSort(value);
   };
 
+  const handleSelectStore = (value: number) => {
+    setSelectedStore(value);
+  };
+  const handlePageChange = (page: number) => {
+    setPageIndex(page);
+  };
+
   const sortProduct = useMemo(() => {
+    const items = productData?.items || [];
     if (selectedSort.includes(SortStatus.LOWTOHIGHT)) {
-      return [...productData].sort(
+      return [...items].sort(
         (a: ProductInfo, b: ProductInfo) =>
           a?.price[0]?.price - b?.price[0]?.price,
       );
     } else if (selectedSort.includes(SortStatus.HIGHTOLOW)) {
-      return [...productData].sort(
+      return [...items].sort(
         (a: ProductInfo, b: ProductInfo) =>
           b?.price[0]?.price - a?.price[0]?.price,
       );
     } else {
-      return productData;
+      return items;
     }
-  }, [productData, selectedSort]);
+  }, [productData?.items, selectedSort]);
 
   const handleSearchUpdate = (query: string) => {
     setSearchQuery(query);
@@ -112,11 +128,39 @@ const ProductList = () => {
   //   toggleFavorite(product?.id);
   // };
 
-  const handleToggleFavorite = async (productId: number) => {
-    await addFavorite({ productId }).unwrap();
-  };
+  useEffect(() => {
+    if (JSON.stringify(prevFavoriteList) !== JSON.stringify(favoriteList)) {
+      const initialFavorites = favoriteList.reduce(
+        (
+          acc: { [x: string]: boolean },
+          favorite: { productId: string | number },
+        ) => {
+          acc[favorite.productId] = true;
+          return acc;
+        },
+        {},
+      );
+      setFavorites(initialFavorites);
+      setPrevFavoriteList(favoriteList);
+    }
+  }, [favoriteList]);
 
-  const dispatch = useDispatch();
+  const handleToggleFavorite = async (productId: number) => {
+    if (!favorites[productId]) {
+      const res = await addFavorite({ productId }).unwrap();
+      if (res) {
+        notify(
+          "success",
+          `Đã thêm ${res?.productName} vào danh sách yêu thích`,
+          2,
+        );
+        setFavorites((prev) => ({
+          ...prev,
+          [productId]: true,
+        }));
+      }
+    }
+  };
 
   return (
     <section className="grid grid-cols-1 gap-16 leading-10 transition-all duration-500 md:grid-cols-4">
@@ -174,7 +218,19 @@ const ProductList = () => {
       </div>
 
       <div className="col-span-1 transition-all duration-500 md:col-span-3">
-        <div className="mb-4 flex justify-end">
+        <div className="mb-4 flex justify-end gap-3">
+          <Select
+            defaultValue={0}
+            className="w-[30%] md:w-[18%]"
+            onChange={handleSelectStore}
+          >
+            <Option value={0}>Mặc định</Option>
+            {store?.map((item: any, index: number) => (
+              <Option key={index} value={item?.id}>
+                {item?.name}
+              </Option>
+            ))}
+          </Select>
           <Select
             defaultValue="default"
             className="w-[30%] md:w-1/6"
@@ -185,6 +241,7 @@ const ProductList = () => {
             <Option value={SortStatus.HIGHTOLOW}>Cao đến thấp</Option>
           </Select>
         </div>
+
         <div className="mx-auto mt-4 grid grid-cols-1 justify-center transition-all duration-500 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3">
           {isFetching ? (
             Array.from({ length: 6 }).map((_, index) => (
@@ -220,10 +277,7 @@ const ProductList = () => {
                         {userInfo && (
                           <Tooltip
                             title={
-                              favoriteList.some(
-                                (favorite: { productId: number }) =>
-                                  favorite.productId === product.id,
-                              )
+                              favorites[product.id]
                                 ? "Đã có trong danh sách yêu thích"
                                 : "Thêm vào danh sách yêu thích"
                             }
@@ -232,11 +286,9 @@ const ProductList = () => {
                             <button
                               className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
                               onClick={() => handleToggleFavorite(product?.id)}
+                              disabled={favorites[product.id]}
                             >
-                              {favoriteList.some(
-                                (favorite: { productId: number }) =>
-                                  favorite.productId === product.id,
-                              ) ? (
+                              {favorites[product.id] ? (
                                 <AiFillHeart className="text-xl text-red-500" />
                               ) : (
                                 <AiOutlineHeart className="text-xl text-gray-500" />
@@ -283,6 +335,14 @@ const ProductList = () => {
             </div>
           )}
         </div>
+        <Pagination
+          current={pageIndex}
+          total={productData?.totalCount || 0}
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+          className="mt-4 flex justify-end"
+        />
       </div>
     </section>
   );

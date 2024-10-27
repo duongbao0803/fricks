@@ -73,9 +73,7 @@ const UploadImage: React.FC<UploadImageProps> = (props) => {
         const downloadURL = await getDownloadURL(storageRef);
         newFile.status = "done";
         setFileChange(downloadURL);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
+      } catch (error) {}
     }
   };
 

@@ -42,7 +42,6 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       }
     } catch (err) {
       setIsOpen(true);
-      console.error("Validation failed:", err);
     }
   };
 
@@ -204,7 +203,8 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
         </Row>
         <i className="font-semibold text-[red]">
           *Lưu ý: Hiện tại, chúng tôi chỉ phục vụ trong phạm vi Thành Phố Thủ
-          Đức. Rất mong mọi người bỏ qua sự bất tiện này
+          Đức. Rất mong quý khách bỏ qua sự bất tiện này. Shop xin chân thành
+          cảm ơn.
         </i>
       </Form>
     </Modal>

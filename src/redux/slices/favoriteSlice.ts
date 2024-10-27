@@ -15,7 +15,7 @@ const favoriteSlice = createSlice({
       state.isFavorite = true;
     },
     decrementFavoriteCount: (state) => {
-      state.count = Math.max(state.count - 1, 0);
+      state.count -= 1;
       state.isFavorite = false;
     },
     clearFavoriteCount: (state) => {

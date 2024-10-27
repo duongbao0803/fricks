@@ -50,6 +50,5 @@ export const notify = (
       showProgress: true,
     });
   } else {
-    console.error("Notification is not initialized");
   }
 };

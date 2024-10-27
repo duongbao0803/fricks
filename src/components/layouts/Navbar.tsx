@@ -33,7 +33,6 @@ const Navbar = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
-
   const { data: favoriteList = [], refetch } = useGetFavorListQuery({
     PageIndex: 1,
     PageSize: 50,
