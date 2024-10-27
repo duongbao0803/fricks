@@ -64,75 +64,77 @@ const FavoriteTable = () => {
   return (
     <section className="mt-5">
       {favoriteList && favoriteList.length > 0 ? (
-        <div>
-          <table className="min-w-full border-[0.5px] border-gray-200 bg-white">
-            <thead className="rounded bg-gray-100">
-              <tr>
-                {tableFavorite.map((data, index: number) => (
-                  <th
-                    key={index}
-                    className="p-6 text-left font-normal tracking-wider"
-                  >
-                    {data}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {favoriteList.map((item: FavoriteProps, index: number) => (
-                <>
-                  <tr className="border-t" key={index}>
-                    <td className="px-6 py-12 align-middle">
-                      <div className="flex items-center">
-                        <Image
-                          height={100}
-                          width={100}
-                          quality={100}
-                          src={Imagee}
-                          className="mr-4 h-12 w-12 rounded-[100%]"
-                          alt="Store Image"
-                        />
-                        <span>{item?.storeName}</span>
-                      </div>
-                    </td>
-                    <Link href={`product/${item?.productId}`}>
-                      <td className="px-6 py-12">
+        <>
+          <div className="overflow-x-auto bg-[#fff]">
+            <table className="min-w-full border-[0.5px] border-gray-200 bg-white">
+              <thead className="rounded bg-gray-100">
+                <tr>
+                  {tableFavorite.map((data, index: number) => (
+                    <th
+                      key={index}
+                      className="p-6 text-left font-normal tracking-wider"
+                    >
+                      {data}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {favoriteList.map((item: FavoriteProps, index: number) => (
+                  <>
+                    <tr className="border-b-0 border-t" key={index}>
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
                         <div className="flex items-center">
                           <Image
                             height={100}
                             width={100}
                             quality={100}
-                            src={item?.productImage}
+                            src={Imagee}
                             className="mr-4 h-12 w-12 rounded-[100%]"
-                            alt="Product Image"
+                            alt="Store Image"
                           />
-                          <span>{item.productName}</span>
+                          <span>{item?.storeName}</span>
                         </div>
                       </td>
-                    </Link>
+                      <Link href={`product/${item?.productId}`}>
+                        <td className="px-6 py-12">
+                          <div className="flex items-center">
+                            <Image
+                              height={100}
+                              width={100}
+                              quality={100}
+                              src={item?.productImage}
+                              className="mr-4 h-12 w-12 rounded-[100%]"
+                              alt="Product Image"
+                            />
+                            <span>{item.productName}</span>
+                          </div>
+                        </td>
+                      </Link>
 
-                    <td className="px-6 py-12">
-                      {item?.productPrices[0]?.price}
-                    </td>
-                    <td className="px-6 py-12">
-                      <TagCustom
-                        color="green"
-                        label="CÒN HÀNG"
-                        closable={false}
-                        className="text-[13px]"
-                      />
-                    </td>
-                    <td className="px-6 py-12 text-center">
-                      <CloseOutlined
-                        onClick={() => handleDeleteItem(item?.id)}
-                        className="cursor-pointer text-xl text-red-500"
-                      />
-                    </td>
-                  </tr>
-                </>
-              ))}
-            </tbody>
-          </table>
+                      <td className="px-6 py-12">
+                        {item?.productPrices[0]?.price}
+                      </td>
+                      <td className="px-6 py-12">
+                        <TagCustom
+                          color="green"
+                          label="CÒN HÀNG"
+                          closable={false}
+                          className="text-[13px]"
+                        />
+                      </td>
+                      <td className="px-6 py-12 text-center">
+                        <CloseOutlined
+                          onClick={() => handleDeleteItem(item?.id)}
+                          className="cursor-pointer text-xl text-red-500"
+                        />
+                      </td>
+                    </tr>
+                  </>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className="mt-5 flex justify-between">
             <button
               onClick={() => router.push("/product")}
@@ -147,7 +149,7 @@ const FavoriteTable = () => {
               Xóa danh sách
             </button>
           </div>
-        </div>
+        </>
       ) : (
         <div className="flex items-center justify-center">
           <Image

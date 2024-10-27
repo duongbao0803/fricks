@@ -51,8 +51,8 @@ const OrderTable = () => {
             <h1>{store?.name}</h1>
           </div>
           <div></div>
-          <div className="col-span-1 overflow-auto bg-[#fff] lg:col-span-3">
-            <table className="min-w-full overflow-x-auto border bg-white">
+          <div className="col-span-1 overflow-x-auto bg-[#fff] lg:col-span-3">
+            <table className="min-w-full border-[0.5px] border-gray-200 bg-white">
               <thead className="rounded bg-thirdly">
                 <tr>
                   {tableData.map((data, index: number) => (
@@ -111,7 +111,7 @@ const OrderTable = () => {
             </table>
             <button
               onClick={handleClearCart}
-              className="group relative float-left mt-2 cursor-pointer text-sm font-normal text-primary hover:text-primary"
+              className="group sticky left-0 float-left mt-2 cursor-pointer text-sm font-normal text-primary hover:text-primary"
             >
               Xóa giỏ hàng
               <span className="absolute bottom-[-2px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />

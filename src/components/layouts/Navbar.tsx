@@ -1,27 +1,26 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Badge, Form, Dropdown } from "antd";
-import type { MenuProps } from "antd";
-import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
-import { FaRegUserCircle } from "react-icons/fa";
-import { GrFavorite } from "react-icons/gr";
-import MobileNav from "./MobileNav";
-import { ShoppingCartOutlined, BellOutlined } from "@ant-design/icons";
-import IconWeb from "@/assets/images/logo/logo_web.png";
-import { useLogout } from "@/hooks/useLogout";
 import User from "@/assets/images/logo/avatar_admin.jpg";
-import useDebounce from "@/hooks/useDebounce";
+import IconWeb from "@/assets/images/logo/logo_web.png";
 import { VoiceSearch } from "@/components";
-import NavElement from "./NavElement";
-import { usePathname } from "next/navigation";
 import { RolesLogin } from "@/enums";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import useDebounce from "@/hooks/useDebounce";
+import { useLogout } from "@/hooks/useLogout";
 import useUserSelector from "@/redux/hooks/useUserSelector";
-import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import { RootState } from "@/redux/store";
+import { BellOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Badge, Dropdown, Form } from "antd";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
+import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
+import { GrFavorite } from "react-icons/gr";
+import { useSelector } from "react-redux";
+import MobileNav from "./MobileNav";
+import NavElement from "./NavElement";
 
 const Navbar = () => {
   const { userInfo } = useUserSelector();
@@ -33,16 +32,9 @@ const Navbar = () => {
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
-  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
-    PageIndex: 1,
-    PageSize: 50,
-  });
   const count = useSelector(
     (state: RootState) => state.persistedReducer.favorites.count,
   );
-  // useEffect(() => {
-  //   refetch();
-  // }, [favoriteList, refetch]);
 
   const currentPath = usePathname();
 
