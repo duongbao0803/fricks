@@ -44,9 +44,14 @@ const Detail = () => {
     MaxPrice: 0,
     StoreId: 0,
   });
-  const { data: store } = useGetStoreDetailQuery({
-    storeId: product?.storeId,
-  });
+  const { data: store } = useGetStoreDetailQuery(
+    {
+      storeId: product?.storeId,
+    },
+    {
+      skip: !product?.storeId,
+    },
+  );
   const typedProduct = product as ProductInfo;
   const [selectedPrice, setSelectedPrice] = useState<number>(
     typedProduct?.price[0]?.price,

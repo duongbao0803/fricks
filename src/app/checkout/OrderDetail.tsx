@@ -230,12 +230,33 @@ const OrderDetail = () => {
                   {/* {infoUser && infoUser?.role === Role.MEMBER && ( */}
                   <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
                     <Radio
-                      value={PAYMENT.VNPAY}
+                      value={PAYMENT.VIETQR}
                       className="w-full object-cover"
                       defaultChecked
                     >
                       <div className="inline w-full">
                         <div className="border-1 w-full">Thanh toán VIETQR</div>
+                      </div>
+                    </Radio>
+                    <div className="ml-4">
+                      <Image
+                        src={VietQR}
+                        alt="Logo-vietqr"
+                        className="w-full object-cover"
+                        height={50}
+                        width={50}
+                        quality={100}
+                      />
+                    </div>
+                  </div>
+                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                    <Radio
+                      value={PAYMENT.VNPAY}
+                      className="w-full object-cover"
+                      defaultChecked
+                    >
+                      <div className="inline w-full">
+                        <div className="border-1 w-full">Thanh toán VNPAY</div>
                       </div>
                     </Radio>
                     <div className="ml-4">
