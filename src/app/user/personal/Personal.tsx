@@ -25,7 +25,7 @@ const Personal = () => {
       form.setFieldsValue({
         ...restUserInfo,
         avatar: fileChange,
-        dob: dayjs(restUserInfo.dob),
+        dob: restUserInfo.dob ? dayjs(restUserInfo.dob) : dayjs(),
       });
     }
   }, [fileChange, form, userInfo]);

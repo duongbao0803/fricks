@@ -4,7 +4,11 @@ import { ButtonCustom } from "@/components/ui/button";
 import { PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
 import { PriceFormat, formatTimestamp } from "@/utils";
-import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { Divider } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -79,9 +83,14 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col justify-between gap-3">
             {order?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
-              <div className="flex gap-2 text-sm text-[#00b7ff]">
-                <CheckCircleFilled color="blue" />
+              <div className="flex gap-2 text-sm text-[green]">
+                <CheckCircleFilled color="green" />
                 <p>Đang giao hàng...</p>
+              </div>
+            ) : order?.paymentStatus.includes(PAYMENT_STATUS.PENDING) ? (
+              <div className="flex gap-2 text-sm text-[#0059ff]">
+                <SyncOutlined spin color="#0059ff" />
+                <p>Đang chờ...</p>
               </div>
             ) : (
               <div className="flex gap-2 text-sm text-[red]">
@@ -92,11 +101,19 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex justify-between gap-5">
+              <div>Tạm tính:</div>
+              <div>
+                {PriceFormat.format(
+                  (order?.total || 0) - (order?.shipFee || 0),
+                )}
+              </div>
+            </div>
+            <div className="flex justify-between gap-5">
               <div>Phí vận chuyển:</div>
               <div>{PriceFormat.format(order?.shipFee || 0)}</div>
             </div>
             <div className="flex justify-between gap-5">
-              <div>Giảm giá:</div>
+              <div>Khuyến mãi:</div>
               <div>{PriceFormat.format(0)}</div>
             </div>
             <div className="flex justify-between gap-5">

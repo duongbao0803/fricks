@@ -121,13 +121,19 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
               </div>
               <div className="col-span-2 col-start-4">
                 <div className="grid grid-cols-3 leading-8">
-                  <div className="col-span-1 font-semibold text-white">
+                  <div className="col-span-2 font-semibold text-white">
                     <p>Tạm tính:</p>
+                    <p>Phí vận chuyển</p>
                     <p>Tổng:</p>
                   </div>
-                  <div className="col-span-2 text-right text-gray-200">
-                    <p> {PriceFormat.format(orderInfo?.total)}</p>
-                    <p> {PriceFormat.format(orderInfo?.total)}</p>
+                  <div className="col-span-1 text-right text-gray-200">
+                    <p>
+                      {PriceFormat.format(
+                        (orderInfo?.total || 0) - (orderInfo?.shipFee || 0),
+                      )}
+                    </p>
+                    <p>{PriceFormat.format(Number(orderInfo?.shipFee || 0))}</p>
+                    <p>{PriceFormat.format(orderInfo?.total || 0)}</p>
                   </div>
                 </div>
               </div>

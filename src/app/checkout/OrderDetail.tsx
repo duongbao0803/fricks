@@ -59,7 +59,6 @@ const OrderDetail = () => {
       return;
     }
     try {
-      console.log("check checkout", checkout);
       const res = await checkoutAPI(checkout);
       if (res && res.data) {
         notify(

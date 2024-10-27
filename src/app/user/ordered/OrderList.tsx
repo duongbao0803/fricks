@@ -1,9 +1,10 @@
 "use client";
 import { useGetListOrderQuery, useGetOrderStatusQuery } from "@/apis/orderApi";
+import NotFoundImage from "@/assets/images/logo/no-products.png";
+import { PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
 import { Modal, Spin } from "antd";
 import Image from "next/image";
-import NotFoundImage from "@/assets/images/logo/no-products.png";
 import React, { useEffect, useState } from "react";
 import OrderedBill from "./OrderedBill";
 import OrderItem from "./OrderItem";
@@ -15,14 +16,20 @@ const OrderedList: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const { data: listOrder = [] } = useGetListOrderQuery({
+  const { data: listOrder = [], isFetching } = useGetListOrderQuery({
     PageIndex: 1,
-    PageSize: 20,
+    PageSize: 50,
   });
   const orderId = JSON.parse(sessionStorage.getItem("orderId") as string);
   const { data: orderInfo } = useGetOrderStatusQuery({
     orderId: orderId,
   });
+
+  useEffect(() => {
+    if (!isFetching) {
+      setLoading(false);
+    }
+  }, [isFetching]);
 
   const showLoading = (id: number) => {
     sessionStorage.setItem("orderId", JSON.stringify(id));
@@ -45,23 +52,31 @@ const OrderedList: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [activeIndex]);
 
+  const filteredOrders = listOrder.filter((order: OrderInfo) => {
+    if (activeIndex === 1)
+      return order.paymentStatus.includes(PAYMENT_STATUS.PAID);
+    if (activeIndex === 2)
+      return order.paymentStatus.includes(PAYMENT_STATUS.FAILED);
+    if (activeIndex === 3)
+      return order.paymentStatus.includes(PAYMENT_STATUS.PENDING);
+    return true;
+  });
+
   const renderComponent = () => {
-    if (isLoading) {
+    if (loading) {
       return (
         <div className="flex justify-center">
-          <Spin size="large" tip="Đang chờ..." className="text-[red]" />
+          <Spin size="large" tip="Đang tải dữ liệu..." className="text-[red]" />
         </div>
       );
     }
 
     return (
       <>
-        {listOrder?.length > 0 ? (
-          listOrder.map(
-            (order: OrderInfo, index: React.Key | null | undefined) => (
-              <OrderItem key={index} order={order} showLoading={showLoading} />
-            ),
-          )
+        {filteredOrders.length > 0 ? (
+          filteredOrders.map((order: OrderInfo, index: React.Key) => (
+            <OrderItem key={index} order={order} showLoading={showLoading} />
+          ))
         ) : (
           <div className="flex justify-center">
             <Image
@@ -88,14 +103,6 @@ const OrderedList: React.FC = () => {
       <Modal
         width={1000}
         height={600}
-        styles={{
-          body: {
-            maxHeight: "80vh",
-            overflowY: "auto",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          },
-        }}
         footer={null}
         open={open}
         onCancel={() => setOpen(false)}
