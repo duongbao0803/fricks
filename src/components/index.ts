@@ -8,3 +8,4 @@ export { default as ProgressBar } from "./ProgressBar";
 export { default as ScrollReveal } from "./ScrollReveal";
 export { default as NextProgressBar } from "./NextProgressBar";
 export { default as VoiceSearch } from "./VoiceSearch";
+export { default as PageNotFound } from "./PageNotFound";
