@@ -3,7 +3,7 @@ import React from "react";
 
 const NotFound = () => {
   return (
-    <main className="grid min-h-screen place-items-center">
+    <main className="grid h-screen place-items-center">
       <PageNotFound />
     </main>
   );

@@ -32,7 +32,7 @@ export default function LoadingWrapper({
     } else if (
       !token &&
       (pathname.startsWith("/user") ||
-        ["/cart", "/checkout", "/payment"].includes(pathname))
+        ["/cart", "/checkout", "/payment", "/favorite"].includes(pathname))
     ) {
       router.push("/notfound");
     } else if (
