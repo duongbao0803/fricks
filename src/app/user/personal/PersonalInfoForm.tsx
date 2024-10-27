@@ -1,7 +1,7 @@
 "use client";
-import { Form, Input, Select, DatePicker } from "antd";
-import moment from "moment";
 import { GENDER } from "@/enums";
+import { DatePicker, Form, Input, Select } from "antd";
+import moment from "moment";
 
 const PersonalInfoForm = ({ form, userInfo }: any) => {
   const disabledDate = (current: object) =>

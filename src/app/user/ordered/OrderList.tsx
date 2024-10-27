@@ -1,12 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Spin, Modal } from "antd";
 import { useGetListOrderQuery, useGetOrderStatusQuery } from "@/apis/orderApi";
-import PaymentSuccess from "@/app/payment/success/page";
-import TransactionTabs from "./TransactionTabs";
-import OrderItem from "./OrderItem";
 import { OrderInfo } from "@/types/order.types";
+import { Modal, Spin } from "antd";
+import Image from "next/image";
+import NotFoundImage from "@/assets/images/logo/no-products.png";
+import React, { useEffect, useState } from "react";
 import OrderedBill from "./OrderedBill";
+import OrderItem from "./OrderItem";
+import TransactionTabs from "./TransactionTabs";
 
 const OrderedList: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -16,7 +17,7 @@ const OrderedList: React.FC = () => {
 
   const { data: listOrder = [] } = useGetListOrderQuery({
     PageIndex: 1,
-    PageSize: 10,
+    PageSize: 20,
   });
   const orderId = JSON.parse(sessionStorage.getItem("orderId") as string);
   const { data: orderInfo } = useGetOrderStatusQuery({
@@ -55,12 +56,23 @@ const OrderedList: React.FC = () => {
 
     return (
       <>
-        {listOrder.length > 0 &&
+        {listOrder?.length > 0 ? (
           listOrder.map(
             (order: OrderInfo, index: React.Key | null | undefined) => (
               <OrderItem key={index} order={order} showLoading={showLoading} />
             ),
-          )}
+          )
+        ) : (
+          <div className="flex justify-center">
+            <Image
+              src={NotFoundImage}
+              alt="No orders available"
+              width={450}
+              height={450}
+              quality={100}
+            />
+          </div>
+        )}
       </>
     );
   };

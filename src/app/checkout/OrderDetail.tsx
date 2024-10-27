@@ -54,9 +54,12 @@ const OrderDetail = () => {
   };
 
   const handlePayment = async () => {
+    if (!isConfirm) {
+      notify("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán", 2);
+      return;
+    }
     try {
       const res = await checkoutAPI(checkout);
-      console.log("check res", res);
       if (res && res.data) {
         notify(
           "success",
@@ -73,9 +76,7 @@ const OrderDetail = () => {
           3,
         );
       }
-    } catch (err) {
-      console.error("Err checkout", err);
-    }
+    } catch (err) {}
   };
   return (
     <section className="pb-10">
@@ -162,7 +163,7 @@ const OrderDetail = () => {
             <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
               FMALL
             </span>
-            <h1>{cartData?.cartUser?.storeName}</h1>
+            <h1>{store?.name}</h1>
           </div>
           <div></div>
           <div className="col-span-1 overflow-auto lg:col-span-2">
@@ -229,7 +230,7 @@ const OrderDetail = () => {
                   {/* {infoUser && infoUser?.role === Role.MEMBER && ( */}
                   <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
                     <Radio
-                      value={PAYMENT.VIETQR}
+                      value={PAYMENT.VNPAY}
                       className="w-full object-cover"
                       defaultChecked
                     >
@@ -248,27 +249,6 @@ const OrderDetail = () => {
                       />
                     </div>
                   </div>
-                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
-                    <Radio
-                      value={PAYMENT.VNPAY}
-                      className="w-full"
-                      defaultChecked
-                    >
-                      <div className="inline w-full">
-                        <div className="border-1 w-full">Thanh toán VNPAY</div>
-                      </div>
-                    </Radio>
-                    <div className="ml-4">
-                      <Image
-                        src={VietQR}
-                        alt="Logo-vnpay"
-                        className="w-11"
-                        height={50}
-                        width={50}
-                        quality={100}
-                      />
-                    </div>
-                  </div> 
                 </Radio.Group>
                 <div className="flex gap-2">
                   <input

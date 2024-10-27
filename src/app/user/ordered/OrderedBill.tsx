@@ -7,7 +7,6 @@ import { formatTimestampWithHour, PriceFormat } from "@/utils";
 import Image from "next/image";
 
 const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
-  console.log("check order", orderInfo);
   return (
     <>
       <main className="container mx-auto my-5 grid min-h-screen place-items-center">

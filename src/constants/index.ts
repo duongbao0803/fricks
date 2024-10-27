@@ -38,7 +38,6 @@ export const tableInvoice = ["Mô tả", "Đơn vị", "Số lượng", "Tổng"
 export const tableFavorite = [
   "Cửa hàng",
   "Sản phẩm",
-  "Đơn vị tính",
   "Giá",
   "Trạng thái",
   "Khác",

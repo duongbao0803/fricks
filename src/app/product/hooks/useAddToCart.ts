@@ -28,15 +28,15 @@ const useAddToCart = () => {
         const isSameStore = cartData?.cart?.some(
           (item: { storeId: number }) => item.storeId === product.storeId,
         );
-        const totalItems = cartData?.cart.reduce(
-          (acc: number, item: ProductInfo) => acc + item.quantity,
-          0,
-        );
 
-        if (totalItems + quantity > MAX_PRODUCTS) {
+        const productQuantityInCart =
+          cartData?.cart?.find((item: ProductInfo) => item.id === product.id)
+            ?.quantity || 0;
+
+        if (productQuantityInCart + quantity > MAX_PRODUCTS) {
           notify(
             "warning",
-            `Không thể thêm quá ${MAX_PRODUCTS} sản phẩm vào giỏ hàng`,
+            `Không thể thêm quá 50 sản phẩm ${product?.name} vào giỏ hàng`,
             1,
           );
           return;
@@ -53,7 +53,7 @@ const useAddToCart = () => {
           notify(
             "warning",
             "Bạn chỉ có thể thêm sản phẩm của một cửa hàng duy nhất",
-            1,
+            2,
           );
         }
       } else {

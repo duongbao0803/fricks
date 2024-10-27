@@ -48,7 +48,7 @@ const OrderTable = () => {
             <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
               FMALL
             </span>
-            <h1>{cartData?.cartUser?.storeName}</h1>
+            <h1>{store?.name}</h1>
           </div>
           <div></div>
           <div className="col-span-1 overflow-auto bg-[#fff] lg:col-span-3">

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { TagCustom } from "@/components/common";
 import { tableFavorite } from "@/constants";
@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   useDeleteFavoriteAllMutation,
+  useDeleteFavoriteMutation,
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
 import { notify } from "@/components/common/Notification";
@@ -16,15 +17,36 @@ import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { FavoriteProps } from "@/types/favorite.types";
 import { useDispatch } from "react-redux";
 import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
+import useToken from "antd/es/theme/useToken";
+import { skipToken } from "@reduxjs/toolkit/query";
+import Link from "next/link";
 
 const FavoriteTable = () => {
   const router = useRouter();
-  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
-    PageIndex: 1,
-    PageSize: 50,
-  });
-  const [deleteAll] = useDeleteFavoriteAllMutation();
   const dispatch = useDispatch();
+  const token = useToken();
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery(
+    token ? { PageIndex: 1, PageSize: 50 } : skipToken,
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [favoriteList.length, refetch]);
+
+  const [deleteAll] = useDeleteFavoriteAllMutation();
+  const [deleteFavorite] = useDeleteFavoriteMutation();
+
+  const handleDeleteItem = async (id: number) => {
+    try {
+      const res = await deleteFavorite(id).unwrap();
+      if (res) {
+        notify("success", `Xóa sản phẩm yêu thích khỏi danh sách`, 2);
+        refetch();
+      }
+    } catch (err: any) {
+      notify("error", `${err?.data?.message}`, 3);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -36,7 +58,6 @@ const FavoriteTable = () => {
       }
     } catch (err: any) {
       notify("error", `${err?.data?.message}`, 3);
-      console.error(err);
     }
   };
 
@@ -74,21 +95,22 @@ const FavoriteTable = () => {
                         <span>{item?.storeName}</span>
                       </div>
                     </td>
+                    <Link href={`product/${item?.productId}`}>
+                      <td className="px-6 py-12">
+                        <div className="flex items-center">
+                          <Image
+                            height={100}
+                            width={100}
+                            quality={100}
+                            src={item?.productImage}
+                            className="mr-4 h-12 w-12 rounded-[100%]"
+                            alt="Product Image"
+                          />
+                          <span>{item.productName}</span>
+                        </div>
+                      </td>
+                    </Link>
 
-                    <td className="px-6 py-12">
-                      <div className="flex items-center">
-                        <Image
-                          height={100}
-                          width={100}
-                          quality={100}
-                          src={item?.productImage}
-                          className="mr-4 h-12 w-12 rounded-[100%]"
-                          alt="Product Image"
-                        />
-                        <span>{item.productName}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-12">5</td>
                     <td className="px-6 py-12">
                       {item?.productPrices[0]?.price}
                     </td>
@@ -102,7 +124,7 @@ const FavoriteTable = () => {
                     </td>
                     <td className="px-6 py-12 text-center">
                       <CloseOutlined
-                        // onClick={() => handleDelete(record)}
+                        onClick={() => handleDeleteItem(item?.id)}
                         className="cursor-pointer text-xl text-red-500"
                       />
                     </td>

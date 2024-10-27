@@ -1,12 +1,9 @@
-import {
-  useAddFavoriteMutation,
-  useDeleteFavoriteMutation,
-} from "@/apis/favoriteProductApi";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { incrementFavoriteCount } from "@/redux/slices/favoriteSlice";
+import { useAddFavoriteMutation } from "@/apis/favoriteProductApi";
 import { notify } from "@/components/common/Notification";
+import { incrementFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useFavorite = () => {
   const [loading, setLoading] = useState(false);
@@ -32,7 +29,6 @@ export const useFavorite = () => {
       }
     } catch (error) {
       setLoading(false);
-      console.error("Error toggling favorite:", error);
     }
   };
 
