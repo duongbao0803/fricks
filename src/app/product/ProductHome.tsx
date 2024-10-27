@@ -226,16 +226,10 @@ const ProductHome = () => {
 
       {productData && productData?.items?.length > 0 && (
         <div className="my-7 flex justify-center">
-          {/* <button
-            onClick={() => router.push("/product")}
-            className="w-[300px] border-2 border-primary bg-primary py-3 font-bold text-[white] transition-all duration-500 ease-in-out hover:rounded-2xl hover:border-primary hover:bg-[white] hover:tracking-widest hover:text-primary"
-          >
-            Xem thêm {">"}
-          </button> */}
           <button
             onClick={() => router.push("/product")}
             type="submit"
-            className="button-hire__custom !w-[300px] border-2 border-primary !py-4 font-normal transition-all duration-700 ease-in-out hover:rounded-2xl hover:border-2 hover:font-bold hover:text-primary"
+            className="button-hire__custom !w-[300px] border-2 border-primary !py-3 text-lg font-semibold transition-all duration-700 ease-in-out hover:rounded-2xl hover:border-2 hover:font-bold hover:text-primary"
           >
             Xem thêm {">"}
             <span></span>

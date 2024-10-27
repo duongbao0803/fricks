@@ -34,9 +34,9 @@ const OrderedList: React.FC = () => {
   const showLoading = (id: number) => {
     sessionStorage.setItem("orderId", JSON.stringify(id));
     setOpen(true);
-    setLoading(true);
+    setIsLoading(true);
     setTimeout(() => {
-      setLoading(false);
+      setIsLoading(false);
     }, 2000);
   };
 
@@ -106,8 +106,16 @@ const OrderedList: React.FC = () => {
         footer={null}
         open={open}
         onCancel={() => setOpen(false)}
+        styles={{
+          body: {
+            maxHeight: "80vh",
+            overflowY: "auto",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          },
+        }}
       >
-        {loading ? (
+        {isLoading ? (
           <Spin
             size="large"
             tip="Đang chờ..."
