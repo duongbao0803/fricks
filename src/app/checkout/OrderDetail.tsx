@@ -46,13 +46,15 @@ const OrderDetail = () => {
 
   const checkout = {
     shipFee: store?.defaultShip,
-    voucherCode: "123456",
+    voucherCode: data?.ward === "Tân Phú" ? "FSTANPHU" : "ABC",
     productOrders: transformedData,
     customerPhone: data?.phoneNumber,
     customerAddress: `${data?.address}, ${data?.ward}, ${data?.district}, ${data?.city}`,
     paymentMethod: value,
   };
 
+  let discount = data?.ward === "Tân Phú" ? store?.defaultShip : 0;
+    
   const handlePayment = async () => {
     if (!isConfirm) {
       notify("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán", 2);
@@ -134,7 +136,7 @@ const OrderDetail = () => {
               <div className="flex flex-col items-end gap-5">
                 <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
                 <span>{PriceFormat.format(store?.defaultShip)}</span>
-                <span>{PriceFormat.format(0)}</span>
+                <span>{PriceFormat.format(discount ?? 0)}</span>
               </div>
             </div>
             <div className="mx-4">
@@ -146,7 +148,7 @@ const OrderDetail = () => {
                 <span className="font-bold text-primary">
                   <span>
                     {PriceFormat.format(
-                      cartData?.totalPrice + (store?.defaultShip || 0),
+                      cartData?.totalPrice + (store?.defaultShip || 0) - (discount),
                     )}
                   </span>
                 </span>
