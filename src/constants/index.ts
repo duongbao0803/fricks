@@ -77,4 +77,5 @@ export const ADDRESS_OPTIONS = [
   { label: "An Khánh", value: "ward_31" },
   { label: "An Lợi Đông", value: "ward_32" },
   { label: "An Phú", value: "ward_33" },
+   { label: "Tân Phú", value: "ward_34" },
 ];
