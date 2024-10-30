@@ -60,7 +60,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
       </div>
       <Divider className="!my-2 bg-gray-200"></Divider>
       <div>
-        <div className="my-6 flex items-center justify-between px-2 text-sm">
+        <div className="my-6 flex items-center justify-between gap-7 px-2 text-sm">
           <div className="flex flex-col gap-4">
             <div>
               <p>{order?.storeName}</p>
@@ -72,7 +72,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
             <FaArrowRightLong size={20} color="orange" />
           </div>
           <div className="flex justify-end gap-4">
-            <div>
+            <div className="text-end">
               <p>{order?.customerName}</p>
               <p>{order?.customerAddress}</p>
               <p>{order?.customerPhone}</p>
