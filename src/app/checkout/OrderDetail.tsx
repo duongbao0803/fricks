@@ -54,7 +54,7 @@ const OrderDetail = () => {
   };
 
   let discount = data?.ward === "Tân Phú" ? store?.defaultShip : 0;
-    
+
   const handlePayment = async () => {
     if (!isConfirm) {
       notify("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán", 2);
@@ -148,7 +148,9 @@ const OrderDetail = () => {
                 <span className="font-bold text-primary">
                   <span>
                     {PriceFormat.format(
-                      cartData?.totalPrice + (store?.defaultShip || 0) - (discount),
+                      cartData?.totalPrice +
+                        (store?.defaultShip || 0) -
+                        discount,
                     )}
                   </span>
                 </span>
@@ -249,6 +251,27 @@ const OrderDetail = () => {
                         width={50}
                         quality={100}
                       />
+                    </div>
+                  </div>
+                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                    <Radio
+                      value={PAYMENT.VNPAY}
+                      className="w-full object-cover"
+                      defaultChecked
+                    >
+                      <div className="inline w-full">
+                        <div className="border-1 w-full">Thanh toán VNPAY</div>
+                      </div>
+                    </Radio>
+                    <div className="ml-4">
+                      {/* <Image
+                        src={VietQR}
+                        alt="Logo-vietqr"
+                        className="w-full object-cover"
+                        height={50}
+                        width={50}
+                        quality={100}
+                      /> */}
                     </div>
                   </div>
                 </Radio.Group>
