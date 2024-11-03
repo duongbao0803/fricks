@@ -23,6 +23,7 @@ export enum GENDER_INFO {
 
 export enum PAYMENT {
   VIETQR,
+  VNPAY,
 }
 
 export enum PAYMENT_STATUS {
