@@ -34,7 +34,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
 
   const handleOk = async () => {
     try {
-      const values = await form.validateFields(); 
+      const values = await form.validateFields();
       if (values) {
         sessionStorage.setItem("form", JSON.stringify(values));
         notify("success", "Cập nhật thông tin thành công", 1);
@@ -42,7 +42,6 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       }
     } catch (err) {
       setIsOpen(true);
-      console.error("Validation failed:", err);
     }
   };
 
@@ -202,6 +201,11 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
             </Form.Item>
           </Col>
         </Row>
+        <i className="font-semibold text-[red]">
+          *Lưu ý: Hiện tại, chúng tôi chỉ phục vụ trong phạm vi Thành Phố Thủ
+          Đức. Rất mong quý khách bỏ qua sự bất tiện này. Shop xin chân thành
+          cảm ơn.
+        </i>
       </Form>
     </Modal>
   );

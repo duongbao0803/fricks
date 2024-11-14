@@ -24,10 +24,10 @@ export enum GENDER_INFO {
 export enum PAYMENT {
   VIETQR,
   VNPAY,
-  COD,
 }
 
 export enum PAYMENT_STATUS {
-  SUCCESS = "SUCCESS",
+  PAID = "PAID",
   FAILED = "FAILED",
+  PENDING = "PENDING",
 }

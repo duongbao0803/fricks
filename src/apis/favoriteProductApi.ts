@@ -1,6 +1,8 @@
-import { url } from "inspector";
+import {
+  decrementFavoriteCount,
+  incrementFavoriteCount,
+} from "@/redux/slices/favoriteSlice";
 import apiSlice from "./apiSlice";
-import { Page } from "@/types/page.types";
 
 const favoriteProductApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,12 +18,28 @@ const favoriteProductApi = apiSlice.injectEndpoints({
         method: "POST",
         body: productId,
       }),
+      async onQueryStarted(productId, { dispatch, queryFulfilled }) {
+        dispatch(incrementFavoriteCount());
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(decrementFavoriteCount());
+        }
+      },
     }),
     deleteFavorite: builder.mutation({
-      query: (id) => ({
-        url: `/favorites/${id}`,
+      query: (productId) => ({
+        url: `/favorites/${productId}`,
         method: "DELETE",
       }),
+      async onQueryStarted(productId, { dispatch, queryFulfilled }) {
+        dispatch(decrementFavoriteCount());
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(incrementFavoriteCount());
+        }
+      },
     }),
     deleteFavoriteAll: builder.mutation({
       query: () => ({

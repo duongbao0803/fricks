@@ -1,25 +1,31 @@
 "use client";
 
 import { useGetAllCatagoryQuery } from "@/apis/categortApi";
-import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
+import {
+  useAddFavoriteMutation,
+  useGetFavorListQuery,
+} from "@/apis/favoriteProductApi";
 import { useGetProductListQuery } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { ScrollReveal } from "@/components";
-import { useFavorite } from "@/hooks/useAddFavorite";
-import { RootState } from "@/redux/store";
+import { notify } from "@/components/common/Notification";
+import useUserInfo from "@/hooks/useUserInfo";
 import { ProductInfo } from "@/types/product.types";
 import { PriceFormat } from "@/utils";
+import { skipToken } from "@reduxjs/toolkit/query";
 import { Rate, Skeleton, Tooltip } from "antd";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "./hooks/useAddToCart";
 
 const ProductHome = () => {
+  const { userInfo } = useUserInfo();
   const router = useRouter();
+  const token = Cookies.get("accessToken");
   const [selectedCategory, setSelectedCategory] = useState(0);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
@@ -28,19 +34,16 @@ const ProductHome = () => {
   );
 
   const { handleAddToCart } = useAddToCart();
-  const isFavorite = useSelector(
-    (state: RootState) => state.persistedReducer.favorites.isFavorite,
+  // const isFavorite = useSelector(
+  //   (state: RootState) => state.persistedReducer.favorites.isFavorite,
+  // );
+  const [addFavorite] = useAddFavoriteMutation();
+
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery(
+    token ? { PageIndex: 1, PageSize: 50 } : skipToken,
   );
-
-  const { toggleFavorite, loading } = useFavorite();
-  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
-    PageIndex: 1,
-    PageSize: 50,
-  });
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [favoriteList, refetch]);
+  const [favorites, setFavorites] = useState<{ [key: number]: boolean }>({});
+  const [prevFavoriteList, setPrevFavoriteList] = useState([]);
 
   const categories = useMemo(
     () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
@@ -58,17 +61,52 @@ const ProductHome = () => {
     }
   }, [selectedCategory]);
 
-  const { data: productData = [] } = useGetProductListQuery({
+  const { data: productData } = useGetProductListQuery({
     PageIndex: 1,
     PageSize: 10,
     CategoryId: selectedCategory,
     name: "",
     MinPrice: 0,
     MaxPrice: 0,
+    StoreId: 0,
   });
 
-  const handleToggleFavorite = (product: ProductInfo) => {
-    toggleFavorite(product?.id);
+  // const handleToggleFavorite = (product: ProductInfo) => {
+  //   toggleFavorite(product?.id);
+  // };
+
+  useEffect(() => {
+    if (JSON.stringify(prevFavoriteList) !== JSON.stringify(favoriteList)) {
+      const initialFavorites = favoriteList.reduce(
+        (
+          acc: { [x: string]: boolean },
+          favorite: { productId: string | number },
+        ) => {
+          acc[favorite.productId] = true;
+          return acc;
+        },
+        {},
+      );
+      setFavorites(initialFavorites);
+      setPrevFavoriteList(favoriteList);
+    }
+  }, [favoriteList]);
+
+  const handleToggleFavorite = async (productId: number) => {
+    if (!favorites[productId]) {
+      const res = await addFavorite({ productId }).unwrap();
+      if (res) {
+        notify(
+          "success",
+          `Đã thêm ${res?.productName} vào danh sách yêu thích`,
+          2,
+        );
+        setFavorites((prev) => ({
+          ...prev,
+          [productId]: true,
+        }));
+      }
+    }
   };
 
   return (
@@ -104,8 +142,8 @@ const ProductHome = () => {
         </div>
       </div>
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {productData?.length > 0
-          ? productData
+        {productData && productData?.items?.length > 0
+          ? productData?.items
               ?.slice(0, 8)
               .map((product: ProductInfo, index: number) => (
                 <ScrollReveal key={index}>
@@ -128,28 +166,28 @@ const ProductHome = () => {
                             </button>
                           </p>
                         </button>
-                        <Tooltip
-                          title={
-                            favoriteList.includes(product?.id)
-                              ? "Đã có trong danh sách yêu thích"
-                              : "Thêm vào danh sách yêu thích"
-                          }
-                          placement="top"
-                        >
-                          <button
-                            className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
-                            onClick={() => handleToggleFavorite(product)}
+                        {userInfo && (
+                          <Tooltip
+                            title={
+                              favorites[product.id]
+                                ? "Đã có trong danh sách yêu thích"
+                                : "Thêm vào danh sách yêu thích"
+                            }
+                            placement="top"
                           >
-                            {favoriteList.some(
-                              (favorite: { productId: number }) =>
-                                favorite.productId === product.id,
-                            ) ? (
-                              <AiFillHeart className="text-xl text-red-500" />
-                            ) : (
-                              <AiOutlineHeart className="text-xl text-gray-500" />
-                            )}
-                          </button>
-                        </Tooltip>
+                            <button
+                              className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
+                              onClick={() => handleToggleFavorite(product?.id)}
+                              disabled={favorites[product.id]}
+                            >
+                              {favorites[product.id] ? (
+                                <AiFillHeart className="text-xl text-red-500" />
+                              ) : (
+                                <AiOutlineHeart className="text-xl text-gray-500" />
+                              )}
+                            </button>
+                          </Tooltip>
+                        )}
                       </div>
                       <Link href={`/product/${product?.id}`}>
                         <div className="flex flex-col items-center p-4 text-center">
@@ -186,13 +224,18 @@ const ProductHome = () => {
             ))}
       </div>
 
-      {productData?.length > 0 && (
+      {productData && productData?.items?.length > 0 && (
         <div className="my-7 flex justify-center">
           <button
             onClick={() => router.push("/product")}
-            className="w-[300px] border-2 border-primary bg-primary py-3 font-bold text-[white] transition-all duration-500 ease-in-out hover:rounded-2xl hover:border-primary hover:bg-[white] hover:tracking-widest hover:text-primary"
+            type="submit"
+            className="button-hire__custom !w-[300px] border-2 border-primary !py-3 text-lg font-semibold transition-all duration-700 ease-in-out hover:rounded-2xl hover:border-2 hover:font-bold hover:text-primary"
           >
             Xem thêm {">"}
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
         </div>
       )}

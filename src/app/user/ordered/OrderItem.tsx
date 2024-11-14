@@ -1,9 +1,14 @@
 "use client";
 import { TagCustom } from "@/components/common";
 import { ButtonCustom } from "@/components/ui/button";
+import { PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
 import { PriceFormat, formatTimestamp } from "@/utils";
-import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { Divider } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -21,18 +26,25 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
         <div className="flex flex-wrap items-center gap-3 font-medium">
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <p className="text-gray-500">Trạng thái:</p>
-            {order?.paymentStatus !== "FAILED" ? (
+            {order?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
               <TagCustom
                 className="!mr-0"
                 label="ĐÃ THANH TOÁN"
                 color="green"
                 closable={false}
               />
+            ) : order?.paymentStatus.includes(PAYMENT_STATUS.FAILED) ? (
+              <TagCustom
+                className="!mr-0"
+                label="THANH TOÁN THẤT BẠI"
+                color="red"
+                closable={false}
+              />
             ) : (
               <TagCustom
                 className="!mr-0"
                 label="CHƯA THANH TOÁN"
-                color="red"
+                color="blue"
                 closable={false}
               />
             )}
@@ -48,7 +60,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
       </div>
       <Divider className="!my-2 bg-gray-200"></Divider>
       <div>
-        <div className="my-6 flex items-center justify-between px-2 text-sm">
+        <div className="my-6 flex items-center justify-between gap-7 px-2 text-sm">
           <div className="flex flex-col gap-4">
             <div>
               <p>{order?.storeName}</p>
@@ -60,7 +72,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
             <FaArrowRightLong size={20} color="orange" />
           </div>
           <div className="flex justify-end gap-4">
-            <div>
+            <div className="text-end">
               <p>{order?.customerName}</p>
               <p>{order?.customerAddress}</p>
               <p>{order?.customerPhone}</p>
@@ -70,25 +82,38 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
         <Divider className="!m-0 bg-gray-200"></Divider>
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col justify-between gap-3">
-            {order?.paymentStatus !== "FAILED" ? (
-              <div className="flex gap-2 text-sm text-[#00b7ff]">
-                <CheckCircleFilled color="blue" />
+            {order?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
+              <div className="flex gap-2 text-sm text-[green]">
+                <CheckCircleFilled color="green" />
                 <p>Đang giao hàng...</p>
+              </div>
+            ) : order?.paymentStatus.includes(PAYMENT_STATUS.PENDING) ? (
+              <div className="flex gap-2 text-sm text-[#0059ff]">
+                <SyncOutlined spin color="#0059ff" />
+                <p>Đang chờ...</p>
               </div>
             ) : (
               <div className="flex gap-2 text-sm text-[red]">
                 <CloseCircleFilled color="red" />
-                <p>Đang chờ...</p>
+                <p>Đã hủy</p>
               </div>
             )}
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex justify-between gap-5">
+              <div>Tạm tính:</div>
+              <div>
+                {PriceFormat.format(
+                  (order?.total || 0) - (order?.shipFee || 0),
+                )}
+              </div>
+            </div>
+            <div className="flex justify-between gap-5">
               <div>Phí vận chuyển:</div>
               <div>{PriceFormat.format(order?.shipFee || 0)}</div>
             </div>
             <div className="flex justify-between gap-5">
-              <div>Giảm giá:</div>
+              <div>Khuyến mãi:</div>
               <div>{PriceFormat.format(0)}</div>
             </div>
             <div className="flex justify-between gap-5">

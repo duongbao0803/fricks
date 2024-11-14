@@ -8,9 +8,15 @@ const storeApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getListStore: builder.query({
+      query: () => ({
+        url: `/stores`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetStoreDetailQuery } = storeApi;
+export const { useGetStoreDetailQuery, useGetListStoreQuery } = storeApi;
 
 export default storeApi;

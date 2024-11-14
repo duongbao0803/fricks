@@ -17,11 +17,11 @@ const FormContact = () => {
   const Contacts = [
     {
       icon: <FaPhoneAlt />,
-      text: "+024 113 114 115",
+      text: "(+84) 909 251 504",
     },
     {
       icon: <FaEarthAfrica />,
-      text: "https://fricks.vercel.app",
+      text: "https://www.frickshop.site",
     },
     {
       icon: <FaMapMarkerAlt />,
@@ -32,7 +32,7 @@ const FormContact = () => {
   const ContactsIcon = [
     {
       icon: <FaFacebookF size={18} />,
-      url: "https://www.linkedin.com/in/duongbao0803/",
+      url: "https://www.facebook.com/Fricks.BuildingService",
     },
     {
       icon: <AiFillInstagram size={20} />,
@@ -72,7 +72,7 @@ const FormContact = () => {
 
   return (
     <section className="grid grid-cols-1 items-center justify-center gap-3 lg:grid-cols-3">
-      <div className="flex h-[500px] flex-col items-center justify-center bg-gray-100 p-8 pb-[116px] pl-[90px] pr-[30px] pt-[120px] lg:col-span-1">
+      <div className="flex h-[500px] flex-col items-center justify-center bg-gray-100 p-8 pb-[116px] pl-11 pr-6 pt-[120px] lg:col-span-1 xl:pl-[90px] xl:pr-[30px]">
         <div className="space-y-6 text-gray-700">
           {Contacts.map((contact, index) => (
             <div key={index} className="flex items-center space-x-4">
@@ -83,7 +83,7 @@ const FormContact = () => {
             </div>
           ))}
         </div>
-        <div className="mt-10 flex flex-col items-center justify-center pl-[30px] pr-[90px]">
+        <div className="justify-centerpl-[30px] mt-10 flex flex-col items-center pr-10 xl:pr-[90px]">
           <h4 className="mb-4 text-2xl font-semibold tracking-widest">
             Theo Dõi
           </h4>
@@ -102,8 +102,10 @@ const FormContact = () => {
           </div>
         </div>
       </div>
-      <div className="h-[500px] bg-gray-100 p-8 px-[110px] py-[50px] lg:col-span-2">
-        <h3 className="mb-6 text-2xl font-semibold">KẾT NỐI VỚI CHÚNG TÔI</h3>
+      <div className="h-[500px] bg-gray-100 p-8 px-10 py-[50px] lg:col-span-2 lg:px-[110px]">
+        <h3 className="mb-6 text-center text-xl font-semibold lg:text-left lg:text-2xl">
+          KẾT NỐI VỚI CHÚNG TÔI
+        </h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-4 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div>

@@ -1,23 +1,14 @@
 "use client";
-import { ButtonCustom } from "@/components/ui/button";
-import { Form, Input } from "antd";
-import { useEffect } from "react";
-import useUserInfo from "@/hooks/useUserInfo";
-import { useValidateFieldsMatch } from "@/hooks/useValidateFieldMatch";
 import { useChangePasswordMutation } from "@/apis/authApi";
 import { notify } from "@/components/common/Notification";
+import { ButtonCustom } from "@/components/ui/button";
+import { useValidateFieldsMatch } from "@/hooks/useValidateFieldMatch";
+import { Form, Input } from "antd";
 
 const ChangePasswordForm = () => {
   const [form] = Form.useForm();
-  const { userInfo, isLoading } = useUserInfo();
   const { validateFieldsMatch } = useValidateFieldsMatch(form);
   const [changePassword] = useChangePasswordMutation();
-
-  useEffect(() => {
-    if (userInfo) {
-      form.setFieldsValue(userInfo?.userInfo);
-    }
-  }, [form, userInfo]);
 
   const onFinish = async (values: any) => {
     try {

@@ -1,11 +1,11 @@
 "use client";
-import React from "react";
 import IconWeb from "@/assets/images/logo/logo_web.png";
-import Image from "next/image";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { tableInvoice } from "@/constants";
+import { RootState } from "@/redux/store";
 import { formatTimestampWithHour, PriceFormat } from "@/utils";
+import Image from "next/image";
+import React from "react";
+import { useSelector } from "react-redux";
 
 const PaymentFailure: React.FC = () => {
   const orderInfo = useSelector(
@@ -108,7 +108,7 @@ const PaymentFailure: React.FC = () => {
           </div>
           <div className="mb-10 mt-5 flex min-h-[400px] justify-center">
             <div className="flex h-[120px] w-[70%] max-w-[350px] -rotate-[15deg] flex-col items-center justify-center gap-2 rounded-3xl border-4 border-[red] font-medium text-[red] lg:h-[150px]">
-              <h2 className="text-2xl lg:text-4xl">CHƯA THANH TOÁN</h2>
+              <h2 className="text-2xl lg:text-3xl">CHƯA THANH TOÁN</h2>
               <p className="text-xl font-bold">
                 {PriceFormat.format(orderInfo?.orderInfo?.total)}
               </p>
@@ -137,13 +137,26 @@ const PaymentFailure: React.FC = () => {
               </div>
               <div className="col-span-2 col-start-4">
                 <div className="grid grid-cols-3 leading-8">
-                  <div className="col-span-1 font-semibold text-white">
+                  <div className="col-span-2 font-semibold text-white">
                     <p>Tạm tính:</p>
+                    <p>Phí vận chuyển</p>
                     <p>Tổng:</p>
                   </div>
-                  <div className="col-span-2 text-right text-gray-200">
-                    <p> {PriceFormat.format(orderInfo?.orderInfo?.total)}</p>
-                    <p> {PriceFormat.format(orderInfo?.orderInfo?.total)}</p>
+                  <div className="col-span-1 text-right text-gray-200">
+                    <p>
+                      {PriceFormat.format(
+                        (orderInfo?.orderInfo?.total || 0) -
+                          (orderInfo?.orderInfo?.shipFee || 0),
+                      )}
+                    </p>
+                    <p>
+                      {PriceFormat.format(
+                        Number(orderInfo?.orderInfo?.shipFee || 0),
+                      )}
+                    </p>
+                    <p>
+                      {PriceFormat.format(orderInfo?.orderInfo?.total || 0)}
+                    </p>
                   </div>
                 </div>
               </div>

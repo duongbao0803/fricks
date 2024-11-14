@@ -1,3 +1,4 @@
+import { OrderInfo } from "@/types/order.types";
 import apiSlice from "./apiSlice";
 
 const orderApi = apiSlice.injectEndpoints({

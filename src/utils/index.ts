@@ -1,4 +1,5 @@
 import { ErrorResponse } from "@/types/login.types";
+import { FormInstance } from "antd";
 import CryptoJS from "crypto-js";
 
 export function isErrorResponse(error: unknown): error is ErrorResponse {
@@ -55,3 +56,12 @@ export function formatTimestampWithHour(timestampStr: string): string {
     second: "2-digit",
   });
 }
+
+export const validatePassword =
+  (form: FormInstance) => (_: unknown, value: string) => {
+    const password = form.getFieldValue("password");
+    if (value && password && value !== password) {
+      return Promise.reject("Mật khẩu không trùng");
+    }
+    return Promise.resolve();
+  };

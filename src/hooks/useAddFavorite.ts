@@ -1,18 +1,16 @@
-import {
-  useAddFavoriteMutation,
-  useDeleteFavoriteMutation,
-} from "@/apis/favoriteProductApi";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { incrementFavoriteCount } from "@/redux/slices/favoriteSlice";
+import { useAddFavoriteMutation } from "@/apis/favoriteProductApi";
 import { notify } from "@/components/common/Notification";
+import { incrementFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useFavorite = () => {
   const [loading, setLoading] = useState(false);
   const isFavorite = useSelector(
     (state: RootState) => state.persistedReducer.favorites.isFavorite,
   );
+  const dispatch = useDispatch();
 
   const [addFavorite] = useAddFavoriteMutation();
 
@@ -27,10 +25,10 @@ export const useFavorite = () => {
           productId: productId,
         }).unwrap();
         notify("success", "Thêm vào danh sách yêu thích thành công", 2);
+        dispatch(incrementFavoriteCount());
       }
     } catch (error) {
       setLoading(false);
-      console.error("Error toggling favorite:", error);
     }
   };
 

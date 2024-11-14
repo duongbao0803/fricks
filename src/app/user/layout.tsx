@@ -50,10 +50,10 @@ export default function ProfileLayout({
   return (
     <main className="bg-[#f1f6fa] pb-10">
       <div className="container mx-auto min-h-screen">
-        <div className="py-16">
+        <div className="pb-5 pt-16 lg:py-16">
           <BreadScrumb items={items} />
         </div>
-        <div className="grid grid-cols-4 gap-10 transition-all duration-500">
+        <div className="relative grid grid-cols-4 gap-10 transition-all duration-500">
           <div className="col-span-1 hidden transition-all duration-500 lg:block">
             <div className="flex items-center gap-4">
               <Image
@@ -73,7 +73,7 @@ export default function ProfileLayout({
               logout={logout}
             />
           </div>
-          <div className="lg:hidden">
+          <div className="absolute right-0 top-[-5px] lg:hidden">
             <MobileSide />
           </div>
           <div key={pathname} className="col-span-4 items-center lg:col-span-3">

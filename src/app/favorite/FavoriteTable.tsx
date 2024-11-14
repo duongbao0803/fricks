@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { TagCustom } from "@/components/common";
 import { tableFavorite } from "@/constants";
@@ -9,104 +9,132 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   useDeleteFavoriteAllMutation,
+  useDeleteFavoriteMutation,
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
 import { notify } from "@/components/common/Notification";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { FavoriteProps } from "@/types/favorite.types";
+import { useDispatch } from "react-redux";
+import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
+import useToken from "antd/es/theme/useToken";
+import { skipToken } from "@reduxjs/toolkit/query";
+import Link from "next/link";
 
 const FavoriteTable = () => {
   const router = useRouter();
-  const { data: favoriteList = [], refetch } = useGetFavorListQuery({
-    PageIndex: 1,
-    PageSize: 50,
-  });
+  const dispatch = useDispatch();
+  const token = useToken();
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery(
+    token ? { PageIndex: 1, PageSize: 50 } : skipToken,
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [favoriteList.length, refetch]);
+
   const [deleteAll] = useDeleteFavoriteAllMutation();
+  const [deleteFavorite] = useDeleteFavoriteMutation();
+
+  const handleDeleteItem = async (id: number) => {
+    try {
+      const res = await deleteFavorite(id).unwrap();
+      if (res) {
+        notify("success", `Xóa sản phẩm yêu thích khỏi danh sách`, 2);
+        refetch();
+      }
+    } catch (err: any) {
+      notify("error", `${err?.data?.message}`, 3);
+    }
+  };
 
   const handleDelete = async () => {
     try {
       const res = await deleteAll({}).unwrap();
       if (res && res.httpCode === 200) {
         notify("success", `${res?.message}`, 2);
+        dispatch(clearFavoriteCount());
         refetch();
       }
     } catch (err: any) {
       notify("error", `${err?.data?.message}`, 3);
-      console.error(err);
     }
   };
 
   return (
     <section className="mt-5">
       {favoriteList && favoriteList.length > 0 ? (
-        <div>
-          <table className="min-w-full border-[0.5px] border-gray-200 bg-white">
-            <thead className="rounded bg-gray-100">
-              <tr>
-                {tableFavorite.map((data, index: number) => (
-                  <th
-                    key={index}
-                    className="p-6 text-left font-normal tracking-wider"
-                  >
-                    {data}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {favoriteList.map((item: FavoriteProps, index: number) => (
-                <>
-                  <tr className="border-t" key={index}>
-                    <td className="px-6 py-12 align-middle">
-                      <div className="flex items-center">
-                        <Image
-                          height={100}
-                          width={100}
-                          quality={100}
-                          src={Imagee}
-                          className="mr-4 h-12 w-12 rounded-[100%]"
-                          alt="Store Image"
-                        />
-                        <span>{item?.storeName}</span>
-                      </div>
-                    </td>
+        <>
+          <div className="overflow-x-auto bg-[#fff]">
+            <table className="min-w-full border-[0.5px] border-gray-200 bg-white">
+              <thead className="rounded bg-gray-100">
+                <tr>
+                  {tableFavorite.map((data, index: number) => (
+                    <th
+                      key={index}
+                      className="p-6 text-left font-normal tracking-wider"
+                    >
+                      {data}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {favoriteList.map((item: FavoriteProps, index: number) => (
+                  <>
+                    <tr className="border-b-0 border-t" key={index}>
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
+                        <div className="flex items-center">
+                          <Image
+                            height={100}
+                            width={100}
+                            quality={100}
+                            src={Imagee}
+                            className="mr-4 h-12 w-12 rounded-[100%]"
+                            alt="Store Image"
+                          />
+                          <span>{item?.storeName}</span>
+                        </div>
+                      </td>
+                      <Link href={`product/${item?.productId}`}>
+                        <td className="px-6 py-12">
+                          <div className="flex items-center">
+                            <Image
+                              height={100}
+                              width={100}
+                              quality={100}
+                              src={item?.productImage}
+                              className="mr-4 h-12 w-12 rounded-[100%]"
+                              alt="Product Image"
+                            />
+                            <span>{item.productName}</span>
+                          </div>
+                        </td>
+                      </Link>
 
-                    <td className="px-6 py-12">
-                      <div className="flex items-center">
-                        <Image
-                          height={100}
-                          width={100}
-                          quality={100}
-                          src={item?.productImage}
-                          className="mr-4 h-12 w-12 rounded-[100%]"
-                          alt="Product Image"
+                      <td className="px-6 py-12">
+                        {item?.productPrices[0]?.price}
+                      </td>
+                      <td className="px-6 py-12">
+                        <TagCustom
+                          color="green"
+                          label="CÒN HÀNG"
+                          closable={false}
+                          className="text-[13px]"
                         />
-                        <span>{item.productName}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-12">5</td>
-                    <td className="px-6 py-12">
-                      {item?.productPrices[0]?.price}
-                    </td>
-                    <td className="px-6 py-12">
-                      <TagCustom
-                        color="green"
-                        label="CÒN HÀNG"
-                        closable={false}
-                        className="text-[13px]"
-                      />
-                    </td>
-                    <td className="px-6 py-12 text-center">
-                      <CloseOutlined
-                        // onClick={() => handleDelete(record)}
-                        className="cursor-pointer text-xl text-red-500"
-                      />
-                    </td>
-                  </tr>
-                </>
-              ))}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="px-6 py-12 text-center">
+                        <CloseOutlined
+                          onClick={() => handleDeleteItem(item?.id)}
+                          className="cursor-pointer text-xl text-red-500"
+                        />
+                      </td>
+                    </tr>
+                  </>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className="mt-5 flex justify-between">
             <button
               onClick={() => router.push("/product")}
@@ -121,7 +149,7 @@ const FavoriteTable = () => {
               Xóa danh sách
             </button>
           </div>
-        </div>
+        </>
       ) : (
         <div className="flex items-center justify-center">
           <Image

@@ -1,9 +1,10 @@
 "use client";
 import { useOrderMutation } from "@/apis/orderApi";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 import VietQR from "@/assets/images/icons/vietqr.jpeg";
 import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
-import { tableDataCheckout } from "@/constants";
+import { tableData } from "@/constants";
 import { PAYMENT } from "@/enums";
 import useUserInfo from "@/hooks/useUserInfo";
 import { RootState } from "@/redux/store";
@@ -13,7 +14,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import InfoModal from "./InfoModal";
-import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -36,22 +36,30 @@ const OrderDetail = () => {
 
   const [checkoutAPI] = useOrderMutation();
 
-  const transformedData = cartData?.cart?.map((item) => ({
-    productId: item?.id,
-    productUnitId: item.price[0].unitId,
-    quantity: item.quantity,
-  }));
+  const transformedData = cartData?.cart?.map(
+    (item: { id: any; price: { unitId: any }[]; quantity: any }) => ({
+      productId: item?.id,
+      productUnitId: item.price[0].unitId,
+      quantity: item.quantity,
+    }),
+  );
 
   const checkout = {
     shipFee: store?.defaultShip,
-    voucherCode: "123456",
+    voucherCode: data?.ward === "Tân Phú" ? "FSTANPHU" : "ABC",
     productOrders: transformedData,
     customerPhone: data?.phoneNumber,
     customerAddress: `${data?.address}, ${data?.ward}, ${data?.district}, ${data?.city}`,
     paymentMethod: value,
   };
 
+  let discount = data?.ward === "Tân Phú" ? store?.defaultShip : 0;
+
   const handlePayment = async () => {
+    if (!isConfirm) {
+      notify("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán", 2);
+      return;
+    }
     try {
       const res = await checkoutAPI(checkout);
       if (res && res.data) {
@@ -70,9 +78,7 @@ const OrderDetail = () => {
           3,
         );
       }
-    } catch (err) {
-      console.error("Err checkout", err);
-    }
+    } catch (err) {}
   };
   return (
     <section className="pb-10">
@@ -130,7 +136,7 @@ const OrderDetail = () => {
               <div className="flex flex-col items-end gap-5">
                 <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
                 <span>{PriceFormat.format(store?.defaultShip)}</span>
-                <span>{PriceFormat.format(0)}</span>
+                <span>{PriceFormat.format(discount ?? 0)}</span>
               </div>
             </div>
             <div className="mx-4">
@@ -142,7 +148,9 @@ const OrderDetail = () => {
                 <span className="font-bold text-primary">
                   <span>
                     {PriceFormat.format(
-                      cartData?.totalPrice - (store?.defaultShip || 0),
+                      cartData?.totalPrice +
+                        (store?.defaultShip || 0) -
+                        discount,
                     )}
                   </span>
                 </span>
@@ -159,14 +167,14 @@ const OrderDetail = () => {
             <span className="rounded-sm bg-[#d0011b] px-2 py-1 text-[12px] text-[#fff]">
               FMALL
             </span>
-            <h1>{cartData?.cart[0]?.storeName}</h1>
+            <h1>{store?.name}</h1>
           </div>
           <div></div>
           <div className="col-span-1 overflow-auto lg:col-span-2">
             <table className="min-w-full overflow-auto border border-gray-300 bg-white">
               <thead className="rounded bg-thirdly">
                 <tr>
-                  {tableDataCheckout.map((data, index: number) => (
+                  {tableData.map((data, index: number) => (
                     <th
                       key={index}
                       className={`px-6 py-3 text-left text-gray-600 ${
@@ -197,6 +205,9 @@ const OrderDetail = () => {
                       </td>
                       <td className="px-6 py-[34px]">
                         {PriceFormat.format(item?.price[0].price ?? 0)}
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {item?.price[0]?.unit.name}
                       </td>
                       <td className="px-6 py-[34px]">{item?.quantity}</td>
                       <td className="px-6 py-[34px]">
@@ -242,10 +253,10 @@ const OrderDetail = () => {
                       />
                     </div>
                   </div>
-                  {/* <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
+                  <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
                     <Radio
                       value={PAYMENT.VNPAY}
-                      className="w-full"
+                      className="w-full object-cover"
                       defaultChecked
                     >
                       <div className="inline w-full">
@@ -253,16 +264,16 @@ const OrderDetail = () => {
                       </div>
                     </Radio>
                     <div className="ml-4">
-                      <Image
-                        src={Vnpay}
-                        alt="Logo-vnpay"
-                        className="w-11"
+                      {/* <Image
+                        src={VietQR}
+                        alt="Logo-vietqr"
+                        className="w-full object-cover"
                         height={50}
                         width={50}
                         quality={100}
-                      />
+                      /> */}
                     </div>
-                  </div> */}
+                  </div>
                 </Radio.Group>
                 <div className="flex gap-2">
                   <input

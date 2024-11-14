@@ -30,7 +30,6 @@ const VoiceSearch = ({ onSearch }: { onSearch: any }) => {
     };
 
     recognition.onerror = (event) => {
-      console.error(event.error);
       setIsListening(false);
     };
 

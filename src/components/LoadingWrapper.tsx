@@ -11,19 +11,43 @@ export default function LoadingWrapper({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const pathname = usePathname();
-
   const token = Cookies.get("accessToken");
 
   useEffect(() => {
+    const validPaths = [
+      "/",
+      "/auth",
+      "/user",
+      "/cart",
+      "/checkout",
+      "/product",
+      "/payment",
+      "/post",
+      "/contact",
+      "/favorite",
+    ];
+
     if (token && pathname === "/auth") {
       router.push("/");
+    } else if (
+      !token &&
+      (pathname.startsWith("/user") ||
+        ["/cart", "/checkout", "/payment", "/favorite"].includes(pathname))
+    ) {
+      router.push("/notfound");
+    } else if (
+      !validPaths.some(
+        (path) => pathname === path || pathname.startsWith(`${path}/`),
+      )
+    ) {
+      router.push("/notfound");
     }
   }, [token, pathname, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);

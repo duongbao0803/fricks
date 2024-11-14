@@ -1,16 +1,15 @@
 "use client";
-import React from "react";
-import { ButtonCustom } from "./ui/button";
 import { Form, Input } from "antd";
 import { FaRegPaperPlane } from "react-icons/fa6";
 import { notify } from "./common/Notification";
+import { ButtonCustom } from "./ui/button";
 
 const Subscribe = () => {
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    notify("success", "Gửi thành công", 3);
+    notify("success", "Gửi thành công", 2);
     form.resetFields();
   };
 

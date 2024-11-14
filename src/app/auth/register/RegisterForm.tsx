@@ -111,14 +111,14 @@ const RegisterForm: React.FC<IProps> = ({
   const handleResendMail = async () => {
     const email = form.getFieldValue("email");
     if (!email) {
-      notify("warning", "Vui lòng nhập email", 3);
+      notify("warning", "Vui lòng nhập email", 1);
       return;
     }
     if (isResending) {
       notify(
         "warning",
         `Vui lòng chờ ${cooldownTime} giây trước khi gửi lại mã OTP`,
-        3,
+        2,
       );
       return;
     }
@@ -127,7 +127,7 @@ const RegisterForm: React.FC<IProps> = ({
     try {
       const res = await resendOtp(JSON.stringify(email)).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res.message}`, 3);
+        notify("success", `${res.message}`, 2);
         const countdownInterval = setInterval(() => {
           setCooldownTime((prev) => {
             if (prev === 1) {
@@ -151,7 +151,7 @@ const RegisterForm: React.FC<IProps> = ({
     const email = form.getFieldValue("email");
     let information = { email, otpCode };
     if (otpCode.length < 6) {
-      notify("warning", "Vui lòng nhập otp", 3);
+      notify("warning", "Vui lòng nhập otp", 1);
       return;
     }
     try {
@@ -161,12 +161,11 @@ const RegisterForm: React.FC<IProps> = ({
         if (accessToken) {
           Cookies.set("accessToken", res.accessToken);
           Cookies.set("refreshToken", res.refreshToken);
-          notify("success", "Đăng nhập thành công", 3);
+          notify("success", "Đăng nhập thành công", 2);
           router.push("/");
         }
       }
     } catch (err) {
-      console.error(err);
       if (isErrorResponse(err)) {
         notify("error", `${err.data.message}`, 3);
       }

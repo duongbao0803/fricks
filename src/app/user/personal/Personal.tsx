@@ -1,14 +1,13 @@
 "use client";
-import { Form } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useUpdateUserMutation } from "@/apis/userApi";
 import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
 import useUserSelector from "@/redux/hooks/useUserSelector";
 import { setUserInfo } from "@/redux/slices/userSlice";
-
+import { Form } from "antd";
 import dayjs from "dayjs";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import AvatarUpload from "./AvatarUpload";
 import PersonalInfoForm from "./PersonalInfoForm";
 
@@ -26,7 +25,7 @@ const Personal = () => {
       form.setFieldsValue({
         ...restUserInfo,
         avatar: fileChange,
-        dob: dayjs(restUserInfo.dob),
+        dob: restUserInfo.dob ? dayjs(restUserInfo.dob) : dayjs(),
       });
     }
   }, [fileChange, form, userInfo]);
@@ -67,7 +66,7 @@ const Personal = () => {
               />
             </div>
           </div>
-          <div className="ml-[135px]">
+          <div className="flex justify-center md:ml-[135px] md:block">
             <ButtonCustom className="mt-4 w-36 text-white">
               Cập nhật
             </ButtonCustom>

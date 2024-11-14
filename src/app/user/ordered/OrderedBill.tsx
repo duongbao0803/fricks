@@ -7,7 +7,6 @@ import { formatTimestampWithHour, PriceFormat } from "@/utils";
 import Image from "next/image";
 
 const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
-  console.log("check order", orderInfo);
   return (
     <>
       <main className="container mx-auto my-5 grid min-h-screen place-items-center">
@@ -89,10 +88,10 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
           </div>
           <div className="mb-10 mt-5 flex min-h-[400px] justify-center">
             <div className="flex h-[120px] w-[70%] max-w-[350px] -rotate-[15deg] flex-col items-center justify-center gap-2 rounded-3xl border-4 border-[red] font-medium text-[red] lg:h-[150px]">
-              {orderInfo?.paymentStatus.includes(PAYMENT_STATUS.SUCCESS) ? (
-                <h2 className="text-2xl lg:text-4xl">ĐÃ THANH TOÁN</h2>
+              {orderInfo?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
+                <h2 className="text-2xl lg:text-3xl">ĐÃ THANH TOÁN</h2>
               ) : (
-                <h2 className="text-2xl lg:text-4xl">CHƯA THANH TOÁN</h2>
+                <h2 className="text-2xl lg:text-3xl">CHƯA THANH TOÁN</h2>
               )}
               <p className="text-xl font-bold">
                 {PriceFormat.format(orderInfo?.total)}
@@ -122,13 +121,19 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
               </div>
               <div className="col-span-2 col-start-4">
                 <div className="grid grid-cols-3 leading-8">
-                  <div className="col-span-1 font-semibold text-white">
+                  <div className="col-span-2 font-semibold text-white">
                     <p>Tạm tính:</p>
+                    <p>Phí vận chuyển</p>
                     <p>Tổng:</p>
                   </div>
-                  <div className="col-span-2 text-right text-gray-200">
-                    <p> {PriceFormat.format(orderInfo?.total)}</p>
-                    <p> {PriceFormat.format(orderInfo?.total)}</p>
+                  <div className="col-span-1 text-right text-gray-200">
+                    <p>
+                      {PriceFormat.format(
+                        (orderInfo?.total || 0) - (orderInfo?.shipFee || 0),
+                      )}
+                    </p>
+                    <p>{PriceFormat.format(Number(orderInfo?.shipFee || 0))}</p>
+                    <p>{PriceFormat.format(orderInfo?.total || 0)}</p>
                   </div>
                 </div>
               </div>

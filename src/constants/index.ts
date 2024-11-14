@@ -31,15 +31,13 @@ export const introImages = [
   { src: Intro_5, alt: "Intro Image 5" },
 ];
 
-export const tableData = ["Sản phẩm", "Giá", "Số lượng", "Tổng"];
+export const tableData = ["Sản phẩm", "Giá", "Đơn vị", "Số lượng", "Tổng"];
 
-export const tableDataCheckout = ["Sản phẩm", "Giá", "Số lượng", "Tổng"];
 export const tableInvoice = ["Mô tả", "Đơn vị", "Số lượng", "Tổng"];
 
 export const tableFavorite = [
   "Cửa hàng",
   "Sản phẩm",
-  "Đơn vị tính",
   "Giá",
   "Trạng thái",
   "Khác",
@@ -79,4 +77,5 @@ export const ADDRESS_OPTIONS = [
   { label: "An Khánh", value: "ward_31" },
   { label: "An Lợi Đông", value: "ward_32" },
   { label: "An Phú", value: "ward_33" },
+   { label: "Tân Phú", value: "ward_34" },
 ];
