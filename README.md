@@ -1,7 +1,7 @@
 # Fricks - Online Platform for Construction Materials Trading
 
 <div align="center">
-    <img style="width: 180px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/COOLIX%2FFrame%2061.png?alt=media&token=fb985543-5adf-4dff-85ce-a3df24ba1ffd" />
+    <img style="width: 180px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2Flogo_web.png?alt=media&token=e13c5383-728e-47a9-b838-b04df8e10330" />
     <p><a href="https://coolix.vercel.app/">Fricks</a> an online marketplace for high-quality construction materials, connecting suppliers and buyers with ease and reliability.
 </div>
 
@@ -46,6 +46,7 @@ Admin: Can manage users, brands, categories, orders, transactions and store list
 #### References:
 
 - Front-end: https://github.com/duongbao0803/fricks
+- Front-end: https://github.com/duongbao0803/fricks-admin
 - Back-end: https://github.com/giaducdang03/fricks-api
 
 ##### Contact me via: tonbao0803@gmail.com
