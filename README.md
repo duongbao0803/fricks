@@ -28,7 +28,13 @@ Admin: Can manage users, brands, categories, orders, transactions and store list
 
 ###### Fricks dashboard
 
-- Updating...
+![Fricks Dashboard](https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2FScreenshot%202024-11-23%20132356.png?alt=media&token=1974b2fb-ab1a-4718-8b55-628e9ab9f9b4)
+
+###### Fricks Home
+
+![Fricks Home](https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2FScreenshot%202025-03-12%20235552.png?alt=media&token=35efceec-eba9-4f41-9b23-56ec06853817)
+
+... (see more in screenshots)
 
 #### Techstacks:
 
