@@ -1,47 +1,54 @@
-# COOLIX - Refrigeration Care Online
+# Fricks - Online Platform for Construction Materials Trading
 
 <div align="center">
-    <img style="width: 180px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/COOLIX%2FFrame%2061.png?alt=media&token=fb985543-5adf-4dff-85ce-a3df24ba1ffd" />
-    <p><a href="https://coolix.vercel.app/">COOLIX</a> is a platform that connects refrigeration repairmen with customers and provides repair services right where they live.
+    <img style="width: 180px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2Flogo_web.png?alt=media&token=e13c5383-728e-47a9-b838-b04df8e10330" />
+    <p><a href="https://coolix.vercel.app/">Fricks</a> an online marketplace for high-quality construction materials, connecting suppliers and buyers with ease and reliability.
 </div>
 
-### Welcome to COOLIX
+### Welcome to Fricks
 
-### Demo: [COOLIX](https://coolix.vercel.app)
+### Demo: [Fricks](https://www.frickshop.site)
 
 #### Introduction
 
-- Updating...
+Fricks is an online marketplace that enables retailers to set up their stores and supply construction materials efficiently. As a trusted intermediary, Frickshop connects sellers with buyers, ensuring seamless transactions, competitive pricing, and a diverse range of high-quality building materials. Our platform simplifies the buying and selling process, making construction material procurement more convenient and accessible.
+
+Guest: Can create an account using their email and verify it via OTP.
+Customer: Can browse products (with sorting, searching, and detailed views), view posts, add/remove favorite products, purchase via VNPAY or VietQR scan, manage personal information, and track orders.
+Store: Can create, update, delete, and manage products, posts, view order and transaction lists, create a withdrawal request from the admin.
+Admin: Can manage users, brands, categories, orders, transactions and store lists, push notifications, and view feedback.
 
 #### 3 Members:
 
-- [Đăng Phan Gia Đức](https://github.com/giaducdang03) (Leader, Back-end Dev, UI Design)
-- [Dương Tôn Bảo](https://github.com/duongbao0803) (Front-end Dev, UI Design)
-- [Phạm Ngọc Bảo](https://github.com/ngocbubuh) (Mobile-Dev)
+- [Đăng Phan Gia Đức](https://github.com/giaducdang03) (Leader, Back-end Dev)
+- [Dương Tôn Bảo](https://github.com/duongbao0803) (Front-end Dev)
+- [Phạm Ngọc Bảo](https://github.com/ngocbubuh) (Back-end Dev)
 
 #### Screen-shots
 
-###### COOLIX app
-
-- Updating...
-
-###### COOLIX dashboard
+###### Fricks dashboard
 
 - Updating...
 
 #### Techstacks:
 
-- Updating...
+- Front-end: NextJS, TailwindCSS, Shadcn/UI, Antd, RTK Query, Firebase, Framer Motion, ChartJS.
+- Back-end: ASP.NET Core Web API, MS SQL, Azure SQL.
+- Deployment: Azure App Service (Back-end), Vercel (Front-end).
+- Other: GitHub, Jira, Swagger, Yarn.
 
 #### Deployment:
 
-- Updating...
+- Front-end: https://www.frickshop.site/ (User)
+- Front-end: https://fricks-admin.vercel.app/ (Dashboard)
+- Back-end: https://fricks.azurewebsites.net/swagger/index.html
 
 #### References:
 
-- Figma: [COOLIX UI](https://www.figma.com/design/EirGpkYSuGPQAteczJryxr/Coolix---Mobile-App-UI?t=Hh1cDdfsx718wuzI-0)
-- Updating...
+- Front-end: https://github.com/duongbao0803/fricks
+- Front-end: https://github.com/duongbao0803/fricks-admin
+- Back-end: https://github.com/giaducdang03/fricks-api
 
 ##### Contact me via: tonbao0803@gmail.com
 
-##### Copyright &#169; 2024 COOLIX
+##### Copyright &#169; 2024 Fricks
