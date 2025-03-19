@@ -1,8 +1,8 @@
 # Fricks - Online Platform for Construction Materials Trading
 
 <div align="center">
-    <img style="width: 180px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2Flogo_web.png?alt=media&token=e13c5383-728e-47a9-b838-b04df8e10330" />
-    <p><a href="https://coolix.vercel.app/">Fricks</a> an online marketplace for high-quality construction materials, connecting suppliers and buyers with ease and reliability.
+   <img style="width: 180px; margin-bottom: 10px;" src="https://firebasestorage.googleapis.com/v0/b/exe201-9459a.appspot.com/o/Fricks%2Flogo_web.png?alt=media&token=e13c5383-728e-47a9-b838-b04df8e10330" />
+    <p><a href="https://www.frickshop.site/">Fricks</a> an online marketplace for high-quality construction materials, connecting suppliers and buyers with ease and reliability.
 </div>
 
 ### Welcome to Fricks
@@ -13,10 +13,10 @@
 
 Fricks is an online marketplace that enables retailers to set up their stores and supply construction materials efficiently. As a trusted intermediary, Frickshop connects sellers with buyers, ensuring seamless transactions, competitive pricing, and a diverse range of high-quality building materials. Our platform simplifies the buying and selling process, making construction material procurement more convenient and accessible.
 
-Guest: Can create an account using their email and verify it via OTP.
-Customer: Can browse products (with sorting, searching, and detailed views), view posts, add/remove favorite products, purchase via VNPAY or VietQR scan, manage personal information, and track orders.
-Store: Can create, update, delete, and manage products, posts, view order and transaction lists, create a withdrawal request from the admin.
-Admin: Can manage users, brands, categories, orders, transactions and store lists, push notifications, and view feedback.
+- Guest: Can create an account using their email and verify it via OTP.
+- Customer: Can browse products (with sorting, searching, and detailed views), view posts, add/remove favorite products, purchase via VNPAY or VietQR scan, manage personal information, and track orders.
+- Store: Can create, update, delete, and manage products, posts, view order and transaction lists, create a withdrawal request from the admin.
+- Admin: Can manage users, brands, categories, orders, transactions and store lists, push notifications, and view feedback.
 
 #### 3 Members:
 
