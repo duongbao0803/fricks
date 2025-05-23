@@ -11,7 +11,6 @@ import { ScrollReveal } from "@/components";
 import { notify } from "@/components/common/Notification";
 import useUserInfo from "@/hooks/useUserInfo";
 import { ProductInfo } from "@/types/product.types";
-import { PriceFormat } from "@/utils";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Rate, Skeleton, Tooltip } from "antd";
 import Cookies from "js-cookie";
@@ -21,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import useAddToCart from "./hooks/useAddToCart";
+import { formatCurrency } from "@/utils";
 
 const ProductHome = () => {
   const { userInfo } = useUserInfo();
@@ -199,7 +199,7 @@ const ProductHome = () => {
                           />
                           <p className="mb-2 text-xl font-bold">
                             <span className="text-primary">
-                              {PriceFormat.format(product?.price[0]?.price)} /{" "}
+                              {formatCurrency(product?.price[0]?.price)} /{" "}
                               {product?.price[0]?.unit?.name || ""}
                             </span>
                           </p>

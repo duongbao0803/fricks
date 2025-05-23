@@ -1,14 +1,17 @@
 "use client";
 
+import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
 import User from "@/assets/images/logo/avatar_admin.jpg";
 import IconWeb from "@/assets/images/logo/logo_web.png";
 import { VoiceSearch } from "@/components";
 import { RolesLogin } from "@/enums";
 import useDebounce from "@/hooks/useDebounce";
 import { useLogout } from "@/hooks/useLogout";
-import useUserSelector from "@/redux/hooks/useUserSelector";
+import { getToken } from "@/hooks/useToken";
+import { setFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
 import { BellOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { skipToken } from "@reduxjs/toolkit/query";
 import type { MenuProps } from "antd";
 import { Badge, Dropdown, Form } from "antd";
 import Image from "next/image";
@@ -18,17 +21,24 @@ import { useEffect, useMemo, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaRegCircleQuestion, FaRegPaperPlane } from "react-icons/fa6";
 import { GrFavorite } from "react-icons/gr";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MobileNav from "./MobileNav";
 import NavElement from "./NavElement";
 
 const Navbar = () => {
-  const { userInfo } = useUserSelector();
+  const dispatch = useDispatch();
+  const token = getToken();
   const { logout } = useLogout();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const [styleCart, setStyleCart] = useState<string>("");
   const [styleFavor, setStyleFavor] = useState<string>("");
+  const { data: favoriteList = [], refetch } = useGetFavorListQuery(
+    token ? { PageIndex: 1, PageSize: 50 } : skipToken,
+  );
+  const userInfo = useSelector(
+    (state: RootState) => state.persistedReducer.user.userInfo,
+  );
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
@@ -37,6 +47,12 @@ const Navbar = () => {
   );
 
   const currentPath = usePathname();
+
+  useEffect(() => {
+    if (favoriteList && Array.isArray(favoriteList)) {
+      dispatch(setFavoriteCount(favoriteList.length));
+    }
+  }, [favoriteList, dispatch]);
 
   useEffect(() => {
     const isCart =
@@ -254,7 +270,9 @@ const Navbar = () => {
                 </Link>
                 <Link href="/cart">
                   <div className="lg:block">
-                    <Badge count={cartData?.totalQuantity}>
+                    <Badge
+                      count={favoriteList?.length || cartData?.totalQuantity}
+                    >
                       <ShoppingCartOutlined
                         className={`cursor-pointer text-2xl ${styleCart} hover:text-primary`}
                       />

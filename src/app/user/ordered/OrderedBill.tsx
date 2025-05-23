@@ -3,7 +3,7 @@ import IconWeb from "@/assets/images/logo/logo_web.png";
 import { tableInvoice } from "@/constants";
 import { PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
-import { formatTimestampWithHour, PriceFormat } from "@/utils";
+import { formatCurrency, formatTimestampWithHour } from "@/utils";
 import Image from "next/image";
 
 const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
@@ -78,7 +78,7 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
                       <td className="px-6 py-[15px]">{order?.productUnit}</td>
                       <td className="px-6 py-[15px]">{order?.quantity}</td>
                       <td className="px-6 py-[15px]">
-                        {PriceFormat.format(order?.quantity * order?.price)}
+                        {formatCurrency(order?.quantity * order?.price)}
                       </td>
                     </tr>
                   </tbody>
@@ -94,7 +94,7 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
                 <h2 className="text-2xl lg:text-3xl">CHƯA THANH TOÁN</h2>
               )}
               <p className="text-xl font-bold">
-                {PriceFormat.format(orderInfo?.total)}
+                {formatCurrency(orderInfo?.total)}
               </p>
               <p>{formatTimestampWithHour(orderInfo?.createDate)}</p>
             </div>
@@ -128,12 +128,12 @@ const OrderedBill = ({ orderInfo }: { orderInfo: OrderInfo }) => {
                   </div>
                   <div className="col-span-1 text-right text-gray-200">
                     <p>
-                      {PriceFormat.format(
+                      {formatCurrency(
                         (orderInfo?.total || 0) - (orderInfo?.shipFee || 0),
                       )}
                     </p>
-                    <p>{PriceFormat.format(Number(orderInfo?.shipFee || 0))}</p>
-                    <p>{PriceFormat.format(orderInfo?.total || 0)}</p>
+                    <p>{formatCurrency(Number(orderInfo?.shipFee || 0))}</p>
+                    <p>{formatCurrency(orderInfo?.total || 0)}</p>
                   </div>
                 </div>
               </div>

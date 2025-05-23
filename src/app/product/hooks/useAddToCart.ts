@@ -8,8 +8,10 @@ import { useGetUserInfoQuery } from "@/apis/authApi";
 import { UserInfo } from "@/types/personal.types";
 import { addToCart, clearCart } from "@/redux/slices/cartSlice";
 import { notify } from "@/components/common/Notification";
+import { useRouter } from "next/navigation";
 
 const useAddToCart = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const token = Cookies.get("accessToken");
   const { data } = useGetUserInfoQuery(undefined, {
@@ -57,10 +59,11 @@ const useAddToCart = () => {
           );
         }
       } else {
+        router.push("/auth");
         notify("info", "Vui lòng đăng nhập để tiếp tục mua hàng", 1);
       }
     },
-    [userInfo, cartData, dispatch],
+    [userInfo, cartData, dispatch, router],
   );
 
   const handleClearCart = () => {

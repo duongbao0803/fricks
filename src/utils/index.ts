@@ -31,11 +31,6 @@ export function decryptData(
   }
 }
 
-export const PriceFormat = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
-
 export function formatTimestamp(timestampStr: string): string {
   const timestamp = new Date(timestampStr);
   return timestamp.toLocaleString("en-GB", {
@@ -65,3 +60,11 @@ export const validatePassword =
     }
     return Promise.resolve();
   };
+
+export const formatCurrency = (value: number): string =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  })
+    .format(value)
+    .replace(/\s₫/, "đ");

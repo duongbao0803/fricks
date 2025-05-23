@@ -1,5 +1,7 @@
 "use client";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
+import { notify } from "@/components/common/Notification";
 import { InputCustom } from "@/components/ui/input";
 import { tableData } from "@/constants";
 import { RolesLogin } from "@/enums";
@@ -7,7 +9,7 @@ import useUserInfo from "@/hooks/useUserInfo";
 import { removeFromCart } from "@/redux/slices/cartSlice";
 import { RootState } from "@/redux/store";
 import { ProductInfo } from "@/types/product.types";
-import { PriceFormat } from "@/utils";
+import { formatCurrency } from "@/utils";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Divider } from "antd";
 import Image from "next/image";
@@ -15,8 +17,6 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAddToCart from "../product/hooks/useAddToCart";
-import { notify } from "@/components/common/Notification";
-import { useGetStoreDetailQuery } from "@/apis/storeApi";
 
 const OrderTable = () => {
   const dispatch = useDispatch();
@@ -84,7 +84,7 @@ const OrderTable = () => {
                       </div>
                     </td>
                     <td className="px-6 py-[34px]">
-                      {PriceFormat.format(item?.price[0]?.price)}
+                      {formatCurrency(item?.price[0]?.price)}
                     </td>
                     <td className="px-6 py-[34px]">
                       {item?.price[0]?.unit.name}
@@ -103,7 +103,7 @@ const OrderTable = () => {
                       </div>
                     </td>
                     <td className="px-6 py-[34px]">
-                      {PriceFormat.format(item?.totalProductPrice ?? 0)}
+                      {formatCurrency(item?.totalProductPrice ?? 0)}
                     </td>
                   </tr>
                 ))}
@@ -148,9 +148,9 @@ const OrderTable = () => {
                   </span>
                 </div>
                 <div className="flex flex-col items-end gap-5">
-                  <span>{PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                  <span>{PriceFormat.format(store?.defaultShip)}</span>
-                  <span>{PriceFormat.format(0)}</span>
+                  <span>{formatCurrency(cartData?.totalPrice ?? 0)}</span>
+                  <span>{formatCurrency(store?.defaultShip)}</span>
+                  <span>{formatCurrency(0)}</span>
                 </div>
               </div>
               <Divider className="!m-0 bg-gray-300" />
@@ -158,7 +158,7 @@ const OrderTable = () => {
                 <div className="flex justify-between">
                   <span className="font-semibold text-gray-500">Tổng</span>
                   <span>
-                    {PriceFormat.format(
+                    {formatCurrency(
                       cartData?.totalPrice + (store?.defaultShip || 0),
                     )}
                   </span>
