@@ -17,14 +17,15 @@ import NotFoundImage from "@/assets/images/logo/no-products.png";
 import { FavoriteProps } from "@/types/favorite.types";
 import { useDispatch } from "react-redux";
 import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
-import useToken from "antd/es/theme/useToken";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Link from "next/link";
+import { getToken } from "@/hooks/useToken";
+import { formatCurrency } from "@/utils";
 
 const FavoriteTable = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const token = useToken();
+  const token = getToken();
   const { data: favoriteList = [], refetch } = useGetFavorListQuery(
     token ? { PageIndex: 1, PageSize: 50 } : skipToken,
   );
@@ -113,7 +114,9 @@ const FavoriteTable = () => {
                       </Link>
 
                       <td className="px-6 py-12">
-                        {item?.productPrices[0]?.price}
+                        {formatCurrency(
+                          item?.productPrices[0]?.price as number,
+                        )}
                       </td>
                       <td className="px-6 py-12">
                         <TagCustom

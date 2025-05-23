@@ -3,7 +3,7 @@ import { useGetDetailPostQuery } from "@/apis/postApi";
 import { useGetDetailProductQuery } from "@/apis/productApi";
 import useAddToCart from "@/app/product/hooks/useAddToCart";
 import { ScrollReveal } from "@/components";
-import { PriceFormat } from "@/utils";
+import { formatCurrency } from "@/utils";
 import { Rate, Spin } from "antd";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -106,7 +106,7 @@ const PostDetail = () => {
                       />
                       <p className="mb-2 text-xl font-bold">
                         <span className="text-primary">
-                          {PriceFormat.format(productDetail?.price[0]?.price)} /{" "}
+                          {formatCurrency(productDetail?.price[0]?.price)} /{" "}
                           {productDetail?.price[0]?.unit?.name || ""}
                         </span>
                       </p>

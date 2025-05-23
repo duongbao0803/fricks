@@ -5,10 +5,10 @@ import {
 } from "@/apis/productApi";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { ProductInfo } from "@/types/product.types";
-import { PriceFormat } from "@/utils";
-import { Divider, Rate, Skeleton, Spin, Tabs, Tag, Tooltip } from "antd";
+import { formatCurrency } from "@/utils";
+import { Divider, Rate, Skeleton, Spin, Tabs, Tooltip } from "antd";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useAddToCart from "../hooks/useAddToCart";
 
@@ -16,6 +16,8 @@ import {
   useAddFavoriteMutation,
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
+import { useGetStoreDetailQuery } from "@/apis/storeApi";
+import Imagee from "@/assets/images/logo/avatar_admin.jpg";
 import { ScrollReveal } from "@/components";
 import { notify } from "@/components/common/Notification";
 import { getToken } from "@/hooks/useToken";
@@ -23,11 +25,7 @@ import useUserInfo from "@/hooks/useUserInfo";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Link from "next/link";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
-import Imagee from "@/assets/images/logo/avatar_admin.jpg";
-import { useGetStoreDetailQuery } from "@/apis/storeApi";
-import { ButtonCustom } from "@/components/ui/button";
 import StoreInfoModal from "./StoreInfoModal";
-import { TagCustom } from "@/components/common";
 
 const Detail = () => {
   const { id } = useParams();
@@ -159,7 +157,7 @@ const Detail = () => {
                 </p>
               </div>
               <p className="my-5 text-3xl font-bold text-primary">
-                {PriceFormat.format(selectedPrice)}
+                {formatCurrency(selectedPrice)}
               </p>
 
               <div className="mt-4 flex items-center space-x-4">
@@ -385,8 +383,8 @@ const Detail = () => {
                               />
                               <p className="mb-2 text-xl font-bold">
                                 <span className="text-primary">
-                                  {PriceFormat.format(product?.price[0]?.price)}{" "}
-                                  / {product?.price[0]?.unit?.name || ""}
+                                  {formatCurrency(product?.price[0]?.price)} /{" "}
+                                  {product?.price[0]?.unit?.name || ""}
                                 </span>
                               </p>
                             </div>

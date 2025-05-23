@@ -6,6 +6,7 @@ import {
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
 import { useGetProductListQuery } from "@/apis/productApi";
+import { useGetListStoreQuery } from "@/apis/storeApi";
 import NoProducts from "@/assets/images/logo/no-products.png";
 import { ScrollReveal, VoiceSearch } from "@/components";
 import { RadioCustom, SliderCustom } from "@/components/common";
@@ -14,7 +15,7 @@ import { SortStatus } from "@/enums";
 import useDebounce from "@/hooks/useDebounce";
 import useUserInfo from "@/hooks/useUserInfo";
 import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
-import { PriceFormat } from "@/utils";
+import { formatCurrency } from "@/utils";
 import { skipToken } from "@reduxjs/toolkit/query";
 import {
   Divider,
@@ -31,9 +32,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { useDispatch } from "react-redux";
 import useAddToCart from "./hooks/useAddToCart";
-import { useGetListStoreQuery } from "@/apis/storeApi";
 
 const { Option } = Select;
 
@@ -307,7 +306,7 @@ const ProductList = () => {
                           />
                           <p className="mb-2 text-xl font-bold">
                             <span className="text-primary">
-                              {PriceFormat.format(item?.price)} / {""}
+                              {formatCurrency(item?.price)} / {""}
                               {item?.unit?.name || ""}
                             </span>
                           </p>

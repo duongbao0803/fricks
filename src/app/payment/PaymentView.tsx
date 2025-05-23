@@ -25,6 +25,7 @@ const PaymentView: React.FC = () => {
     }
 
     if (orderInfo && !isLoading) {
+      dispatch(clearCart());
       dispatch(setOrderInfo(orderInfo));
 
       if (status === "paid") {

@@ -2,19 +2,27 @@
 import { useUpdateUserMutation } from "@/apis/userApi";
 import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
-import useUserSelector from "@/redux/hooks/useUserSelector";
 import { setUserInfo } from "@/redux/slices/userSlice";
 import { Form } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AvatarUpload from "./AvatarUpload";
 import PersonalInfoForm from "./PersonalInfoForm";
+import { RootState } from "@/redux/store";
+import { getToken } from "@/hooks/useToken";
+import { useGetUserInfoQuery } from "@/apis/authApi";
 
 const Personal = () => {
+  const token = getToken();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const { userInfo } = useUserSelector();
+  const userInfo = useSelector(
+    (state: RootState) => state.persistedReducer.user.userInfo,
+  );
+  const { refetch } = useGetUserInfoQuery(undefined, {
+    skip: !token,
+  });
   const [fileChange, setFileChange] = useState<string>("");
 
   const [updateUser] = useUpdateUserMutation();
@@ -42,12 +50,13 @@ const Personal = () => {
         if (res && res.httpCode === 200) {
           dispatch(setUserInfo(res.data));
           notify("success", `${res.message}`, 2);
+          refetch();
         }
       } catch (err: any) {
         notify("error", `${err.data.message}`, 3);
       }
     },
-    [dispatch, updateUser, userInfo?.id],
+    [dispatch, updateUser, userInfo?.id, refetch],
   );
 
   return (

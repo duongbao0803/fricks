@@ -8,7 +8,7 @@ import { tableData } from "@/constants";
 import { PAYMENT } from "@/enums";
 import useUserInfo from "@/hooks/useUserInfo";
 import { RootState } from "@/redux/store";
-import { PriceFormat } from "@/utils";
+import { formatCurrency } from "@/utils";
 import { Divider, Radio, RadioChangeEvent } from "antd";
 import Image from "next/image";
 import { useState } from "react";
@@ -134,9 +134,9 @@ const OrderDetail = () => {
                 <span className="font-semibold text-gray-500">Khuyến mãi:</span>
               </div>
               <div className="flex flex-col items-end gap-5">
-                <span> {PriceFormat.format(cartData?.totalPrice ?? 0)}</span>
-                <span>{PriceFormat.format(store?.defaultShip)}</span>
-                <span>{PriceFormat.format(discount ?? 0)}</span>
+                <span> {formatCurrency(cartData?.totalPrice ?? 0)}</span>
+                <span>{formatCurrency(store?.defaultShip)}</span>
+                <span>{formatCurrency(discount ?? 0)}</span>
               </div>
             </div>
             <div className="mx-4">
@@ -147,7 +147,7 @@ const OrderDetail = () => {
                 <span className="font-semibold text-gray-500">Tổng</span>
                 <span className="font-bold text-primary">
                   <span>
-                    {PriceFormat.format(
+                    {formatCurrency(
                       cartData?.totalPrice +
                         (store?.defaultShip || 0) -
                         discount,
@@ -204,14 +204,14 @@ const OrderDetail = () => {
                         </div>
                       </td>
                       <td className="px-6 py-[34px]">
-                        {PriceFormat.format(item?.price[0].price ?? 0)}
+                        {formatCurrency(item?.price[0].price ?? 0)}
                       </td>
                       <td className="px-6 py-[34px]">
                         {item?.price[0]?.unit.name}
                       </td>
                       <td className="px-6 py-[34px]">{item?.quantity}</td>
                       <td className="px-6 py-[34px]">
-                        {PriceFormat.format(item?.totalProductPrice ?? 0)}
+                        {formatCurrency(item?.totalProductPrice ?? 0)}
                       </td>
                     </tr>
                   </>

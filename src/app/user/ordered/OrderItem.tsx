@@ -3,7 +3,7 @@ import { TagCustom } from "@/components/common";
 import { ButtonCustom } from "@/components/ui/button";
 import { PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
-import { PriceFormat, formatTimestamp } from "@/utils";
+import { formatCurrency, formatTimestamp } from "@/utils";
 import {
   CheckCircleFilled,
   CloseCircleFilled,
@@ -103,22 +103,20 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
             <div className="flex justify-between gap-5">
               <div>Tạm tính:</div>
               <div>
-                {PriceFormat.format(
-                  (order?.total || 0) - (order?.shipFee || 0),
-                )}
+                {formatCurrency((order?.total || 0) - (order?.shipFee || 0))}
               </div>
             </div>
             <div className="flex justify-between gap-5">
               <div>Phí vận chuyển:</div>
-              <div>{PriceFormat.format(order?.shipFee || 0)}</div>
+              <div>{formatCurrency(order?.shipFee || 0)}</div>
             </div>
             <div className="flex justify-between gap-5">
               <div>Khuyến mãi:</div>
-              <div>{PriceFormat.format(0)}</div>
+              <div>{formatCurrency(0)}</div>
             </div>
             <div className="flex justify-between gap-5">
               <div>Tổng:</div>
-              <div>{PriceFormat.format(order?.total)}</div>
+              <div>{formatCurrency(order?.total)}</div>
             </div>
             <div className="w-full">
               <ButtonCustom

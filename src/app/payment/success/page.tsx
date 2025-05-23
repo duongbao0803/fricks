@@ -1,11 +1,11 @@
 "use client";
-import React from "react";
 import IconWeb from "@/assets/images/logo/logo_web.png";
-import Image from "next/image";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { tableInvoice } from "@/constants";
-import { formatTimestampWithHour, PriceFormat } from "@/utils";
+import { RootState } from "@/redux/store";
+import { formatCurrency, formatTimestampWithHour } from "@/utils";
+import Image from "next/image";
+import React from "react";
+import { useSelector } from "react-redux";
 
 const PaymentSuccess: React.FC = () => {
   const orderInfo = useSelector(
@@ -98,7 +98,7 @@ const PaymentSuccess: React.FC = () => {
                       <td className="px-6 py-[34px]">{order?.productUnit}</td>
                       <td className="px-6 py-[34px]">{order?.quantity}</td>
                       <td className="px-6 py-[34px]">
-                        {PriceFormat.format(order?.quantity * order?.price)}
+                        {formatCurrency(order?.quantity * order?.price)}
                       </td>
                     </tr>
                   </tbody>
@@ -110,7 +110,7 @@ const PaymentSuccess: React.FC = () => {
             <div className="flex h-[120px] w-[70%] max-w-[350px] -rotate-[15deg] flex-col items-center justify-center gap-2 rounded-3xl border-4 border-[red] font-medium text-[red] lg:h-[150px]">
               <h2 className="text-2xl lg:text-4xl">ĐÃ THANH TOÁN</h2>
               <p className="text-xl font-bold">
-                {PriceFormat.format(orderInfo?.orderInfo?.total)}
+                {formatCurrency(orderInfo?.orderInfo?.total)}
               </p>
               <p>{formatTimestampWithHour(orderInfo?.orderInfo?.createDate)}</p>
             </div>
@@ -144,19 +144,17 @@ const PaymentSuccess: React.FC = () => {
                   </div>
                   <div className="col-span-1 text-right text-gray-200">
                     <p>
-                      {PriceFormat.format(
+                      {formatCurrency(
                         (orderInfo?.orderInfo?.total || 0) -
                           (orderInfo?.orderInfo?.shipFee || 0),
                       )}
                     </p>
                     <p>
-                      {PriceFormat.format(
+                      {formatCurrency(
                         Number(orderInfo?.orderInfo?.shipFee || 0),
                       )}
                     </p>
-                    <p>
-                      {PriceFormat.format(orderInfo?.orderInfo?.total || 0)}
-                    </p>
+                    <p>{formatCurrency(orderInfo?.orderInfo?.total || 0)}</p>
                   </div>
                 </div>
               </div>

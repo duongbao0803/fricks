@@ -3,10 +3,11 @@ import { BreadScrumb } from "@/components/common";
 import MobileSide from "@/components/layouts/MobileSide";
 import SidebarButtons from "@/components/layouts/SidebarButtons";
 import { useLogout } from "@/hooks/useLogout";
-import useUserSelector from "@/redux/hooks/useUserSelector";
+import { RootState } from "@/redux/store";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function ProfileLayout({
   children,
@@ -15,8 +16,9 @@ export default function ProfileLayout({
 }>) {
   const router = useRouter();
   const pathname = usePathname();
-  const { userInfo } = useUserSelector();
-
+  const userInfo = useSelector(
+    (state: RootState) => state.persistedReducer.user.userInfo,
+  );
   const [activeButton, setActiveButton] = useState<number>(1);
   const { logout } = useLogout();
 
