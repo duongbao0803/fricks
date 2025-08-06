@@ -7,6 +7,8 @@ import Script from "next/script";
 import ClientLayout from "./auth/layout";
 import "./globals.css";
 import { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const robotoSlab = Roboto_Slab({
   subsets: ["latin"],
@@ -54,7 +56,11 @@ export default function RootLayout({
           <NotificationProvider>
             <NextProgressBar />
             <Providers>
-              <ClientLayout>{children}</ClientLayout>
+              <ClientLayout>
+                {children}
+                <Analytics />
+                <SpeedInsights />
+              </ClientLayout>
             </Providers>
           </NotificationProvider>
         </LoadingWrapper>
