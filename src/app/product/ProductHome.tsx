@@ -41,10 +41,35 @@ const ProductHome = () => {
       </div>
 
       <div className="mx-auto mt-14 max-w-[700px]">
+        <div className="mb-2 flex justify-center space-x-2 md:hidden">
+          <button
+            onClick={handler.scrollLeft}
+            className={`rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+              state.canScrollLeft
+                ? "text-primary hover:bg-primary hover:text-white"
+                : "cursor-not-allowed text-gray-300"
+            }`}
+            disabled={!state.canScrollLeft}
+          >
+            <IoChevronBack className="text-xl" />
+          </button>
+          <button
+            onClick={handler.scrollRight}
+            className={`rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+              state.canScrollRight
+                ? "text-primary hover:bg-primary hover:text-white"
+                : "cursor-not-allowed text-gray-300"
+            }`}
+            disabled={!state.canScrollRight}
+          >
+            <IoChevronForward className="text-xl" />
+          </button>
+        </div>
+
         <div className="relative flex items-center">
           <button
             onClick={handler.scrollLeft}
-            className={`absolute -left-10 top-1/2 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+            className={`absolute -left-10 top-1/2 z-10 hidden -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl md:block ${
               state.canScrollLeft
                 ? "text-primary hover:bg-primary hover:text-white"
                 : "cursor-not-allowed text-gray-300"
@@ -87,7 +112,7 @@ const ProductHome = () => {
 
           <button
             onClick={handler.scrollRight}
-            className={`absolute -right-10 top-1/2 z-10 -translate-y-1/2 translate-x-4 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+            className={`absolute -right-10 top-1/2 z-10 hidden -translate-y-1/2 translate-x-4 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl md:block ${
               state.canScrollRight
                 ? "text-primary hover:bg-primary hover:text-white"
                 : "cursor-not-allowed text-gray-300"
