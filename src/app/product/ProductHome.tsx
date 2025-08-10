@@ -1,149 +1,107 @@
 "use client";
 
-import { useGetAllCatagoryQuery } from "@/apis/categortApi";
-import {
-  useAddFavoriteMutation,
-  useGetFavorListQuery,
-} from "@/apis/favoriteProductApi";
-import { useGetProductListQuery } from "@/apis/productApi";
+import { useProductHome } from "@/app/product/hooks/useProductHome";
 import NotFoundImage from "@/assets/images/logo/not-found.jpg";
 import { ScrollReveal } from "@/components";
-import { notify } from "@/components/common/Notification";
-import useUserInfo from "@/hooks/useUserInfo";
 import { ProductInfo } from "@/types/product.types";
-import { skipToken } from "@reduxjs/toolkit/query";
+import { formatCurrency } from "@/utils";
 import { Rate, Skeleton, Tooltip } from "antd";
-import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import useAddToCart from "./hooks/useAddToCart";
-import { formatCurrency } from "@/utils";
+import { IoChevronBack, IoChevronForward, IoSparkles } from "react-icons/io5";
 
 const ProductHome = () => {
-  const { userInfo } = useUserInfo();
-  const router = useRouter();
-  const token = Cookies.get("accessToken");
-  const [selectedCategory, setSelectedCategory] = useState(0);
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
-    undefined,
-    {},
-  );
-
-  const { handleAddToCart } = useAddToCart();
-  // const isFavorite = useSelector(
-  //   (state: RootState) => state.persistedReducer.favorites.isFavorite,
-  // );
-  const [addFavorite] = useAddFavoriteMutation();
-
-  const { data: favoriteList = [], refetch } = useGetFavorListQuery(
-    token ? { PageIndex: 1, PageSize: 50 } : skipToken,
-  );
-  const [favorites, setFavorites] = useState<{ [key: number]: boolean }>({});
-  const [prevFavoriteList, setPrevFavoriteList] = useState([]);
-
-  const categories = useMemo(
-    () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
-    [categoriesData],
-  );
-
-  useEffect(() => {
-    const selectedCategoryElement = document.getElementById(
-      `category-${selectedCategory}`,
-    );
-    if (indicatorRef.current && selectedCategoryElement) {
-      const { offsetLeft, offsetWidth } = selectedCategoryElement;
-      indicatorRef.current.style.transform = `translateX(${offsetLeft}px)`;
-      indicatorRef.current.style.width = `${offsetWidth}px`;
-    }
-  }, [selectedCategory]);
-
-  const { data: productData } = useGetProductListQuery({
-    PageIndex: 1,
-    PageSize: 10,
-    CategoryId: selectedCategory,
-    name: "",
-    MinPrice: 0,
-    MaxPrice: 0,
-    StoreId: 0,
-  });
-
-  // const handleToggleFavorite = (product: ProductInfo) => {
-  //   toggleFavorite(product?.id);
-  // };
-
-  useEffect(() => {
-    if (JSON.stringify(prevFavoriteList) !== JSON.stringify(favoriteList)) {
-      const initialFavorites = favoriteList.reduce(
-        (
-          acc: { [x: string]: boolean },
-          favorite: { productId: string | number },
-        ) => {
-          acc[favorite.productId] = true;
-          return acc;
-        },
-        {},
-      );
-      setFavorites(initialFavorites);
-      setPrevFavoriteList(favoriteList);
-    }
-  }, [favoriteList]);
-
-  const handleToggleFavorite = async (productId: number) => {
-    if (!favorites[productId]) {
-      const res = await addFavorite({ productId }).unwrap();
-      if (res) {
-        notify(
-          "success",
-          `Đã thêm ${res?.productName} vào danh sách yêu thích`,
-          2,
-        );
-        setFavorites((prev) => ({
-          ...prev,
-          [productId]: true,
-        }));
-      }
-    }
-  };
+  const { handler, state, refs } = useProductHome();
 
   return (
-    <section className="container mx-auto">
-      <div className="relative mt-28">
-        <h3 className="text-center text-3xl font-bold text-primary lg:text-4xl">
-          Sản phẩm VLXD
-        </h3>
-        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
-          <div className="mt-2 flex w-[200px] items-center justify-center">
-            <span className="h-px flex-grow bg-gray-300"></span>
-            <span className="mx-2 text-gray-500">&#x2766;</span>
-            <span className="h-px flex-grow bg-gray-300"></span>
-          </div>
+    <section className="container mx-auto" ref={refs.ref}>
+      <div className="mt-36 text-center">
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-thirdly px-3 py-2">
+          <IoSparkles className="animate-pulse text-xl text-primary" />
+          <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
+            Sản phẩm chất lượng cao
+          </span>
+        </div>
+
+        <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
+          Sản phẩm <span className="text-primary">VLXD</span>
+        </h1>
+
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-gray-600 lg:text-base">
+          Khám phá bộ sưu tập vật liệu xây dựng chất lượng cao với giá cả cạnh
+          tranh nhất
+        </p>
+
+        <div className="mt-5 flex items-center justify-center">
+          <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+          <IoSparkles className="mx-4 text-lg text-primary" />
+          <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
         </div>
       </div>
-      <div className="mx-auto mt-20 max-w-[700px]">
-        <div className="scroll relative flex flex-nowrap space-x-2 overflow-x-scroll px-2">
-          <div
-            ref={indicatorRef}
-            className="absolute inset-0 z-[-1] mb-3 h-full rounded-md bg-primary transition-transform duration-500 ease-in-out"
-          />
-          {categories.map((category, index) => (
+
+      <div className="mx-auto mt-14 max-w-[700px]">
+        <div className="relative flex items-center">
+          <button
+            onClick={handler.scrollLeft}
+            className={`absolute -left-10 top-1/2 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+              state.canScrollLeft
+                ? "text-primary hover:bg-primary hover:text-white"
+                : "cursor-not-allowed text-gray-300"
+            }`}
+            disabled={!state.canScrollLeft}
+          >
+            <IoChevronBack className="text-xl" />
+          </button>
+
+          <div className="overflow-hidden">
             <div
-              key={index}
-              id={`category-${category.id}`}
-              className={`relative flex-shrink-0 cursor-pointer p-2 transition-colors duration-500 ${selectedCategory === category.id ? "text-white" : "text-black"}`}
-              onClick={() => setSelectedCategory(category.id)}
+              ref={refs.scrollContainerRef}
+              className="scroll scrollbar-hide relative flex flex-nowrap space-x-2 overflow-x-auto px-2"
+              onScroll={handler.checkScrollPosition}
+              style={{
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
-              {category.name}
+              <div
+                ref={refs.indicatorRef}
+                className="absolute inset-0 z-[-1] mb-3 h-full rounded-md bg-primary transition-transform duration-500 ease-in-out"
+              />
+              {state.categories.map((category, index) => (
+                <div
+                  key={index}
+                  id={`category-${category.id}`}
+                  className={`relative flex-shrink-0 cursor-pointer p-2 transition-colors duration-500 ${
+                    state.selectedCategory === category.id
+                      ? "text-white"
+                      : "text-black"
+                  }`}
+                  onClick={() => handler.setSelectedCategory(category.id)}
+                >
+                  {category.name}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <button
+            onClick={handler.scrollRight}
+            className={`absolute -right-10 top-1/2 z-10 -translate-y-1/2 translate-x-4 rounded-full bg-white p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+              state.canScrollRight
+                ? "text-primary hover:bg-primary hover:text-white"
+                : "cursor-not-allowed text-gray-300"
+            }`}
+            disabled={!state.canScrollRight}
+          >
+            <IoChevronForward className="text-xl" />
+          </button>
         </div>
       </div>
+
       <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {productData && productData?.items?.length > 0
-          ? productData?.items
+        {state.productData && state.productData?.items?.length > 0
+          ? state.productData?.items
               ?.slice(0, 8)
               .map((product: ProductInfo, index: number) => (
                 <ScrollReveal key={index}>
@@ -161,15 +119,17 @@ const ProductHome = () => {
 
                         <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
                           <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                            <button onClick={() => handleAddToCart(product)}>
+                            <button
+                              onClick={() => handler.handleAddToCart(product)}
+                            >
                               + Thêm vào giỏ hàng
                             </button>
                           </p>
                         </button>
-                        {userInfo && (
+                        {state.userInfo && (
                           <Tooltip
                             title={
-                              favorites[product.id]
+                              state.favorites[product.id]
                                 ? "Đã có trong danh sách yêu thích"
                                 : "Thêm vào danh sách yêu thích"
                             }
@@ -177,10 +137,12 @@ const ProductHome = () => {
                           >
                             <button
                               className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
-                              onClick={() => handleToggleFavorite(product?.id)}
-                              disabled={favorites[product.id]}
+                              onClick={() =>
+                                handler.handleToggleFavorite(product?.id)
+                              }
+                              disabled={state.favorites[product.id]}
                             >
-                              {favorites[product.id] ? (
+                              {state.favorites[product.id] ? (
                                 <AiFillHeart className="text-xl text-red-500" />
                               ) : (
                                 <AiOutlineHeart className="text-xl text-gray-500" />
@@ -224,10 +186,10 @@ const ProductHome = () => {
             ))}
       </div>
 
-      {productData && productData?.items?.length > 0 && (
+      {state.productData && state.productData?.items?.length > 0 && (
         <div className="my-7 flex justify-center">
           <button
-            onClick={() => router.push("/product")}
+            onClick={() => handler.router.push("/product")}
             type="submit"
             className="button-hire__custom !w-[300px] border-2 border-primary !py-3 text-lg font-semibold transition-all duration-700 ease-in-out hover:rounded-2xl hover:border-2 hover:font-bold hover:text-primary"
           >

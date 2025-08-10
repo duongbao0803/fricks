@@ -9,3 +9,4 @@ export { default as ScrollReveal } from "./ScrollReveal";
 export { default as NextProgressBar } from "./NextProgressBar";
 export { default as VoiceSearch } from "./VoiceSearch";
 export { default as PageNotFound } from "./PageNotFound";
+export { default as BackToTop } from "./BackToTop";

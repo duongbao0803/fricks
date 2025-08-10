@@ -1,136 +1,151 @@
 "use client";
-import { Card, Skeleton } from "antd";
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
+
+import { useGetPostListQuery } from "@/apis/postApi";
+import { Skeleton } from "antd";
+import Image from "next/image";
+import Link from "next/link";
+import { IoSparkles } from "react-icons/io5";
+import { useInView } from "react-intersection-observer";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+import { Autoplay, FreeMode } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
-import { Autoplay, FreeMode, Pagination } from "swiper/modules";
-import Link from "next/link";
-import Image from "next/image";
-import { useGetPostListQuery } from "@/apis/postApi";
-import { PostInfo } from "@/types/post.types";
 
 const PostHome = () => {
-  const { Meta } = Card;
-  const { data, isLoading } = useGetPostListQuery({
-    PageIndex: 1,
-    PageSize: 100,
-  });
+  const { ref, inView } = useInView({ triggerOnce: true });
+
+  const { data, isLoading } = useGetPostListQuery(
+    {
+      PageIndex: 1,
+      PageSize: 100,
+    },
+    { skip: !inView },
+  );
+
+  const stripHtml = (html: string) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent?.slice(0, 100) + "..." || "";
+  };
 
   return (
-    <section className="container mx-auto my-32 text-center">
-      <div className="relative mt-20">
-        <h3 className="text-center text-3xl font-bold text-primary lg:text-4xl">
+    <section className="container m-32 mx-auto px-4" ref={ref}>
+      <div className="mb-14 text-center">
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-thirdly px-3 py-2">
+          <IoSparkles className="animate-pulse text-xl text-primary" />
+          <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
+            Tin tức mới nhất
+          </span>
+        </div>
+        <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
           Tin tức
-        </h3>
-        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
-          <div className="mt-2 flex w-[100px] items-center justify-center">
-            <span className="h-px flex-grow bg-gray-300"></span>
-            <span className="mx-2 text-gray-500">&#x2766;</span>
-            <span className="h-px flex-grow bg-gray-300"></span>
-          </div>
+        </h1>
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-gray-600 lg:text-base">
+          Thông tin mới nhất về sản phẩm và các xu hướng trong ngành vật liệu
+          xây dựng
+        </p>
+        <div className="mt-5 flex items-center justify-center">
+          <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+          <IoSparkles className="mx-4 text-lg text-primary" />
+          <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
         </div>
       </div>
 
-      <div className="my-10 flex justify-center">
-        <Swiper
-          freeMode={true}
-          pagination={{
-            clickable: true,
-          }}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            320: {
-              slidesPerView: 1,
-              spaceBetween: 20,
-            },
-            640: {
-              slidesPerView: 1,
-              spaceBetween: 5,
-            },
-            900: {
-              slidesPerView: 2,
-              spaceBetween: 5,
-            },
-            1150: {
-              slidesPerView: 3,
-              spaceBetween: 5,
-            },
-            1600: {
-              slidesPerView: 3,
-              spaceBetween: 5,
-            },
-            2000: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-            2400: {
-              slidesPerView: 3,
-              spaceBetween: 30,
-            },
-            3300: {
-              slidesPerView: 4,
-              spaceBetween: 30,
-            },
-          }}
-          modules={[FreeMode, Pagination, Autoplay]}
-          className="mySwiper h-[450px] overflow-hidden transition-all duration-500"
-        >
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, index) => (
-                <SwiperSlide
-                  key={index}
-                  className="flex h-[400px] w-[350px] justify-center"
-                >
-                  <div className="my-3 mr-4 rounded-lg border-[0.2px] border-[#e6e6e6] p-5">
-                    <Skeleton active paragraph={{ rows: 3 }} />
+      <Swiper
+        freeMode
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }}
+        breakpoints={{
+          320: { slidesPerView: 1, spaceBetween: 0 },
+          780: { slidesPerView: 2, spaceBetween: 0 },
+          900: { slidesPerView: 2, spaceBetween: 0 },
+          1150: { slidesPerView: 3, spaceBetween: 0 },
+          1600: { slidesPerView: 3, spaceBetween: 0 },
+          2000: { slidesPerView: 4, spaceBetween: 0 },
+        }}
+        modules={[FreeMode, Autoplay]}
+      >
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <SwiperSlide key={i} className="p-5">
+                <div className="h-full w-full overflow-hidden rounded-2xl bg-white shadow-md">
+                  <Skeleton.Image className="min-w-full" active />
+                  <div className="space-y-3 p-6">
+                    <Skeleton active paragraph={{ rows: 2 }} />
                   </div>
-                </SwiperSlide>
-              ))
-            : data?.length > 0 &&
-              data.map((post: PostInfo, index: number) => (
-                <SwiperSlide
-                  key={index}
-                  className="flex h-[400px] w-[350px] justify-center"
+                </div>
+              </SwiperSlide>
+            ))
+          : data?.map((post: any) => (
+              <SwiperSlide key={post.id} className="p-5">
+                <Link
+                  href={`/post/${post.id}`}
+                  className="group block h-full transition-all duration-300 hover:-translate-y-1"
                 >
-                  <Link
-                    href={`/post/${post?.id}`}
-                    className="transition-all duration-500"
-                  >
-                    <Card
-                      hoverable
-                      className="mx-auto h-[400px] w-[350px] overflow-hidden border-2"
-                      cover={
-                        <Image
-                          alt="error"
-                          height={1000}
-                          width={1000}
-                          quality={100}
-                          src={post.image}
-                          className="h-[300px] w-full object-cover"
-                        />
-                      }
-                    >
-                      <Meta
-                        description={
-                          <>
-                            <h2 className="block text-sm font-semibold text-[black]">
-                              {post.title}
-                            </h2>
-                          </>
-                        }
+                  <div className="h-full overflow-hidden rounded-2xl bg-white shadow-md">
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        height={200}
+                        width={400}
+                        quality={90}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
-                    </Card>
-                  </Link>
-                </SwiperSlide>
-              ))}
-        </Swiper>
-      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    </div>
+                    <div className="space-y-3 p-6">
+                      <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 transition-colors duration-300 group-hover:text-primary">
+                        {post.title}
+                      </h3>
+                      <p className="line-clamp-2 text-sm text-gray-600">
+                        {stripHtml(post.content)}
+                      </p>
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <svg
+                            className="h-4 w-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span>
+                            {new Date(post.createDate).toLocaleDateString()}
+                          </span>
+                        </span>
+                        <span className="flex items-center gap-1 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                          <span>Đọc thêm</span>
+                          <svg
+                            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            ))}
+      </Swiper>
     </section>
   );
 };

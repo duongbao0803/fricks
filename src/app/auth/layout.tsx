@@ -2,7 +2,6 @@
 import { Footer, Navbar } from "@/components/layouts";
 import ProgressBar from "@/components/ProgressBar";
 import useUserInfo from "@/hooks/useUserInfo";
-import { FloatButton } from "antd";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -31,7 +30,6 @@ export default function ClientLayout({
     <>
       {showNavbar && <Navbar />}
       {children}
-      <FloatButton.BackTop className="!fixed !bottom-[150px] !right-[5px]" />
       <ProgressBar />
       {showNavbar && <Footer />}
     </>
