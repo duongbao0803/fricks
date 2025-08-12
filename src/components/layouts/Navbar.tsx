@@ -3,7 +3,6 @@
 import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
 import User from "@/assets/images/logo/avatar_admin.jpg";
 import IconWeb from "@/assets/images/logo/logo_web.png";
-import { VoiceSearch } from "@/components";
 import { RolesLogin } from "@/enums";
 import useDebounce from "@/hooks/useDebounce";
 import { useLogout } from "@/hooks/useLogout";
@@ -12,15 +11,15 @@ import { setFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
 import {
   BellOutlined,
-  ShoppingCartOutlined,
-  UserOutlined,
   LockOutlined,
-  ShoppingOutlined,
   LogoutOutlined,
+  ShoppingCartOutlined,
+  ShoppingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { skipToken } from "@reduxjs/toolkit/query";
 import type { MenuProps } from "antd";
-import { Badge, Dropdown, Form } from "antd";
+import { Badge, Dropdown } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
