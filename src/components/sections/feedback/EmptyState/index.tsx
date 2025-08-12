@@ -6,6 +6,7 @@ const EmptyState = ({
   selectedRating,
   searchQuery,
   onWriteReview,
+  userInfo,
 }: EmptyStateProps) => {
   const isEmptyResults = selectedRating === "all" && !searchQuery;
 
@@ -24,7 +25,7 @@ const EmptyState = ({
           ? "Hãy là người đầu tiên đánh giá sản phẩm này"
           : "Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm"}
       </p>
-      {isEmptyResults && (
+      {isEmptyResults && userInfo && (
         <Button
           type="primary"
           onClick={onWriteReview}

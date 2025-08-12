@@ -16,6 +16,7 @@ import FeedbackCard from "@/components/sections/feedback/FeedbackCard";
 import EmptyState from "@/components/sections/feedback/EmptyState";
 import ReviewModal from "@/components/sections/feedback/ReviewModal";
 import LoadingState from "@/components/sections/feedback/LoadingState";
+import useUserInfo from "@/hooks/useUserInfo";
 
 const FeedbackSection = ({ productId }: FeedbackSectionProps) => {
   const [selectedRating, setSelectedRating] = useState("all");
@@ -36,6 +37,7 @@ const FeedbackSection = ({ productId }: FeedbackSectionProps) => {
   ]);
   const [hasMorePages, setHasMorePages] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const { userInfo } = useUserInfo();
 
   const {
     data: feedbackData,
@@ -185,14 +187,16 @@ const FeedbackSection = ({ productId }: FeedbackSectionProps) => {
             {totalFeedbacks} đánh giá từ khách hàng
           </p>
         </div>
-        <Button
-          type="primary"
-          onClick={() => setIsReviewModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-5 text-white transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          Viết đánh giá
-        </Button>
+        {userInfo && (
+          <Button
+            type="primary"
+            onClick={() => setIsReviewModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-5 text-white transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Viết đánh giá
+          </Button>
+        )}
       </div>
 
       <RatingOverview
@@ -251,6 +255,7 @@ const FeedbackSection = ({ productId }: FeedbackSectionProps) => {
             selectedRating={selectedRating}
             searchQuery={searchQuery}
             onWriteReview={() => setIsReviewModalOpen(true)}
+            userInfo={userInfo}
           />
         )}
       </div>
