@@ -5,20 +5,15 @@ import SidebarButtons from "@/components/layouts/SidebarButtons";
 import { useLogout } from "@/hooks/useLogout";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../../tailwind.config";
-
-const fullConfig = resolveConfig(tailwindConfig);
 
 export default function ProfileLayoutClient({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
   const pathname = usePathname();
   const userInfo = useSelector(
     (state: RootState) => state.persistedReducer.user.userInfo,
@@ -44,10 +39,6 @@ export default function ProfileLayoutClient({
     }
   }, [pathname]);
 
-  const handleButtonClick = (buttonName: number, path: string) => {
-    router.push(path);
-  };
-
   return (
     <main className="bg-[#f1f6fa] pb-10">
       <div className="container mx-auto min-h-screen">
@@ -68,11 +59,7 @@ export default function ProfileLayoutClient({
               <span className="font-semibold">{userInfo?.fullName}</span>
             </div>
             <div className="my-3 h-0.5 w-full bg-[#eeeeee]" />
-            <SidebarButtons
-              activeButton={activeButton}
-              handleButtonClick={handleButtonClick}
-              logout={logout}
-            />
+            <SidebarButtons activeButton={activeButton} logout={logout} />
           </div>
           <div className="absolute right-0 top-[-5px] lg:hidden">
             <MobileSide />

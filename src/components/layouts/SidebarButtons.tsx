@@ -22,7 +22,6 @@ export const buttonsData: ButtonData[] = [
 
 const SidebarButtons: React.FC<SidebarButtonsProps> = ({
   activeButton,
-  handleButtonClick,
   logout,
 }) => {
   return (
@@ -58,7 +57,6 @@ const SidebarButtons: React.FC<SidebarButtonsProps> = ({
                 ? "bg-primary text-white"
                 : "hover:bg-primary hover:text-white"
             }`}
-            onClick={() => handleButtonClick(button.id, button.path)}
           >
             <div className="flex items-center justify-center gap-3 lg:justify-start">
               {button.icon}

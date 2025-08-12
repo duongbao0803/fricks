@@ -7,6 +7,5 @@ export interface ButtonData {
 
 export interface SidebarButtonsProps {
   activeButton: number;
-  handleButtonClick: (id: number, path: string) => void;
   logout: () => void;
 }
