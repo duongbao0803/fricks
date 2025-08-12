@@ -7,6 +7,9 @@ import { Metadata } from "next";
 import { Roboto_Slab } from "next/font/google";
 import ClientLayout from "./auth/layout";
 import "./globals.css";
+import { ConfigProvider } from "antd";
+import { color } from "framer-motion";
+import { Toaster } from "sonner";
 
 const robotoSlab = Roboto_Slab({
   subsets: ["latin"],
@@ -51,17 +54,26 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${robotoSlab.variable}`}>
         {/* <LoadingWrapper> */}
-        <NotificationProvider>
-          <NextProgressBar />
-          <Providers>
-            <ClientLayout>
-              {children}
-              <Analytics />
-              <SpeedInsights />
-              <BackToTop />
-            </ClientLayout>
-          </Providers>
-        </NotificationProvider>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#ff7b29",
+            },
+          }}
+        >
+          <NotificationProvider>
+            <NextProgressBar />
+            <Providers>
+              <ClientLayout>
+                {children}
+                <Toaster position="top-right" richColors />
+                <Analytics />
+                <SpeedInsights />
+                <BackToTop />
+              </ClientLayout>
+            </Providers>
+          </NotificationProvider>
+        </ConfigProvider>
         {/* </LoadingWrapper> */}
       </body>
     </html>

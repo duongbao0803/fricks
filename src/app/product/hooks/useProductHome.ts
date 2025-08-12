@@ -4,8 +4,8 @@ import {
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
 import { useGetProductListQuery } from "@/apis/productApi";
-import useAddToCart from "@/app/product/hooks/useAddToCart";
-import { notify } from "@/components/common/Notification";
+import useCart from "@/app/product/hooks/useCart";
+import { showToast } from "@/hooks/useShowToast";
 import useUserInfo from "@/hooks/useUserInfo";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Cookies from "js-cookie";
@@ -28,10 +28,10 @@ const useProductHome = () => {
   const [favorites, setFavorites] = useState<{ [key: number]: boolean }>({});
   const prevFavoriteListRef = useRef<any[]>([]);
 
-  const { data: categoriesData = [], isLoading: isCategoriesLoading } =
+  const { data: categoriesData, isLoading: isCategoriesLoading } =
     useGetAllCatagoryQuery(undefined, { skip: !inView });
 
-  const { handleAddToCart } = useAddToCart();
+  const { handleAddToCart } = useCart();
   const [addFavorite] = useAddFavoriteMutation();
 
   const { data: favoriteList = [], refetch } = useGetFavorListQuery(
@@ -51,10 +51,10 @@ const useProductHome = () => {
     { skip: !inView },
   );
 
-  const categories = useMemo(
-    () => [{ id: 0, name: "Tất cả" }, ...categoriesData],
-    [categoriesData],
-  );
+  const categories = useMemo(() => {
+    const list = Array.isArray(categoriesData) ? categoriesData : [];
+    return [{ id: 0, name: "Tất cả" }, ...list];
+  }, [categoriesData]);
 
   const checkScrollPosition = useCallback(() => {
     if (!scrollContainerRef.current) return;
@@ -76,10 +76,9 @@ const useProductHome = () => {
       if (!favorites[productId]) {
         const res = await addFavorite({ productId }).unwrap();
         if (res) {
-          notify(
+          showToast(
             "success",
             `Đã thêm ${res?.productName} vào danh sách yêu thích`,
-            2,
           );
           setFavorites((prev) => ({ ...prev, [productId]: true }));
         }

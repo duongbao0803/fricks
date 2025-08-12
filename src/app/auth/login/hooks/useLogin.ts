@@ -6,10 +6,10 @@ import {
   useLoginMutation,
   useResendOTPMutation,
 } from "@/apis/authApi";
-import { notify } from "@/components/common/Notification";
 import { auth } from "@/config/firebase";
 import { RolesLogin } from "@/enums";
 import { useDecryptCredentials } from "@/hooks/useDecryptCredentials";
+import { showToast } from "@/hooks/useShowToast";
 import { ApiResponse } from "@/types/login.types";
 import { encryptData, isErrorResponse } from "@/utils";
 import { Form } from "antd";
@@ -55,7 +55,7 @@ const useLogin = () => {
               "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             ];
           if (role !== RolesLogin.CUSTOMER) {
-            notify("error", "Bạn không có quyền truy cập vào trang này", 3);
+            showToast("error", "Bạn không có quyền truy cập vào trang này");
             setIsLoggingIn(false);
             return;
           } else {
@@ -68,7 +68,7 @@ const useLogin = () => {
               Cookies.set("password", encryptedPassword);
             }
             router.replace("/");
-            notify("success", "Đăng nhập thành công", 3);
+            showToast("success", "Đăng nhập thành công");
             setIsLoggingIn(false);
           }
         }
@@ -80,7 +80,7 @@ const useLogin = () => {
             "Bạn phải xác nhận email trước khi đăng nhập vào hệ thống. OTP đã gửi qua email.",
           )
         ) {
-          notify("error", `${err.data.message}`, 3);
+          showToast("error", `${err.data.message}`);
           setIsLoggingIn(false);
           setTimeout(() => {
             setIsDrawerVisible(true);
@@ -88,10 +88,10 @@ const useLogin = () => {
           return;
         }
         setIsLoggingIn(false);
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       } else {
         setIsLoggingIn(false);
-        notify("error", "An unknown error occurred", 3);
+        showToast("error", "An unknown error occurred");
       }
     }
   };
@@ -109,11 +109,11 @@ const useLogin = () => {
         Cookies.set("accessToken", res.accessToken);
         Cookies.set("refreshToken", res.refreshToken);
         router.replace("/");
-        notify("success", `${res.message}`, 2);
+        showToast("success", `${res.message}`, 2);
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       }
     }
   };
@@ -122,7 +122,7 @@ const useLogin = () => {
     const email = form.getFieldValue("email");
     let information = { email, otpCode };
     if (otpCode.length < 6) {
-      notify("warning", "Vui lòng nhập otp", 2);
+      showToast("warning", "Vui lòng nhập otp", 2);
       return;
     }
     try {
@@ -133,12 +133,12 @@ const useLogin = () => {
           Cookies.set("accessToken", res.accessToken);
           Cookies.set("refreshToken", res.refreshToken);
           router.push("/");
-          notify("success", "Đăng nhập thành công", 2);
+          showToast("success", "Đăng nhập thành công", 2);
         }
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       }
     }
   };
@@ -150,11 +150,11 @@ const useLogin = () => {
   const handleResendMail = async () => {
     const email = form.getFieldValue("email");
     if (!email) {
-      notify("warning", "Vui lòng nhập email", 3);
+      showToast("warning", "Vui lòng nhập email");
       return;
     }
     if (isResending) {
-      notify(
+      showToast(
         "warning",
         `Vui lòng chờ ${cooldownTime} giây trước khi gửi lại mã OTP`,
         3,
@@ -166,7 +166,7 @@ const useLogin = () => {
     try {
       const res = await resendOtp(JSON.stringify(email)).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res.message}`, 3);
+        showToast("success", `${res.message}`);
         const countdownInterval = setInterval(() => {
           setCooldownTime((prev) => {
             if (prev === 1) {
@@ -179,9 +179,9 @@ const useLogin = () => {
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       } else {
-        notify("error", `${err}`, 3);
+        showToast("error", `${err}`);
       }
     }
   };

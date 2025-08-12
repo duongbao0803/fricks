@@ -5,7 +5,6 @@ import {
   Statistical,
   Subscribe,
 } from "@/components";
-import Modal from "@/components/Modal";
 import { Metadata } from "next";
 import "./globals.css";
 import PostHome from "./post/PostHome";

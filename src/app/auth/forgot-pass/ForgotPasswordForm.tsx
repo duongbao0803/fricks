@@ -5,7 +5,6 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { InputCustom } from "@/components/ui/input";
 import RegisterForm from "@/app/auth/register/RegisterForm";
 import { ButtonCustom } from "@/components/ui/button";
-import { notify } from "@/components/common/Notification";
 import {
   Drawer,
   DrawerContent,
@@ -27,6 +26,7 @@ import {
   useResetPasswordMutation,
 } from "@/apis/authApi";
 import { isErrorResponse } from "@/utils";
+import { showToast } from "@/hooks/useShowToast";
 
 interface IProps {
   isShowRegister: boolean;
@@ -62,14 +62,14 @@ const ForgotPasswordForm: React.FC<IProps> = ({
       const res = await resetPassword(JSON.stringify(email)).unwrap();
       if (res && res.httpCode === 200) {
         setIsSending(false);
-        notify("success", `${res.message}`, 2);
+        showToast("success", `${res.message}`);
         setTimeout(() => {
           setIsDrawerVisible(true);
         }, 1000);
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`, 3);
         setIsSending(false);
       }
     }
@@ -79,7 +79,7 @@ const ForgotPasswordForm: React.FC<IProps> = ({
     const email = form.getFieldValue("email");
     let information = { email, otpCode };
     if (otpCode.length < 6) {
-      notify("warning", "Vui lòng nhập otp", 1);
+      showToast("warning", "Vui lòng nhập otp");
       return;
     }
     try {
@@ -89,9 +89,9 @@ const ForgotPasswordForm: React.FC<IProps> = ({
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       } else {
-        notify("error", `${err}`, 3);
+        showToast("error", `${err}`, 3);
       }
     }
   };
@@ -103,21 +103,21 @@ const ForgotPasswordForm: React.FC<IProps> = ({
     const password = form.getFieldValue("password");
     const information = { email, password };
     if (!email || !password) {
-      notify("warning", "Vui lòng nhập đầy đủ thông tin", 2);
+      showToast("warning", "Vui lòng nhập đầy đủ thông tin");
       return;
     }
     try {
       const res = await confirmNewPassword(information).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res.message}`, 2);
+        showToast("success", `${res.message}`);
         setIsDrawerVisible(false);
         setIsShowRegister(true);
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       } else {
-        notify("error", `${err}`, 3);
+        showToast("error", `${err}`);
       }
     }
   };

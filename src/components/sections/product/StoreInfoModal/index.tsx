@@ -1,9 +1,8 @@
-import { notify } from "@/components/common/Notification";
 import { InputCustom } from "@/components/ui/input";
+import { showToast } from "@/hooks/useShowToast";
 import { StoreInfo } from "@/types/store.types";
-import { Form, Image, Input, Modal, Select } from "antd";
+import { Form, Image, Input, Modal } from "antd";
 import React, { useEffect } from "react";
-import { AiOutlineMessage } from "react-icons/ai";
 
 export interface AddModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,9 +16,7 @@ const StoreInfoModal: React.FC<AddModalProps> = (props) => {
 
   const { setIsOpen, isOpen, store } = props;
   const [form] = Form.useForm();
-  const { Option } = Select;
   const userForm = sessionStorage.getItem("form");
-  const data = userForm ? JSON.parse(userForm) : {};
   // const userForm = sessionStorage.getItem("form");
   // const data = JSON.parse(userForm ?? "");
 
@@ -34,7 +31,7 @@ const StoreInfoModal: React.FC<AddModalProps> = (props) => {
       const values = await form.validateFields();
       if (values) {
         sessionStorage.setItem("form", JSON.stringify(values));
-        notify("success", "Cập nhật thông tin thành công", 1);
+        showToast("success", "Cập nhật thông tin thành công");
         setIsOpen(false);
       }
     } catch (err) {
