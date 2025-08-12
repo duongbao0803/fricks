@@ -3,7 +3,6 @@
 import { useGetFavorListQuery } from "@/apis/favoriteProductApi";
 import User from "@/assets/images/logo/avatar_admin.jpg";
 import IconWeb from "@/assets/images/logo/logo_web.png";
-import { VoiceSearch } from "@/components";
 import { RolesLogin } from "@/enums";
 import useDebounce from "@/hooks/useDebounce";
 import { useLogout } from "@/hooks/useLogout";
@@ -12,15 +11,15 @@ import { setFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
 import {
   BellOutlined,
-  ShoppingCartOutlined,
-  UserOutlined,
   LockOutlined,
-  ShoppingOutlined,
   LogoutOutlined,
+  ShoppingCartOutlined,
+  ShoppingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { skipToken } from "@reduxjs/toolkit/query";
 import type { MenuProps } from "antd";
-import { Badge, Dropdown, Form } from "antd";
+import { Badge, Dropdown } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -158,7 +157,7 @@ const Navbar = () => {
     <header>
       <div className="flex flex-col items-center justify-center bg-[#fff] transition-all duration-500">
         <div className="w-full bg-[#F5F5F5]">
-          <div className="container mx-auto flex w-full flex-wrap items-center justify-center gap-2 transition-all duration-500 lg:justify-between">
+          <div className="container mx-auto flex w-full flex-wrap items-center justify-center gap-2 transition-all duration-500 md:justify-between">
             <div className="mr-2 flex flex-wrap items-center gap-1">
               <FaRegPaperPlane className="mr-1 text-sm transition-all duration-500 lg:text-lg" />
               <span className="text-[12px] lg:text-[15px]">
@@ -169,7 +168,7 @@ const Navbar = () => {
               {linkData.map((link, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-4 text-[12px]"
+                  className="flex items-center gap-4 py-2 text-[12px]"
                 >
                   <Link
                     href={link.href}
@@ -256,9 +255,10 @@ const Navbar = () => {
           <div className="hidden items-center gap-8 lg:flex">
             <NavElement />
           </div>
+
           <div className="mx-6 flex w-full items-center justify-end gap-3 lg:mx-0 lg:w-auto">
-            {userInfo && userInfo?.role?.includes(RolesLogin.CUSTOMER) && (
-              <div className="mt-1 flex items-center gap-7">
+            {userInfo && userInfo?.role?.includes(RolesLogin.CUSTOMER) ? (
+              <div className="mr-0 mt-1 flex w-[130px] items-center justify-end gap-7 lg:mr-5">
                 <Link href="/favorite">
                   <div className="lg:block">
                     <Badge count={count}>
@@ -280,6 +280,8 @@ const Navbar = () => {
                   </div>
                 </Link>
               </div>
+            ) : (
+              <div className="w-[130px]" />
             )}
           </div>
           <div className="lg:hidden">

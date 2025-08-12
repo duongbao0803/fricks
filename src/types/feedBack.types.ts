@@ -79,6 +79,7 @@ export interface EmptyStateProps {
   selectedRating: string;
   searchQuery: string;
   onWriteReview: () => void;
+  userInfo: UserInfo | null;
 }
 
 export interface ReviewModalPropsExtended extends ReviewModalProps {
