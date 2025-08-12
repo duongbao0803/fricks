@@ -1,6 +1,6 @@
-import { notify } from "@/components/common/Notification";
 import { InputCustom } from "@/components/ui/input";
 import { ADDRESS_OPTIONS } from "@/constants";
+import { showToast } from "@/hooks/useShowToast";
 import { UserInfo } from "@/types/personal.types";
 import { Col, Form, Modal, Row, Select } from "antd";
 import React, { useEffect } from "react";
@@ -26,8 +26,8 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       form.setFieldsValue({
         email: data?.email || userInfo.email,
         fullName: data?.fullName || userInfo.fullName,
-        customerAddress: data?.customerAddress || userInfo.address,
-        customerPhone: data?.customerPhone || userInfo.phoneNumber,
+        address: data?.customerAddress || userInfo.address,
+        phoneNumber: data?.customerPhone || userInfo.phoneNumber,
       });
     }
   }, [isOpen, userInfo, form]);
@@ -37,7 +37,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       const values = await form.validateFields();
       if (values) {
         sessionStorage.setItem("form", JSON.stringify(values));
-        notify("success", "Cập nhật thông tin thành công", 1);
+        showToast("success", "Cập nhật thông tin thành công");
         setIsOpen(false);
       }
     } catch (err) {
@@ -85,7 +85,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
           labelCol={{ span: 24 }}
           className="formItem mb-7"
         >
-          <InputCustom placeholder="Email" />
+          <InputCustom placeholder="Email" readOnly />
         </Form.Item>
         <Form.Item
           name="fullName"

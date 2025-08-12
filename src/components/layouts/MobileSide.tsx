@@ -32,11 +32,6 @@ const MobileSide = () => {
     }
   }, [pathname]);
 
-  const handleButtonClick = (buttonName: number, path: string) => {
-    setActiveButton(buttonName);
-    router.push(path);
-  };
-
   return (
     <Sheet>
       <SheetTrigger className="flex items-center justify-center">
@@ -53,11 +48,7 @@ const MobileSide = () => {
               quality={100}
             />
           </div>
-          <SidebarButtons
-            activeButton={activeButton}
-            handleButtonClick={handleButtonClick}
-            logout={logout}
-          ></SidebarButtons>
+          <SidebarButtons activeButton={activeButton} logout={logout} />
         </nav>
       </SheetContent>
     </Sheet>

@@ -50,6 +50,43 @@ export interface ProductInfo {
   updateDate?: string | null;
   isDeleted?: boolean;
   version?: string;
-  rating?: number;
+  rate?: number;
   totalProductPrice?: number;
+}
+
+export interface ProductGridProps extends CategoryScrollProps {
+  productData?: {
+    items: ProductInfo[];
+  };
+  title: string;
+  subtitle: string;
+  badgeText: string;
+  maxItems?: number;
+  userInfo?: any;
+  favorites?: { [key: number]: boolean };
+  showViewMoreButton?: boolean;
+  viewMoreHref?: string;
+  viewMoreText?: string;
+  onAddToCart: (product: ProductInfo, quantity: number, unit: any) => void;
+  onToggleFavorite?: (productId: number) => void;
+  loading?: boolean;
+  skeletonCount?: number;
+
+  className?: string;
+  style?: React.CSSProperties;
+  emptyStateText?: string;
+  gridCols?: number;
+}
+
+export interface CategoryScrollProps {
+  scrollLeft?: () => void;
+  canScrollLeft?: boolean;
+  scrollRight?: () => void;
+  canScrollRight?: boolean;
+  categories: { id: number; name: string }[];
+  selectedCategory?: number;
+  setSelectedCategory?: (id: number) => void;
+  indicatorRef?: React.RefObject<HTMLDivElement>;
+  scrollContainerRef?: React.RefObject<HTMLDivElement>;
+  checkScrollPosition?: () => void;
 }

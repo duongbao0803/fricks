@@ -1,5 +1,5 @@
 import apiSlice from "@/apis/apiSlice";
-import { notify } from "@/components/common/Notification";
+import { showToast } from "@/hooks/useShowToast";
 import { clearCart } from "@/redux/slices/cartSlice";
 import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { setUserInfo } from "@/redux/slices/userSlice";
@@ -22,7 +22,7 @@ export const useLogout = () => {
       dispatch(clearFavoriteCount());
       dispatch(apiSlice.util.resetApiState());
     }, 1000);
-    notify("success", "Đăng xuất thành công", 2);
+    showToast("success", "Đăng xuất thành công", 2);
   };
 
   return { logout };

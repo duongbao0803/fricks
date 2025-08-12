@@ -1,19 +1,21 @@
 "use client";
+
 import { useOrderMutation } from "@/apis/orderApi";
 import { useGetStoreDetailQuery } from "@/apis/storeApi";
 import VietQR from "@/assets/images/icons/vietqr.jpeg";
-import { notify } from "@/components/common/Notification";
-import { ButtonCustom } from "@/components/ui/button";
+import Vnpay from "@/assets/images/icons/vnpay.webp";
+import InfoModal from "@/components/sections/checkout/InfoModal";
 import { tableData } from "@/constants";
 import { PAYMENT } from "@/enums";
+import { showToast } from "@/hooks/useShowToast";
 import useUserInfo from "@/hooks/useUserInfo";
 import { RootState } from "@/redux/store";
+import { ProductInfo } from "@/types/product.types";
 import { formatCurrency } from "@/utils";
-import { Divider, Radio, RadioChangeEvent } from "antd";
+import { Button, Divider, Radio, RadioChangeEvent } from "antd";
 import Image from "next/image";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import InfoModal from "./InfoModal";
 
 const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -28,22 +30,39 @@ const OrderDetail = () => {
   });
 
   const userForm = sessionStorage.getItem("form");
+
+  if (!userForm && userInfo) {
+    const defaultFormData = {
+      email: userInfo?.email || "",
+      fullName: userInfo?.fullName || "",
+      address: userInfo?.address || "",
+      ward: userInfo?.ward || "",
+      district: userInfo?.district || "",
+      city: userInfo?.city || "",
+      phoneNumber: userInfo?.phoneNumber || "",
+    };
+    sessionStorage.setItem("form", JSON.stringify(defaultFormData));
+  }
+
   const data = userForm ? JSON.parse(userForm) : {};
 
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
 
-  const [checkoutAPI] = useOrderMutation();
+  const [checkoutAPI, { isLoading: isCheckoutLoading }] = useOrderMutation();
 
   const transformedData = cartData?.cart?.map(
-    (item: { id: any; price: { unitId: any }[]; quantity: any }) => ({
+    (
+      item: ProductInfo & {
+        selectedUnit: { id: number; name: string; price: number } | null;
+      },
+    ) => ({
       productId: item?.id,
-      productUnitId: item.price[0].unitId,
+      productUnitId: item.selectedUnit?.id,
       quantity: item.quantity,
     }),
   );
-
   const checkout = {
     shipFee: store?.defaultShip,
     voucherCode: data?.ward === "Tân Phú" ? "FSTANPHU" : "ABC",
@@ -57,25 +76,23 @@ const OrderDetail = () => {
 
   const handlePayment = async () => {
     if (!isConfirm) {
-      notify("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán", 2);
+      showToast("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán");
       return;
     }
     try {
       const res = await checkoutAPI(checkout);
       if (res && res.data) {
-        notify(
+        showToast(
           "success",
           "Đặt đơn hàng thành công. Vui lòng chờ sau 3s để thanh toán",
-          3,
         );
         setTimeout(() => {
           window.location.href = `${res?.data?.checkoutUrl}`;
         }, 3000);
       } else {
-        notify(
+        showToast(
           "error",
           "Đặt hàng không thành công. Vui lòng điền đầy đủ thông tin đặt hàng",
-          3,
         );
       }
     } catch (err) {}
@@ -204,10 +221,10 @@ const OrderDetail = () => {
                         </div>
                       </td>
                       <td className="px-6 py-[34px]">
-                        {formatCurrency(item?.price[0].price ?? 0)}
+                        {formatCurrency(item?.selectedUnit?.price ?? 0)}
                       </td>
                       <td className="px-6 py-[34px]">
-                        {item?.price[0]?.unit.name}
+                        {item?.selectedUnit?.name}
                       </td>
                       <td className="px-6 py-[34px]">{item?.quantity}</td>
                       <td className="px-6 py-[34px]">
@@ -264,14 +281,14 @@ const OrderDetail = () => {
                       </div>
                     </Radio>
                     <div className="ml-4">
-                      {/* <Image
-                        src={VietQR}
+                      <Image
+                        src={Vnpay}
                         alt="Logo-vietqr"
                         className="w-full object-cover"
                         height={50}
                         width={50}
                         quality={100}
-                      /> */}
+                      />
                     </div>
                   </div>
                 </Radio.Group>
@@ -285,12 +302,14 @@ const OrderDetail = () => {
                     Vui lòng xác nhận lại đơn hàng trước khi thanh toán
                   </p>
                 </div>
-                <ButtonCustom
-                  className="mt-5 h-10 w-full transform rounded py-1 text-white transition-all duration-500 active:scale-95"
+                <Button
+                  type="primary"
+                  className="text mt-5 h-10 w-full transform rounded py-1 text-base font-bold text-white transition-all duration-500 active:scale-95"
                   onClick={handlePayment}
+                  loading={isCheckoutLoading}
                 >
                   Thanh toán
-                </ButtonCustom>
+                </Button>
               </div>
             </div>
           </div>

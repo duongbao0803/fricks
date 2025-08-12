@@ -1,7 +1,7 @@
 import { BannerCustom, BreadScrumb } from "@/components/common";
 import React from "react";
-import OrderTable from "./OrderTable";
 import { Metadata } from "next";
+import OrderTable from "@/components/sections/cart";
 
 export const metadata: Metadata = {
   title: "Fricks | Giỏ hàng",

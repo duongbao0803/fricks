@@ -1,17 +1,17 @@
 "use client";
+import { useGetUserInfoQuery } from "@/apis/authApi";
 import { useUpdateUserMutation } from "@/apis/userApi";
-import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
+import { showToast } from "@/hooks/useShowToast";
+import { getToken } from "@/hooks/useToken";
 import { setUserInfo } from "@/redux/slices/userSlice";
+import { RootState } from "@/redux/store";
 import { Form } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AvatarUpload from "./AvatarUpload";
 import PersonalInfoForm from "./PersonalInfoForm";
-import { RootState } from "@/redux/store";
-import { getToken } from "@/hooks/useToken";
-import { useGetUserInfoQuery } from "@/apis/authApi";
 
 const Personal = () => {
   const token = getToken();
@@ -49,11 +49,11 @@ const Personal = () => {
         const res = await updateUser(updatedValues).unwrap();
         if (res && res.httpCode === 200) {
           dispatch(setUserInfo(res.data));
-          notify("success", `${res.message}`, 2);
+          showToast("success", `${res.message}`);
           refetch();
         }
       } catch (err: any) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       }
     },
     [dispatch, updateUser, userInfo?.id, refetch],

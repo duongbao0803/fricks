@@ -1,7 +1,7 @@
 "use client";
 import { useChangePasswordMutation } from "@/apis/authApi";
-import { notify } from "@/components/common/Notification";
 import { ButtonCustom } from "@/components/ui/button";
+import { showToast } from "@/hooks/useShowToast";
 import { useValidateFieldsMatch } from "@/hooks/useValidateFieldMatch";
 import { Form, Input } from "antd";
 
@@ -14,11 +14,11 @@ const ChangePasswordForm = () => {
     try {
       const res = await changePassword(values).unwrap();
       if (res && res.httpCode == 200) {
-        notify("success", `${res.message}`, 2);
+        showToast("success", `${res.message}`);
         form.resetFields();
       }
     } catch (err: any) {
-      notify("error", `${err.data.message}`, 3);
+      showToast("error", `${err.data.message}`);
     }
   };
 

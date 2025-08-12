@@ -1,6 +1,7 @@
 import { ErrorResponse } from "@/types/login.types";
 import { FormInstance } from "antd";
 import CryptoJS from "crypto-js";
+import dayjs from "dayjs";
 
 export function isErrorResponse(error: unknown): error is ErrorResponse {
   return (error as ErrorResponse).data !== undefined;
@@ -68,3 +69,18 @@ export const formatCurrency = (value: number): string =>
   })
     .format(value)
     .replace(/\s₫/, "đ");
+
+export const formatDateFeedback = (dateString: string) => {
+  const date = dayjs(dateString);
+  if (!date.isValid()) return "Ngày không hợp lệ";
+
+  const now = dayjs();
+  const diffInHours = now.diff(date, "hour");
+
+  if (diffInHours < 1) return "Vừa xong";
+  if (diffInHours < 24) return `${diffInHours} giờ trước`;
+  if (diffInHours < 48) return "Hôm qua";
+  if (diffInHours < 168) return `${Math.floor(diffInHours / 24)} ngày trước`;
+
+  return date.format("D MMMM YYYY");
+};

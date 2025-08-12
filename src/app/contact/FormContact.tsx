@@ -1,6 +1,6 @@
 "use client";
-import { notify } from "@/components/common/Notification";
-import React, { useState } from "react";
+import { showToast } from "@/hooks/useShowToast";
+import { useState } from "react";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { FaEarthAfrica, FaFacebookF } from "react-icons/fa6";
@@ -58,7 +58,7 @@ const FormContact = () => {
     e.preventDefault();
 
     if (formData.name && formData.email && formData.title && formData.message) {
-      notify("success", "Gửi biểu mẫu thành công", 3);
+      showToast("success", "Gửi biểu mẫu thành công");
       setFormData({
         name: "",
         email: "",
@@ -66,7 +66,7 @@ const FormContact = () => {
         message: "",
       });
     } else {
-      notify("warning", "Vui lòng nhập đầy đủ thông tin", 3);
+      showToast("warning", "Vui lòng nhập đầy đủ thông tin");
     }
   };
 
