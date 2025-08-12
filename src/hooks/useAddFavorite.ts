@@ -1,5 +1,5 @@
 import { useAddFavoriteMutation } from "@/apis/favoriteProductApi";
-import { notify } from "@/components/common/Notification";
+import { showToast } from "@/hooks/useShowToast";
 import { incrementFavoriteCount } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
 import { useState } from "react";
@@ -19,12 +19,12 @@ export const useFavorite = () => {
 
     try {
       if (!isFavorite) {
-        notify("success", "Sản phẩm đã có trong danh sách yêu thích", 2);
+        showToast("success", "Sản phẩm đã có trong danh sách yêu thích");
       } else {
         await addFavorite({
           productId: productId,
         }).unwrap();
-        notify("success", "Thêm vào danh sách yêu thích thành công", 2);
+        showToast("success", "Thêm vào danh sách yêu thích thành công");
         dispatch(incrementFavoriteCount());
       }
     } catch (error) {

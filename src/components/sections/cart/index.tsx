@@ -1,26 +1,25 @@
 "use client";
+
 import { useGetStoreDetailQuery } from "@/apis/storeApi";
+import useCart from "@/app/product/hooks/useCart";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
-import { notify } from "@/components/common/Notification";
 import { InputCustom } from "@/components/ui/input";
 import { tableData } from "@/constants";
 import { RolesLogin } from "@/enums";
+import { showToast } from "@/hooks/useShowToast";
 import useUserInfo from "@/hooks/useUserInfo";
-import { removeFromCart } from "@/redux/slices/cartSlice";
 import { RootState } from "@/redux/store";
 import { ProductInfo } from "@/types/product.types";
 import { formatCurrency } from "@/utils";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Divider } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import useAddToCart from "../product/hooks/useAddToCart";
+import { useSelector } from "react-redux";
 
 const OrderTable = () => {
-  const dispatch = useDispatch();
-  const { handleAddToCart, handleClearCart } = useAddToCart();
+  const { handleAddToCart, handleClearCart, handleRemoveFromCart } = useCart();
   const router = useRouter();
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
@@ -29,13 +28,6 @@ const OrderTable = () => {
     storeId: cartData?.cart[0]?.storeId,
   });
   const { userInfo } = useUserInfo();
-
-  const handleRemoveProduct = useCallback(
-    (product: ProductInfo) => {
-      dispatch(removeFromCart(product));
-    },
-    [dispatch],
-  );
 
   return (
     <>
@@ -68,45 +60,72 @@ const OrderTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {cartData?.cart?.map((item: ProductInfo, index: number) => (
-                  <tr className="border-b-0 border-t" key={index}>
-                    <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
-                      <div className="flex items-center">
-                        <Image
-                          height={100}
-                          width={100}
-                          quality={100}
-                          src={item?.image}
-                          className="mr-4 h-12 w-12 rounded-[100%]"
-                          alt="Product Image"
-                        />
-                        <span>{item.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-[34px]">
-                      {formatCurrency(item?.price[0]?.price)}
-                    </td>
-                    <td className="px-6 py-[34px]">
-                      {item?.price[0]?.unit.name}
-                    </td>
-                    <td className="px-6 py-[34px]">
-                      <div className="flex items-center">
-                        <MinusCircleOutlined
-                          onClick={() => handleRemoveProduct(item)}
-                          className="cursor-pointer text-xl text-black"
-                        />
-                        <span className="text-md mx-2">{item?.quantity}</span>
-                        <PlusCircleOutlined
-                          onClick={() => handleAddToCart(item)}
-                          className="cursor-pointer text-xl text-primary"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-[34px]">
-                      {formatCurrency(item?.totalProductPrice ?? 0)}
-                    </td>
-                  </tr>
-                ))}
+                {cartData?.cart?.map(
+                  (
+                    item: ProductInfo & {
+                      selectedUnit: {
+                        name: string;
+                        price: number;
+                        id: number;
+                      } | null;
+                    },
+                    index: number,
+                  ) => (
+                    <tr className="border-b-0 border-t" key={index}>
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
+                        <div className="flex items-center">
+                          <Image
+                            height={100}
+                            width={100}
+                            quality={100}
+                            src={item?.image}
+                            className="mr-4 h-12 w-12 rounded-[100%]"
+                            alt="Product Image"
+                          />
+                          <span>{item.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {formatCurrency(item.selectedUnit?.price ?? 0)}
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {item.selectedUnit?.name ??
+                          item.price[0]?.unit.name ??
+                          "Không có đơn vị"}
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        <div className="flex items-center">
+                          <MinusCircleOutlined
+                            onClick={() =>
+                              handleRemoveFromCart(item.id, item.selectedUnit)
+                            }
+                            className="cursor-pointer text-xl text-black"
+                          />
+                          <span className="text-md mx-2">{item.quantity}</span>
+                          <PlusCircleOutlined
+                            onClick={() =>
+                              handleAddToCart(
+                                item,
+                                1,
+                                item.selectedUnit
+                                  ? {
+                                      name: item.selectedUnit.name,
+                                      price: item.selectedUnit.price,
+                                      productUnitId: item.selectedUnit.id,
+                                    }
+                                  : null,
+                              )
+                            }
+                            className="cursor-pointer text-xl text-primary"
+                          />
+                        </div>
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {formatCurrency(item.totalProductPrice ?? 0)}
+                      </td>
+                    </tr>
+                  ),
+                )}
               </tbody>
             </table>
             <button
@@ -126,7 +145,7 @@ const OrderTable = () => {
               <div className="flex flex-1 flex-col items-center justify-between gap-3 p-3">
                 <InputCustom placeholder="Mã giảm giá" className="" />
                 <button
-                  onClick={() => notify("info", "Tính năng sẽ sớm ra mắt", 2)}
+                  onClick={() => showToast("info", "Tính năng sẽ sớm ra mắt")}
                   className="w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95"
                 >
                   ÁP DỤNG
@@ -164,18 +183,16 @@ const OrderTable = () => {
                   </span>
                 </div>
                 <div className="mt-5">
-                  <button
-                    onClick={() => router.push("/checkout")}
-                    className="mb-3 w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95"
-                  >
-                    XÁC NHẬN
-                  </button>
-                  <button
-                    onClick={() => router.push("/product")}
-                    className="w-full transform rounded border-2 border-primary py-2 font-bold text-primary transition-all duration-500 hover:bg-gray-300/25 active:scale-95"
-                  >
-                    MUA THÊM
-                  </button>
+                  <Link href="/checkout">
+                    <button className="mb-3 w-full transform rounded bg-primary py-2 font-bold uppercase text-white transition-all duration-500 hover:bg-primary/80 active:scale-95">
+                      XÁC NHẬN
+                    </button>
+                  </Link>
+                  <Link href="/product">
+                    <button className="w-full transform rounded border-2 border-primary py-2 font-bold text-primary transition-all duration-500 hover:bg-gray-300/25 active:scale-95">
+                      MUA THÊM
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

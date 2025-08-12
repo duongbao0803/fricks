@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// favoriteSlice.js
 const initialState = {
   count: 0,
   isFavorite: false,

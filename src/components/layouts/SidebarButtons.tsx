@@ -1,18 +1,7 @@
+import { ButtonData, SidebarButtonsProps } from "@/types/layout.types";
+import Link from "next/link";
 import React from "react";
-import { FiUser, FiLock, FiShoppingCart, FiLogOut } from "react-icons/fi";
-
-interface ButtonData {
-  id: number;
-  label: string;
-  path: string;
-  icon: JSX.Element;
-}
-
-interface SidebarButtonsProps {
-  activeButton: number;
-  handleButtonClick: (id: number, path: string) => void;
-  logout: () => void;
-}
+import { FiLock, FiLogOut, FiShoppingCart, FiUser } from "react-icons/fi";
 
 export const buttonsData: ButtonData[] = [
   {
@@ -33,31 +22,49 @@ export const buttonsData: ButtonData[] = [
 
 const SidebarButtons: React.FC<SidebarButtonsProps> = ({
   activeButton,
-  handleButtonClick,
   logout,
 }) => {
   return (
     <>
-      {buttonsData.map((button, index) => (
-        <button
-          key={index}
-          className={`mb-2 w-full rounded-lg px-3 py-2 text-left transition-all duration-200 ease-in-out ${
-            activeButton === button.id
-              ? "bg-primary text-white"
-              : "hover:bg-primary hover:text-white"
-          }`}
-          onClick={() =>
-            button.id === 4
-              ? logout()
-              : handleButtonClick(button.id, button.path)
-          }
-        >
-          <div className="flex items-center justify-center gap-3 lg:justify-start">
-            {button.icon}
-            <span>{button.label}</span>
-          </div>
-        </button>
-      ))}
+      {buttonsData.map((button) => {
+        const isActive = activeButton === button.id;
+
+        if (button.id === 4) {
+          return (
+            <button
+              key={button.id}
+              className={`mb-2 w-full rounded-lg px-3 py-2 text-left transition-all duration-200 ease-in-out ${
+                isActive
+                  ? "bg-primary text-white"
+                  : "hover:bg-primary hover:text-white"
+              }`}
+              onClick={logout}
+            >
+              <div className="flex items-center justify-center gap-3 lg:justify-start">
+                {button.icon}
+                <span>{button.label}</span>
+              </div>
+            </button>
+          );
+        }
+
+        return (
+          <Link
+            key={button.id}
+            href={button.path}
+            className={`mb-2 block w-full rounded-lg px-3 py-2 text-left transition-all duration-200 ease-in-out ${
+              isActive
+                ? "bg-primary text-white"
+                : "hover:bg-primary hover:text-white"
+            }`}
+          >
+            <div className="flex items-center justify-center gap-3 lg:justify-start">
+              {button.icon}
+              <span>{button.label}</span>
+            </div>
+          </Link>
+        );
+      })}
     </>
   );
 };

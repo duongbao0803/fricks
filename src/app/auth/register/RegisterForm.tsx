@@ -9,7 +9,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from "framer-motion";
 import { InputCustom } from "@/components/ui/input";
 import { ButtonCustom } from "@/components/ui/button";
-import { notify } from "@/components/common/Notification";
 import LoginForm from "@/app/auth/login/LoginForm";
 import {
   useConfirmEmailMutation,
@@ -33,6 +32,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useValidateFieldsMatch } from "@/hooks/useValidateFieldMatch";
+import { showToast } from "@/hooks/useShowToast";
 
 interface IProps {
   isShowRegister: boolean;
@@ -75,7 +75,7 @@ const RegisterForm: React.FC<IProps> = ({
   }) => {
     const { confirmPassword, ...information } = values;
     if (!captchaVerified) {
-      notify("warning", "Vui lòng xác nhận reCAPTCHA", 3);
+      showToast("warning", "Vui lòng xác nhận reCAPTCHA");
       return;
     }
 
@@ -83,10 +83,9 @@ const RegisterForm: React.FC<IProps> = ({
       setIsSigningUp(true);
       const res = await register(values).unwrap();
       if (res && res.httpCode === 200) {
-        notify(
+        showToast(
           "success",
           "Vui lòng kiểm tra hòm thư (hoặc Thư rác) để lấy mã OTP",
-          3,
         );
         setTimeout(() => {
           setIsDrawerVisible(true);
@@ -96,10 +95,10 @@ const RegisterForm: React.FC<IProps> = ({
     } catch (err: unknown) {
       if (isErrorResponse(err)) {
         setIsSigningUp(false);
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`, 3);
       } else {
         setIsSigningUp(false);
-        notify("error", `${err}`, 3);
+        showToast("error", `${err}`);
       }
     }
   };
@@ -111,14 +110,13 @@ const RegisterForm: React.FC<IProps> = ({
   const handleResendMail = async () => {
     const email = form.getFieldValue("email");
     if (!email) {
-      notify("warning", "Vui lòng nhập email", 1);
+      showToast("warning", "Vui lòng nhập email", 1);
       return;
     }
     if (isResending) {
-      notify(
+      showToast(
         "warning",
         `Vui lòng chờ ${cooldownTime} giây trước khi gửi lại mã OTP`,
-        2,
       );
       return;
     }
@@ -127,7 +125,7 @@ const RegisterForm: React.FC<IProps> = ({
     try {
       const res = await resendOtp(JSON.stringify(email)).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res.message}`, 2);
+        showToast("success", `${res.message}`, 2);
         const countdownInterval = setInterval(() => {
           setCooldownTime((prev) => {
             if (prev === 1) {
@@ -140,9 +138,9 @@ const RegisterForm: React.FC<IProps> = ({
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`);
       } else {
-        notify("error", `${err}`, 3);
+        showToast("error", `${err}`);
       }
     }
   };
@@ -151,7 +149,7 @@ const RegisterForm: React.FC<IProps> = ({
     const email = form.getFieldValue("email");
     let information = { email, otpCode };
     if (otpCode.length < 6) {
-      notify("warning", "Vui lòng nhập otp", 1);
+      showToast("warning", "Vui lòng nhập otp", 1);
       return;
     }
     try {
@@ -161,13 +159,13 @@ const RegisterForm: React.FC<IProps> = ({
         if (accessToken) {
           Cookies.set("accessToken", res.accessToken);
           Cookies.set("refreshToken", res.refreshToken);
-          notify("success", "Đăng nhập thành công", 2);
+          showToast("success", "Đăng nhập thành công", 2);
           router.push("/");
         }
       }
     } catch (err) {
       if (isErrorResponse(err)) {
-        notify("error", `${err.data.message}`, 3);
+        showToast("error", `${err.data.message}`, 3);
       }
     }
   };

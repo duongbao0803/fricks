@@ -1,7 +1,7 @@
 "use client";
+import { showToast } from "@/hooks/useShowToast";
 import { Form, Input } from "antd";
 import { FaRegPaperPlane } from "react-icons/fa6";
-import { notify } from "./common/Notification";
 import { ButtonCustom } from "./ui/button";
 
 const Subscribe = () => {
@@ -9,7 +9,7 @@ const Subscribe = () => {
 
   const handleSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    notify("success", "Gửi thành công", 2);
+    showToast("success", "Gửi thành công");
     form.resetFields();
   };
 

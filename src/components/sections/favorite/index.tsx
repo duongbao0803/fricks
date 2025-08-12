@@ -1,26 +1,26 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { TagCustom } from "@/components/common";
-import { tableFavorite } from "@/constants";
-import { CloseOutlined } from "@ant-design/icons";
-import Imagee from "@/assets/images/logo/avatar_admin.jpg";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import {
   useDeleteFavoriteAllMutation,
   useDeleteFavoriteMutation,
   useGetFavorListQuery,
 } from "@/apis/favoriteProductApi";
-import { notify } from "@/components/common/Notification";
+import Imagee from "@/assets/images/logo/avatar_admin.jpg";
 import NotFoundImage from "@/assets/images/logo/no-products.png";
-import { FavoriteProps } from "@/types/favorite.types";
-import { useDispatch } from "react-redux";
-import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
-import { skipToken } from "@reduxjs/toolkit/query";
-import Link from "next/link";
+import { TagCustom } from "@/components/common";
+import { tableFavorite } from "@/constants";
+import { showToast } from "@/hooks/useShowToast";
 import { getToken } from "@/hooks/useToken";
+import { clearFavoriteCount } from "@/redux/slices/favoriteSlice";
+import { FavoriteProps } from "@/types/favorite.types";
 import { formatCurrency } from "@/utils";
+import { CloseOutlined } from "@ant-design/icons";
+import { skipToken } from "@reduxjs/toolkit/query";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 const FavoriteTable = () => {
   const router = useRouter();
@@ -41,11 +41,11 @@ const FavoriteTable = () => {
     try {
       const res = await deleteFavorite(id).unwrap();
       if (res) {
-        notify("success", `Xóa sản phẩm yêu thích khỏi danh sách`, 2);
+        showToast("success", `Xóa sản phẩm yêu thích khỏi danh sách`);
         refetch();
       }
     } catch (err: any) {
-      notify("error", `${err?.data?.message}`, 3);
+      showToast("error", `${err?.data?.message}`);
     }
   };
 
@@ -53,12 +53,12 @@ const FavoriteTable = () => {
     try {
       const res = await deleteAll({}).unwrap();
       if (res && res.httpCode === 200) {
-        notify("success", `${res?.message}`, 2);
+        showToast("success", `${res?.message}`);
         dispatch(clearFavoriteCount());
         refetch();
       }
     } catch (err: any) {
-      notify("error", `${err?.data?.message}`, 3);
+      showToast("error", `${err?.data?.message}`);
     }
   };
 

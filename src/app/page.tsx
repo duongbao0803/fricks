@@ -5,7 +5,6 @@ import {
   Statistical,
   Subscribe,
 } from "@/components";
-import Modal from "@/components/Modal";
 import { Metadata } from "next";
 import "./globals.css";
 import PostHome from "./post/PostHome";
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Modal />
+      {/* <Modal /> */}
       <CarouselHome />
       <ProductHome />
       <ScrollReveal>

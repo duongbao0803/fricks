@@ -1,5 +1,5 @@
 import { BannerCustom, BreadScrumb } from "@/components/common";
-import FavoriteTable from "./FavoriteTable";
+import FavoriteTable from "@/components/sections/favorite";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

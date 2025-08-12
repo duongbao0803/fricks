@@ -10,9 +10,9 @@ import { useGetListStoreQuery } from "@/apis/storeApi";
 import NoProducts from "@/assets/images/logo/no-products.png";
 import { ScrollReveal, VoiceSearch } from "@/components";
 import { RadioCustom, SliderCustom } from "@/components/common";
-import { notify } from "@/components/common/Notification";
 import { SortStatus } from "@/enums";
 import useDebounce from "@/hooks/useDebounce";
+import { showToast } from "@/hooks/useShowToast";
 import useUserInfo from "@/hooks/useUserInfo";
 import { Category, ProductInfo, ProductPrice } from "@/types/product.types";
 import { formatCurrency } from "@/utils";
@@ -32,7 +32,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import useAddToCart from "./hooks/useAddToCart";
+import useCart from "./hooks/useCart";
 
 const { Option } = Select;
 
@@ -41,7 +41,7 @@ const ProductList = () => {
   const { userInfo } = useUserInfo();
   const debouncedPriceRange = useDebounce(priceRange, 500);
   const [selectedSort, setSelectedSort] = useState<string>("default");
-  const { handleAddToCart } = useAddToCart();
+  const { handleAddToCart } = useCart();
   // const { data: favoriteList = [] } = useGetFavorListQuery(undefined, {});
   const { data: categoriesData = [], isLoading } = useGetAllCatagoryQuery(
     undefined,
@@ -123,10 +123,6 @@ const ProductList = () => {
     setPriceRange(value);
   };
 
-  // const handleToggleFavorite = (product: ProductInfo, item: ProductPrice) => {
-  //   toggleFavorite(product?.id);
-  // };
-
   useEffect(() => {
     if (JSON.stringify(prevFavoriteList) !== JSON.stringify(favoriteList)) {
       const initialFavorites = favoriteList.reduce(
@@ -142,16 +138,15 @@ const ProductList = () => {
       setFavorites(initialFavorites);
       setPrevFavoriteList(favoriteList);
     }
-  }, [favoriteList]);
+  }, [favoriteList, prevFavoriteList]);
 
   const handleToggleFavorite = async (productId: number) => {
     if (!favorites[productId]) {
       const res = await addFavorite({ productId }).unwrap();
       if (res) {
-        notify(
+        showToast(
           "success",
           `Đã thêm ${res?.productName} vào danh sách yêu thích`,
-          2,
         );
         setFavorites((prev) => ({
           ...prev,
@@ -253,74 +248,88 @@ const ProductList = () => {
             ))
           ) : sortProduct?.length > 0 ? (
             sortProduct?.map((product: ProductInfo) =>
-              product?.price?.map((item: ProductPrice, index: number) => (
-                <ScrollReveal key={index}>
-                  <div className="relative mx-auto my-5 h-[400px] max-w-[350px] cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-500 ease-in-out hover:shadow-lg sm:w-[260px] md:w-[260px]">
-                    <div className="relative flex h-96 flex-col items-center justify-center transition-all duration-500">
-                      <div className="group relative h-full w-full overflow-hidden transition-all duration-500">
-                        <Image
-                          src={product?.image ?? ""}
-                          width={1000}
-                          height={1000}
-                          quality={100}
-                          alt="product"
-                          className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
-                        />
-                        <button className="absolute bottom-0 flex h-full w-full cursor-default items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
-                          <p className="mx-5 cursor-pointer border-2 p-2 text-[16px] font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                            <button onClick={() => handleAddToCart(product)}>
-                              + Thêm vào giỏ hàng
-                            </button>
-                          </p>
-                        </button>
-                        {userInfo && (
-                          <Tooltip
-                            title={
-                              favorites[product.id]
-                                ? "Đã có trong danh sách yêu thích"
-                                : "Thêm vào danh sách yêu thích"
-                            }
-                            placement="top"
-                          >
-                            <button
-                              className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
-                              onClick={() => handleToggleFavorite(product?.id)}
-                              disabled={favorites[product.id]}
-                            >
-                              {favorites[product.id] ? (
-                                <AiFillHeart className="text-xl text-red-500" />
-                              ) : (
-                                <AiOutlineHeart className="text-xl text-gray-500" />
-                              )}
-                            </button>
-                          </Tooltip>
-                        )}
-                      </div>
-                      <Link href={`/product/${product?.id}`}>
-                        <div className="flex flex-col items-center p-4 text-center">
-                          <h3 className="mb-2 text-lg">{product?.name}</h3>
-                          <Rate
-                            disabled
-                            value={product?.rating || 5}
-                            className="mb-2 text-sm"
+              product?.price?.map((item: ProductPrice, index: number) => {
+                const defaultUnit = {
+                  name: item?.unit?.name,
+                  price: item?.price,
+                  productUnitId: item?.unitId,
+                };
+
+                return (
+                  <ScrollReveal key={index}>
+                    <div className="relative mx-auto my-5 h-[400px] max-w-[350px] cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-500 ease-in-out hover:shadow-lg sm:w-[260px] md:w-[260px]">
+                      <div className="relative flex h-96 flex-col items-center justify-center transition-all duration-500">
+                        <div className="group relative h-full w-full overflow-hidden transition-all duration-500">
+                          <Image
+                            src={product?.image ?? ""}
+                            width={1000}
+                            height={1000}
+                            quality={100}
+                            alt="product"
+                            className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
                           />
-                          <p className="mb-2 text-xl font-bold">
-                            <span className="text-primary">
-                              {formatCurrency(item?.price)} / {""}
-                              {item?.unit?.name || ""}
-                            </span>
-                          </p>
+                          <button className="absolute bottom-0 flex h-full w-full cursor-default items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
+                            <p className="mx-5 cursor-pointer border-2 p-2 text-[16px] font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
+                              <button
+                                onClick={() =>
+                                  handleAddToCart(product, 1, defaultUnit)
+                                }
+                              >
+                                + Thêm vào giỏ hàng
+                              </button>
+                            </p>
+                          </button>
+                          {userInfo && (
+                            <Tooltip
+                              title={
+                                favorites[product.id]
+                                  ? "Đã có trong danh sách yêu thích"
+                                  : "Thêm vào danh sách yêu thích"
+                              }
+                              placement="top"
+                            >
+                              <button
+                                className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
+                                onClick={() =>
+                                  handleToggleFavorite(product?.id)
+                                }
+                                disabled={favorites[product.id]}
+                              >
+                                {favorites[product.id] ? (
+                                  <AiFillHeart className="text-xl text-red-500" />
+                                ) : (
+                                  <AiOutlineHeart className="text-xl text-gray-500" />
+                                )}
+                              </button>
+                            </Tooltip>
+                          )}
                         </div>
-                      </Link>
+                        <Link href={`/product/${product?.id}`}>
+                          <div className="flex flex-col items-center p-4 text-center">
+                            <h3 className="mb-2 text-lg">{product?.name}</h3>
+                            <Rate
+                              disabled
+                              value={product?.rate || 5}
+                              className="mb-2 text-sm"
+                            />
+                            <p className="mb-2 text-xl font-bold">
+                              <span className="text-primary">
+                                {formatCurrency(item?.price)} / {""}
+                                {item?.unit?.name || ""}
+                              </span>
+                            </p>
+                          </div>
+                        </Link>
+                      </div>
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 transform">
+                        <p className="text-[12px] font-normal text-gray-400">
+                          {product?.storeName}
+                        </p>
+                      </div>
                     </div>
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 transform">
-                      <p className="text-[12px] font-normal text-gray-400">
-                        {product?.storeName}
-                      </p>
-                    </div>
-                  </div>
-                </ScrollReveal>
-              )),
+                  </ScrollReveal>
+                );
+              }),
             )
           ) : (
             <div className="col-span-1 grid place-items-center text-center text-lg font-bold text-gray-500 md:col-span-3">

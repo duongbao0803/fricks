@@ -1,6 +1,5 @@
 import { BannerCustom, BreadScrumb } from "@/components/common";
-import React from "react";
-import OrderDetail from "./OrderDetail";
+import OrderDetail from "@/components/sections/checkout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

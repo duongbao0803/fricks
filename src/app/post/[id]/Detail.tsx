@@ -1,7 +1,7 @@
 "use client";
 import { useGetDetailPostQuery } from "@/apis/postApi";
 import { useGetDetailProductQuery } from "@/apis/productApi";
-import useAddToCart from "@/app/product/hooks/useAddToCart";
+import useCart from "@/app/product/hooks/useCart";
 import { ScrollReveal } from "@/components";
 import { formatCurrency } from "@/utils";
 import { Rate, Spin } from "antd";
@@ -16,7 +16,15 @@ const PostDetail = () => {
   const { data: productDetail } = useGetDetailProductQuery({
     productId: postDetail?.productId,
   });
-  const { handleAddToCart } = useAddToCart();
+  const { handleAddToCart } = useCart();
+
+  const defaultUnit = productDetail?.price?.[0]
+    ? {
+        name: productDetail.price[0]?.unit?.name,
+        price: productDetail.price[0]?.price,
+        productUnitId: productDetail.price[0]?.unitId,
+      }
+    : null;
 
   return (
     <div>
@@ -67,7 +75,11 @@ const PostDetail = () => {
 
                     <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
                       <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                        <button onClick={() => handleAddToCart(productDetail)}>
+                        <button
+                          onClick={() =>
+                            handleAddToCart(productDetail, 1, defaultUnit)
+                          }
+                        >
                           + Thêm vào giỏ hàng
                         </button>
                       </p>

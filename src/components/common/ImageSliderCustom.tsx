@@ -1,4 +1,3 @@
-// components/Tai1qImage.tsx
 import Image, { StaticImageData } from "next/image";
 
 interface ImageSliderProps {
@@ -22,7 +21,7 @@ const ImageSliderCustom: React.FC<ImageSliderProps> = ({
     <Image
       src={src}
       alt={alt}
-      className={className || "h-[650px] w-full object-center !rounded-xl"}
+      className={className || "h-[650px] w-full !rounded-xl object-center"}
       width={width || 1000}
       height={height || 1000}
       quality={quality || 100}
