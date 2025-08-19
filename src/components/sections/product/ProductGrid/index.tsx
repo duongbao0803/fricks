@@ -51,7 +51,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
           </span>
         </div>
 
-        <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
+        <h1 className="mb-2 text-3xl font-medium text-gray-900 sm:text-4xl md:text-3xl">
           {title === "Sản phẩm VLXD" ? (
             <>
               Sản phẩm <span className="text-primary">VLXD</span>
@@ -91,97 +91,118 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         />
       )}
 
-      <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="xs:grid-col-1 mx-auto mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
         {productData && productData?.items?.length > 0 && !loading
-          ? productData?.items?.slice(1, maxItems).map((product: ProductInfo) =>
-              product?.price?.map((item: ProductPrice, index: number) => {
-                const defaultUnit = {
-                  name: item?.unit?.name,
-                  price: item?.price,
-                  productUnitId: item?.unitId,
-                };
+          ? (() => {
+              const allProductUnits: Array<{
+                product: ProductInfo;
+                priceItem: ProductPrice;
+                index: number;
+              }> = [];
 
-                return (
-                  <ScrollReveal key={`${product.id}-${index}`}>
-                    <div className="relative my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
-                      <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
-                        <div className="group relative h-full w-full overflow-hidden">
-                          <Image
-                            src={product?.image ?? NotFoundImage}
-                            width={1000}
-                            height={1000}
-                            quality={100}
-                            alt="product"
-                            className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
-                          />
-
-                          <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
-                            <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
-                              <button
-                                onClick={() =>
-                                  onAddToCart(product, 1, defaultUnit)
-                                }
-                              >
-                                + Thêm vào giỏ hàng
-                              </button>
-                            </p>
-                          </button>
-
-                          {userInfo && onToggleFavorite && (
-                            <Tooltip
-                              title={
-                                favorites[product.id]
-                                  ? "Đã có trong danh sách yêu thích"
-                                  : "Thêm vào danh sách yêu thích"
-                              }
-                              placement="top"
-                            >
-                              <button
-                                className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
-                                onClick={() => onToggleFavorite(product?.id)}
-                                disabled={favorites[product.id]}
-                              >
-                                {favorites[product.id] ? (
-                                  <AiFillHeart className="text-xl text-red-500" />
-                                ) : (
-                                  <AiOutlineHeart className="text-xl text-gray-500" />
-                                )}
-                              </button>
-                            </Tooltip>
-                          )}
-                        </div>
-                        <Link href={`/product/${product?.id}`}>
-                          <div className="flex flex-col items-center p-4 text-center">
-                            <h3 className="mb-2 text-lg">{product?.name}</h3>
-                            <Rate
-                              disabled
-                              value={product?.rate || 5}
-                              className="mb-2 text-sm"
-                            />
-                            <p className="mb-2 text-xl font-bold">
-                              <span className="text-primary">
-                                {formatCurrency(item?.price)} /{" "}
-                                {item?.unit?.name}
-                              </span>
-                            </p>
-                          </div>
-                        </Link>
-                      </div>
-                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 transform">
-                        <p className="text-[12px] font-normal text-gray-400">
-                          {product?.storeName}
-                        </p>
-                      </div>
-                    </div>
-                  </ScrollReveal>
+              productData.items.slice(1).forEach((product: ProductInfo) => {
+                product?.price?.forEach(
+                  (priceItem: ProductPrice, priceIndex: number) => {
+                    allProductUnits.push({
+                      product,
+                      priceItem,
+                      index: allProductUnits.length,
+                    });
+                  },
                 );
-              }),
-            )
+              });
+
+              return allProductUnits
+                .slice(0, maxItems - 1)
+                .map(({ product, priceItem, index }) => {
+                  const defaultUnit = {
+                    name: priceItem?.unit?.name,
+                    price: priceItem?.price,
+                    productUnitId: priceItem?.unitId,
+                  };
+
+                  return (
+                    <ScrollReveal key={`${product.id}-${index}`}>
+                      <div className="relative my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
+                        <div className="flex h-80 flex-col items-center justify-center transition-all duration-700 ease-in-out">
+                          <div className="group relative h-full w-full overflow-hidden">
+                            <Image
+                              src={product?.image ?? NotFoundImage}
+                              width={1000}
+                              height={1000}
+                              quality={100}
+                              alt="product"
+                              className="h-full w-full object-contain p-3 transition-all duration-300 ease-in-out group-hover:scale-110"
+                            />
+
+                            <button className="absolute bottom-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-50 opacity-0 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:transform group-hover:opacity-100">
+                              <p className="text-md mx-5 border-2 p-2 font-semibold text-[#fff] hover:bg-[#fff] hover:text-black xl:text-lg">
+                                <button
+                                  onClick={() =>
+                                    onAddToCart(product, 1, defaultUnit)
+                                  }
+                                >
+                                  + Thêm vào giỏ hàng
+                                </button>
+                              </p>
+                            </button>
+
+                            {userInfo && onToggleFavorite && (
+                              <Tooltip
+                                title={
+                                  favorites[product.id]
+                                    ? "Đã có trong danh sách yêu thích"
+                                    : "Thêm vào danh sách yêu thích"
+                                }
+                                placement="top"
+                              >
+                                <button
+                                  className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 transition-all duration-500 hover:bg-gray-200"
+                                  onClick={() => onToggleFavorite(product?.id)}
+                                  disabled={favorites[product.id]}
+                                >
+                                  {favorites[product.id] ? (
+                                    <AiFillHeart className="text-xl text-red-500" />
+                                  ) : (
+                                    <AiOutlineHeart className="text-xl text-gray-500" />
+                                  )}
+                                </button>
+                              </Tooltip>
+                            )}
+                          </div>
+                          <Link href={`/product/${product?.id}`}>
+                            <div className="flex flex-col items-center p-4 text-center">
+                              <h3 className="mb-2 text-lg">{product?.name}</h3>
+                              <Rate
+                                disabled
+                                value={product?.rate ?? 5}
+                                className="mb-2 text-sm"
+                              />
+                              <p className="mb-2 text-xl font-bold">
+                                <span className="text-primary">
+                                  {formatCurrency(priceItem?.price)} /{" "}
+                                  {priceItem?.unit?.name}
+                                </span>
+                              </p>
+                            </div>
+                          </Link>
+                        </div>
+                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 transform">
+                          <p className="text-[12px] font-normal text-gray-400">
+                            {product?.storeName}
+                          </p>
+                        </div>
+                      </div>
+                    </ScrollReveal>
+                  );
+                });
+            })()
           : Array.from({ length: skeletonCount }).map((_, index) => (
               <div
                 key={index}
-                className="my-3 rounded-lg border-[0.2px] border-[#e6e6e6] p-5"
+                className="my-3 mr-4 min-h-64 rounded-lg border-[0.2px] border-[#e6e6e6] p-5"
               >
+                <Skeleton.Image active className="mb-2 !w-full" />
                 <Skeleton loading={true} active />
               </div>
             ))}
