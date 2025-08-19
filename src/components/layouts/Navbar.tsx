@@ -270,9 +270,7 @@ const Navbar = () => {
                 </Link>
                 <Link href="/cart">
                   <div className="lg:block">
-                    <Badge
-                      count={favoriteList?.length || cartData?.totalQuantity}
-                    >
+                    <Badge count={cartData?.totalQuantity}>
                       <ShoppingCartOutlined
                         className={`cursor-pointer text-2xl ${styleCart} hover:text-primary`}
                       />
