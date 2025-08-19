@@ -149,7 +149,7 @@ const Detail = () => {
                 <div className="my-2 flex">
                   <Rate
                     disabled
-                    value={typedProduct?.rate || 5}
+                    value={typedProduct?.rate ?? 5}
                     className="mb-2 text-sm"
                   />
                   <span className="ml-2 text-gray-400">

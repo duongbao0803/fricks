@@ -20,7 +20,6 @@ import { useSelector } from "react-redux";
 
 const OrderTable = () => {
   const { handleAddToCart, handleClearCart, handleRemoveFromCart } = useCart();
-  const router = useRouter();
   const cartData = useSelector(
     (state: RootState) => state.persistedReducer.cart,
   );
