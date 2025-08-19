@@ -1,11 +1,12 @@
 "use client";
 import { TagCustom } from "@/components/common";
 import { ButtonCustom } from "@/components/ui/button";
-import { PAYMENT_STATUS } from "@/enums";
+import { ORDER_STATUS, PAYMENT_STATUS } from "@/enums";
 import { OrderInfo } from "@/types/order.types";
 import { formatCurrency, formatTimestamp } from "@/utils";
 import {
   CheckCircleFilled,
+  ClockCircleFilled,
   CloseCircleFilled,
   SyncOutlined,
 } from "@ant-design/icons";
@@ -82,20 +83,25 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, showLoading }) => {
         <Divider className="!m-0 bg-gray-200"></Divider>
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col justify-between gap-3">
-            {order?.paymentStatus.includes(PAYMENT_STATUS.PAID) ? (
-              <div className="flex gap-2 text-sm text-[green]">
-                <CheckCircleFilled color="green" />
+            {order?.status.includes(ORDER_STATUS.DELIVERY) ? (
+              <div className="flex gap-2 text-sm text-[orange]">
+                <ClockCircleFilled color="orange" />
                 <p>Đang giao hàng...</p>
               </div>
-            ) : order?.paymentStatus.includes(PAYMENT_STATUS.PENDING) ? (
-              <div className="flex gap-2 text-sm text-[#0059ff]">
-                <SyncOutlined spin color="#0059ff" />
-                <p>Đang chờ...</p>
-              </div>
-            ) : (
+            ) : order?.status.includes(ORDER_STATUS.CANCELED) ? (
               <div className="flex gap-2 text-sm text-[red]">
                 <CloseCircleFilled color="red" />
                 <p>Đã hủy</p>
+              </div>
+            ) : order?.status.includes(ORDER_STATUS.DONE) ? (
+              <div className="flex gap-2 text-sm text-green-500">
+                <CheckCircleFilled color="green" />
+                <p>Đã giao hàng</p>
+              </div>
+            ) : (
+              <div className="flex gap-2 text-sm text-[#0059ff]">
+                <SyncOutlined spin color="#0059ff" />
+                <p>Đang chờ...</p>
               </div>
             )}
           </div>

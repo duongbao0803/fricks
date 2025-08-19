@@ -31,3 +31,9 @@ export enum PAYMENT_STATUS {
   FAILED = "FAILED",
   PENDING = "PENDING",
 }
+
+export enum ORDER_STATUS {
+  DONE = "DONE",
+  CANCELED = "CANCELED",
+  DELIVERY = "DELIVERY",
+}
