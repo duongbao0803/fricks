@@ -19,26 +19,28 @@ const SelectCateScrollbar = ({
       <div className="mb-2 flex justify-center space-x-2 md:hidden">
         <button
           onClick={scrollLeft}
-          className={`rounded-full bg-primary p-2 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+          className={`rounded-full p-2 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
             canScrollLeft
-              ? "text-primary hover:bg-primary hover:text-white"
+              ? "bg-primary text-primary hover:bg-primary hover:text-white"
               : "cursor-not-allowed text-gray-300"
           }`}
           disabled={!canScrollLeft}
         >
-          <IoChevronBack className="text-xl" />
+          <IoChevronBack
+            className={`text-xl transition ${canScrollLeft ? "text-white" : "text-black"}`}
+          />
         </button>
         <button
           onClick={scrollRight}
-          className={`rounded-full bg-primary p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+          className={`rounded-full p-2 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ${
             canScrollRight
-              ? "text-primary hover:bg-primary hover:text-white"
+              ? "bg-primary text-primary hover:bg-primary hover:text-white"
               : "cursor-not-allowed text-gray-300"
           }`}
           disabled={!canScrollRight}
         >
           <IoChevronForward
-            className={`text-xl transition ${canScrollLeft ? "text-white" : "text-black"}`}
+            className={`text-xl transition ${canScrollRight ? "text-white" : "text-black"}`}
           />
         </button>
       </div>

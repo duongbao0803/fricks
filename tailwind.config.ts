@@ -13,6 +13,7 @@ const config: Config = {
       padding: "15px",
       screens: {
         "max-513": { max: "513px" },
+        xs: "480px",
         sm: "640px",
         md: "768px",
         lg: "992px",

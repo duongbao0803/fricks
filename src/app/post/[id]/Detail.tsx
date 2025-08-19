@@ -9,6 +9,7 @@ import parse from "html-react-parser";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { IoSparkles } from "react-icons/io5";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -47,22 +48,32 @@ const PostDetail = () => {
             <div>{postDetail?.content ? parse(postDetail.content) : ""}</div>
           </div>
 
-          <div className="relative mt-12">
-            <h3 className="text-center text-2xl font-bold text-primary lg:text-4xl">
-              Sản phẩm liên quan
-            </h3>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
-              <div className="mt-2 flex w-[200px] items-center justify-center">
-                <span className="h-px flex-grow bg-gray-300"></span>
-                <span className="mx-2 text-gray-500">&#x2766;</span>
-                <span className="h-px flex-grow bg-gray-300"></span>
-              </div>
+          <div className="mt-36 text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-thirdly px-3 py-2">
+              <IoSparkles className="animate-pulse text-xl text-primary" />
+              <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
+                Sản phẩm chất lượng cao
+              </span>
+            </div>
+
+            <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
+              Sản phẩm <span className="text-primary">liên quan</span>
+            </h1>
+
+            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-gray-600 lg:text-base">
+              Khám phá các sản phẩm liên quan với chất lượng và giá cả hợp lý
+            </p>
+
+            <div className="mt-5 flex items-center justify-center">
+              <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+              <IoSparkles className="mx-4 text-lg text-primary" />
+              <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
             </div>
           </div>
           <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <ScrollReveal>
               <div className="relative my-5 cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-700 ease-in-out hover:shadow-lg">
-                <div className="flex h-96 flex-col items-center justify-center transition-all duration-700 ease-in-out">
+                <div className="flex h-80 flex-col items-center justify-center transition-all duration-700 ease-in-out">
                   <div className="group relative h-full w-full overflow-hidden">
                     <Image
                       src={productDetail?.image ?? ""}
