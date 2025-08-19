@@ -14,7 +14,7 @@ import { ProductInfo } from "@/types/product.types";
 import { formatCurrency } from "@/utils";
 import { Button, Divider, Radio, RadioChangeEvent } from "antd";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const OrderDetail = () => {
@@ -29,66 +29,22 @@ const OrderDetail = () => {
     storeId: cartData?.cart[0]?.storeId,
   });
 
-  const [data, setData] = useState({
-    email: "",
-    fullName: "",
-    address: "",
-    ward: "",
-    district: "",
-    city: "",
-    phoneNumber: "",
-  });
+  const userForm = sessionStorage.getItem("form");
 
-  useEffect(() => {
-    if (userInfo) {
-      const defaultFormData = {
-        email: userInfo?.email || "",
-        fullName: userInfo?.fullName || "",
-        address: "",
-        ward: "",
-        district: "",
-        city: "",
-        phoneNumber: userInfo?.phoneNumber || "",
-      };
-
-      const existingForm = sessionStorage.getItem("form");
-      if (existingForm) {
-        const parsedForm = JSON.parse(existingForm);
-        const mergedData = {
-          ...defaultFormData,
-          ...parsedForm,
-          email: userInfo?.email || parsedForm.email,
-          fullName: userInfo?.fullName || parsedForm.fullName,
-          phoneNumber: userInfo?.phoneNumber || parsedForm.phoneNumber,
-        };
-        sessionStorage.setItem("form", JSON.stringify(mergedData));
-        setData(mergedData);
-      } else {
-        sessionStorage.setItem("form", JSON.stringify(defaultFormData));
-        setData(defaultFormData);
-      }
-    } else {
-      const userForm = sessionStorage.getItem("form");
-      if (userForm) {
-        setData(JSON.parse(userForm));
-      }
-    }
-  }, [userInfo]);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const userForm = sessionStorage.getItem("form");
-      if (userForm) {
-        setData(JSON.parse(userForm));
-      }
+  if (!userForm && userInfo) {
+    const defaultFormData = {
+      email: userInfo?.email || "",
+      fullName: userInfo?.fullName || "",
+      address: userInfo?.address || "",
+      ward: userInfo?.ward || "",
+      district: userInfo?.district || "",
+      city: userInfo?.city || "",
+      phoneNumber: userInfo?.phoneNumber || "",
     };
+    sessionStorage.setItem("form", JSON.stringify(defaultFormData));
+  }
 
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  const data = userForm ? JSON.parse(userForm) : {};
 
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
@@ -107,7 +63,6 @@ const OrderDetail = () => {
       quantity: item.quantity,
     }),
   );
-
   const checkout = {
     shipFee: store?.defaultShip,
     voucherCode: data?.ward === "Tân Phú" ? "FSTANPHU" : "ABC",
@@ -120,20 +75,10 @@ const OrderDetail = () => {
   let discount = data?.ward === "Tân Phú" ? store?.defaultShip : 0;
 
   const handlePayment = async () => {
-    if (!data?.address || !data?.ward || !data?.district || !data?.city) {
-      showToast(
-        "info",
-        "Vui lòng cập nhật thông tin địa chỉ giao hàng trước khi thanh toán",
-      );
-      setIsOpen(true);
-      return;
-    }
-
     if (!isConfirm) {
       showToast("info", "Vui lòng xác nhận lại đơn hàng trước khi thanh toán");
       return;
     }
-
     try {
       const res = await checkoutAPI(checkout);
       if (res && res.data) {
@@ -150,23 +95,8 @@ const OrderDetail = () => {
           "Đặt hàng không thành công. Vui lòng điền đầy đủ thông tin đặt hàng",
         );
       }
-    } catch (err) {
-      console.error("Payment error:", err);
-    }
+    } catch (err) {}
   };
-
-  // Hàm để cập nhật data khi modal đóng
-  const handleModalClose = (isOpen: boolean) => {
-    setIsOpen(isOpen);
-    if (!isOpen) {
-      // Khi modal đóng, cập nhật lại data từ sessionStorage
-      const userForm = sessionStorage.getItem("form");
-      if (userForm) {
-        setData(JSON.parse(userForm));
-      }
-    }
-  };
-
   return (
     <section className="pb-10">
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
@@ -179,7 +109,7 @@ const OrderDetail = () => {
               onClick={() => setIsOpen(true)}
               className="group relative float-right mb-3 cursor-pointer font-normal text-primary hover:text-primary"
             >
-              {data?.address ? "Sửa thông tin" : "Thêm thông tin"}
+              Thêm thông tin
               <span className="absolute bottom-[-2px] left-0 h-0.5 w-full scale-x-0 transform bg-primary transition-transform duration-300 group-hover:scale-x-100" />
             </button>
           </div>
@@ -195,11 +125,12 @@ const OrderDetail = () => {
               <div className="col-span-4">
                 <p>{data?.email || "Chưa có thông tin"}</p>
                 <p>{data?.fullName || "Chưa có thông tin"}</p>
-                <p className={!data?.address ? "text-red-500" : ""}>
-                  {data?.address && data?.ward && data?.district && data?.city
+                <p>
+                  {data?.address
                     ? `${data.address}, ${data.ward}, ${data.district}, ${data.city}`
-                    : "Vui lòng cập nhật địa chỉ giao hàng"}
+                    : "Chưa có thông tin"}
                 </p>
+
                 <p>{data?.phoneNumber || "Chưa có thông tin"}</p>
               </div>
             </div>
@@ -274,31 +205,33 @@ const OrderDetail = () => {
               </thead>
               <tbody>
                 {cartData?.cart?.map((item, index: number) => (
-                  <tr className="border-t" key={index}>
-                    <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
-                      <div className="flex items-center">
-                        <Image
-                          height={100}
-                          width={100}
-                          quality={100}
-                          src={item?.image}
-                          className="mr-4 h-12 w-12 rounded-[100%]"
-                          alt="Product Image"
-                        />
-                        <span>{item?.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-[34px]">
-                      {formatCurrency(item?.selectedUnit?.price ?? 0)}
-                    </td>
-                    <td className="px-6 py-[34px]">
-                      {item?.selectedUnit?.name}
-                    </td>
-                    <td className="px-6 py-[34px]">{item?.quantity}</td>
-                    <td className="px-6 py-[34px]">
-                      {formatCurrency(item?.totalProductPrice ?? 0)}
-                    </td>
-                  </tr>
+                  <>
+                    <tr className="border-t" key={index}>
+                      <td className="sticky left-0 z-10 bg-white px-6 py-[34px]">
+                        <div className="flex items-center">
+                          <Image
+                            height={100}
+                            width={100}
+                            quality={100}
+                            src={item?.image}
+                            className="mr-4 h-12 w-12 rounded-[100%]"
+                            alt="Product Image"
+                          />
+                          <span>{item?.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {formatCurrency(item?.selectedUnit?.price ?? 0)}
+                      </td>
+                      <td className="px-6 py-[34px]">
+                        {item?.selectedUnit?.name}
+                      </td>
+                      <td className="px-6 py-[34px]">{item?.quantity}</td>
+                      <td className="px-6 py-[34px]">
+                        {formatCurrency(item?.totalProductPrice ?? 0)}
+                      </td>
+                    </tr>
+                  </>
                 ))}
               </tbody>
             </table>
@@ -315,10 +248,12 @@ const OrderDetail = () => {
                   className="w-full"
                   value={value}
                 >
+                  {/* {infoUser && infoUser?.role === Role.MEMBER && ( */}
                   <div className="relative mb-5 flex h-[77px] w-full items-center justify-between rounded border border-[#bebcbc] p-5 hover:border-primary">
                     <Radio
                       value={PAYMENT.VIETQR}
                       className="w-full object-cover"
+                      defaultChecked
                     >
                       <div className="inline w-full">
                         <div className="border-1 w-full">Thanh toán VIETQR</div>
@@ -339,6 +274,7 @@ const OrderDetail = () => {
                     <Radio
                       value={PAYMENT.VNPAY}
                       className="w-full object-cover"
+                      defaultChecked
                     >
                       <div className="inline w-full">
                         <div className="border-1 w-full">Thanh toán VNPAY</div>
@@ -379,11 +315,7 @@ const OrderDetail = () => {
           </div>
         </div>
       </div>
-      <InfoModal
-        userInfo={userInfo}
-        isOpen={isOpen}
-        setIsOpen={handleModalClose}
-      />
+      <InfoModal userInfo={userInfo} isOpen={isOpen} setIsOpen={setIsOpen} />
     </section>
   );
 };

@@ -6,7 +6,7 @@ import { Col, Form, Modal, Row, Select } from "antd";
 import React, { useEffect } from "react";
 
 export interface AddModalProps {
-  setIsOpen: (nextState: boolean) => void;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isOpen: boolean;
   userInfo?: UserInfo;
 }
@@ -26,8 +26,8 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
       form.setFieldsValue({
         email: data?.email || userInfo.email,
         fullName: data?.fullName || userInfo.fullName,
-        address: data?.address ?? "",
-        phoneNumber: data?.phoneNumber || userInfo.phoneNumber,
+        address: data?.customerAddress || userInfo.address,
+        phoneNumber: data?.customerPhone || userInfo.phoneNumber,
       });
     }
   }, [isOpen, userInfo, form]);
@@ -47,6 +47,7 @@ const InfoModal: React.FC<AddModalProps> = (props) => {
 
   const handleCancel = () => {
     setIsOpen(false);
+    form.resetFields();
   };
 
   const filterOption = (

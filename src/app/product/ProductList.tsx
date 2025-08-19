@@ -158,7 +158,7 @@ const ProductList = () => {
 
   return (
     <section className="grid grid-cols-1 gap-16 leading-10 transition-all duration-500 md:grid-cols-4">
-      <div className="sticky transition-all duration-500 md:col-span-1">
+      <div className="transition-all duration-500 md:col-span-1">
         <div>
           <p className="font-medium">Tìm kiếm</p>
           <div className="relative my-5 flex items-center gap-2 transition-all duration-500 lg:flex">
@@ -238,12 +238,11 @@ const ProductList = () => {
 
         <div className="mx-auto mt-4 grid grid-cols-1 justify-center transition-all duration-500 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3">
           {isFetching ? (
-            Array.from({ length: 9 }).map((_, index) => (
+            Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="my-3 mr-4 min-h-64 rounded-lg border-[0.2px] border-[#e6e6e6] p-5"
+                className="my-3 mr-4 rounded-lg border-[0.2px] border-[#e6e6e6] p-5"
               >
-                <Skeleton.Image active className="mb-5 !w-full" />
                 <Skeleton loading={true} active />
               </div>
             ))
@@ -258,8 +257,8 @@ const ProductList = () => {
 
                 return (
                   <ScrollReveal key={index}>
-                    <div className="relative mx-auto my-5 min-h-[330px] max-w-[350px] cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-500 ease-in-out hover:shadow-lg sm:w-[260px] md:w-[260px]">
-                      <div className="relative flex h-80 flex-col items-center justify-center transition-all duration-500">
+                    <div className="relative mx-auto my-5 h-[400px] max-w-[350px] cursor-pointer rounded-lg border-[0.5px] bg-white shadow-md transition-all duration-500 ease-in-out hover:shadow-lg sm:w-[260px] md:w-[260px]">
+                      <div className="relative flex h-96 flex-col items-center justify-center transition-all duration-500">
                         <div className="group relative h-full w-full overflow-hidden transition-all duration-500">
                           <Image
                             src={product?.image ?? ""}
@@ -310,7 +309,7 @@ const ProductList = () => {
                             <h3 className="mb-2 text-lg">{product?.name}</h3>
                             <Rate
                               disabled
-                              value={product?.rate ?? 5}
+                              value={product?.rate || 5}
                               className="mb-2 text-sm"
                             />
                             <p className="mb-2 text-xl font-bold">
