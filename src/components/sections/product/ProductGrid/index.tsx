@@ -50,8 +50,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
             {badgeText}
           </span>
         </div>
-
-        <h1 className="mb-2 text-3xl font-medium text-gray-900 sm:text-4xl md:text-3xl">
+        <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
           {title === "Sản phẩm VLXD" ? (
             <>
               Sản phẩm <span className="text-primary">VLXD</span>

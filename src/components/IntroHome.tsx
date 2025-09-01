@@ -45,10 +45,10 @@ const IntroHome = () => {
             </span>
           </div>
           <div className="leading-8">
-            <h1 className="text-3xl font-medium sm:text-4xl">
+            <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl">
               Sản phẩm chất lượng
             </h1>
-            <p className="my-5 text-black/50">
+            <p className="mx-auto my-5 max-w-2xl text-sm leading-relaxed text-gray-600 lg:text-base">
               Báo giá cập nhật 24/7 tại nhà máy sản suất. Hỗ trợ vận chuyển thép
               tới tận công trình
             </p>
