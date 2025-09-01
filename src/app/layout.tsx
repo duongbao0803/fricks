@@ -1,4 +1,4 @@
-import { BackToTop, NextProgressBar } from "@/components";
+import { BackToTop, LoadingWrapper, NextProgressBar } from "@/components";
 import { NotificationProvider } from "@/components/common/Notification";
 import { Providers } from "@/redux/provider";
 import { Analytics } from "@vercel/analytics/next";
@@ -53,28 +53,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${robotoSlab.variable}`}>
-        {/* <LoadingWrapper> */}
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: "#ff7b29",
-            },
-          }}
-        >
-          <NotificationProvider>
-            <NextProgressBar />
-            <Providers>
-              <ClientLayout>
-                {children}
-                <Toaster position="top-right" richColors />
-                <Analytics />
-                <SpeedInsights />
-                <BackToTop />
-              </ClientLayout>
-            </Providers>
-          </NotificationProvider>
-        </ConfigProvider>
-        {/* </LoadingWrapper> */}
+        <LoadingWrapper>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#ff7b29",
+              },
+            }}
+          >
+            <NotificationProvider>
+              <NextProgressBar />
+              <Providers>
+                <ClientLayout>
+                  {children}
+                  <Toaster position="top-right" richColors />
+                  <Analytics />
+                  <SpeedInsights />
+                  <BackToTop />
+                </ClientLayout>
+              </Providers>
+            </NotificationProvider>
+          </ConfigProvider>
+        </LoadingWrapper>
       </body>
     </html>
   );
